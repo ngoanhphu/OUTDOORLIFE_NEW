@@ -1,0 +1,55 @@
+.button {
+  width: 180px;
+  height: 40px;
+  background-image: linear-gradient(rgb(214, 202, 254), rgb(158, 129, 254));
+  border: none;
+  border-radius: 50px;
+  color: rgb(255, 255, 255);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  cursor: pointer;
+  box-shadow: 1px 3px 0px rgb(139, 113, 255);
+  transition-duration: .3s;
+}
+
+.cartIcon {
+  width: 14px;
+  height: fit-content;
+}
+
+.cartIcon path {
+  fill: white;
+}
+
+.button:active {
+  transform: translate(2px ,0px);
+  box-shadow: 0px 1px 0px rgb(139, 113, 255);
+  padding-bottom: 1px;
+}
+.badge-custom {
+    background-color: #FFA500; /* Màu cam */
+    color: #ffffff; /* Màu chữ trắng */
+    padding: 10px 20px; /* Thêm khoảng đệm trong nút */
+    border-radius: 25px; /* Góc bo tròn */
+    font-size: 16px; /* Kích thước chữ */
+    font-weight: bold; /* Chữ đậm */
+    border: none; /* Loại bỏ viền mặc định */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Bóng đổ */
+    transition: background-color 0.3s, transform 0.3s; /* Hiệu ứng chuyển đổi */
+    cursor: pointer; /* Thay đổi con trỏ khi di chuột qua */
+    text-align: center; /* Canh giữa chữ */
+    text-decoration: none; /* Loại bỏ gạch chân nếu là thẻ a */
+}
+
+.badge-custom:hover {
+    background-color: #ff8c00; /* Màu khi di chuột qua */
+    transform: scale(1.05); /* Phóng to nhẹ khi di chuột qua */
+}
+
+.badge-custom:active {
+    background-color: #e67e22; /* Màu khi bấm giữ */
+    transform: scale(1); /* Trở về kích thước ban đầu */
+}
