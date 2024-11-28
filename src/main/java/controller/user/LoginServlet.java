@@ -1,5 +1,7 @@
 package controller.user;
 
+import dao.DBContext;
+import dao.OwnerDAO;
 import dao.UserDaoImpl;
 import java.io.IOException;
 import java.security.MessageDigest;
@@ -10,6 +12,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.PrintWriter;
+import java.sql.SQLException;
+
 import model.User;
 
 @WebServlet(name = "loginservlet", urlPatterns = {"/loginservlet"})
@@ -38,6 +42,7 @@ public class LoginServlet extends HttpServlet {
             throws ServletException, IOException {
          String email = request.getParameter("email");
         String password = request.getParameter("password");
+        OwnerDAO ownerDAO = new OwnerDAO(new DBContext());
 
         // Xác thực người dùng là quản trị viên
         User user = authenticateUser(email, password);
@@ -49,6 +54,16 @@ public class LoginServlet extends HttpServlet {
         }else if(user != null && user.isOwner()){
               HttpSession session = request.getSession();
             session.setAttribute("currentUser", user);
+
+            try {
+                Integer ownerId = ownerDAO.getOwnerIDbyAccountID(user.getId());
+                if (ownerId != null) {
+                    session.setAttribute("ownerId", ownerId);
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
             response.sendRedirect("owner.jsp");
             return; // Kết thúc phương thức sau khi chuyển hướng
         }

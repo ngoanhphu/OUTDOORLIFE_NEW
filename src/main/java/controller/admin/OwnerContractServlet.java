@@ -7,6 +7,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import model.OwnerContract;
 
 import java.io.IOException;
@@ -33,14 +34,17 @@ public class OwnerContractServlet extends HttpServlet {
             // Create OwnerContract object from form data
             OwnerContract contract = new OwnerContract();
 
-            contract.setAccountId(Integer.parseInt(request.getParameter("accountId")));
+            // Retrieve accountId and ownerId from session
+            HttpSession session = request.getSession();
+            Integer accountId = (Integer) session.getAttribute("accountId");
+            Integer ownerId = (Integer) session.getAttribute("ownerId");
 
-            String registrationDateStr = request.getParameter("registrationDate");
-            if (registrationDateStr != null && !registrationDateStr.isEmpty()) {
-                contract.setRegistration(Date.valueOf(registrationDateStr));
+            if (accountId == null || ownerId == null) {
+                throw new IllegalArgumentException("Account_id or owner_id is not present in the session");
             }
 
-            contract.setStatus(request.getParameter("status"));
+            contract.setAccountId(accountId);
+            contract.setOwnerId(ownerId);
 
             String startDateStr = request.getParameter("startDate");
             if (startDateStr != null && !startDateStr.isEmpty()) {
@@ -54,13 +58,8 @@ public class OwnerContractServlet extends HttpServlet {
 
             contract.setNotes(request.getParameter("notes"));
 
-            String ownerIdStr = request.getParameter("ownerId");
-            if (ownerIdStr != null && !ownerIdStr.isEmpty()) {
-                contract.setOwnerId(Integer.parseInt(ownerIdStr));
-            }
-
             // Insert contract into database
-            boolean success = insertOwnerContract(contract);
+            boolean success = insertOwnerContract(contract, session);
 
             // Redirect based on success
             if (success) {
@@ -74,7 +73,7 @@ public class OwnerContractServlet extends HttpServlet {
         }
     }
 
-    private boolean insertOwnerContract(OwnerContract contract) throws SQLException {
-        return dao.insertOwnerContract(contract);
+    private boolean insertOwnerContract(OwnerContract contract, HttpSession session) throws SQLException {
+        return dao.insertOwnerContract(contract, session);
     }
 }
