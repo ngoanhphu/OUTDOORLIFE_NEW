@@ -24,10 +24,12 @@ public class RegisterAccountServlet extends HttpServlet {
         String phone = request.getParameter("phone");
         String password = request.getParameter("password");
         String agreed = request.getParameter("agreed");
+        String isOwner=request.getParameter("isOwner");
         JSONObject jsonResponse = new JSONObject();
         UserDaoImpl guestDao = new UserDaoImpl();
-        
-        if (agreed != null) {
+        String code = guestDao.getRandom();
+
+        if (agreed != null && isOwner==null) {
             try {
                 boolean emailExists = guestDao.emailExists(email);
                 if (emailExists) {
@@ -40,6 +42,8 @@ public class RegisterAccountServlet extends HttpServlet {
                     guest.setEmail(email);
                     guest.setPhoneNumber(phone);
                     guest.setPasswordHash(password);
+                    guest.setCode(code);
+
                     
                     boolean emailSent = guestDao.sendEmail(guest);
                     if (emailSent) {
@@ -55,7 +59,39 @@ public class RegisterAccountServlet extends HttpServlet {
                 jsonResponse.put("success", false);
                 jsonResponse.put("message", "An error occurred while checking email.");
             }
-        } else {
+        } else if(agreed != null && isOwner!=null) {
+            try {
+                boolean emailExists = guestDao.emailExists(email);
+                if (emailExists) {
+                    jsonResponse.put("success", false);
+                    jsonResponse.put("message", "Email is already registered. Please use a different email.");
+                } else {
+                    User guest = new User();
+                    guest.setFirstName(firstName);
+                    guest.setLastName(lastName);
+                    guest.setEmail(email);
+                    guest.setPhoneNumber(phone);
+                    guest.setPasswordHash(password);
+                    guest.setCode(code);
+                    guest.setOwner(true);
+
+
+                    boolean emailSent = guestDao.sendEmail(guest);
+                    if (emailSent) {
+                        HttpSession session = request.getSession();
+                        session.setAttribute("authcode", guest);
+                        jsonResponse.put("success", true);
+                    } else {
+                        jsonResponse.put("success", false);
+                        jsonResponse.put("message", "An error occurred while sending the verification email.");
+                    }
+                }
+            } catch (Exception ex) {
+                jsonResponse.put("success", false);
+                jsonResponse.put("message", "An error occurred while checking email.");
+            }
+        }
+        else {
             jsonResponse.put("success", false);
             jsonResponse.put("message", "Please accept the Terms of Service.");
         }
