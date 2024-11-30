@@ -24,42 +24,12 @@ public class RegisterAccountServlet extends HttpServlet {
         String phone = request.getParameter("phone");
         String password = request.getParameter("password");
         String agreed = request.getParameter("agreed");
-        String isOwner=request.getParameter("isOwner");
+        String isOwner = request.getParameter("isOwner"); // Đây sẽ là "on" nếu checkbox được chọn
         JSONObject jsonResponse = new JSONObject();
         UserDaoImpl guestDao = new UserDaoImpl();
         String code = guestDao.getRandom();
 
-        if (agreed != null && isOwner==null) {
-            try {
-                boolean emailExists = guestDao.emailExists(email);
-                if (emailExists) {
-                    jsonResponse.put("success", false);
-                    jsonResponse.put("message", "Email is already registered. Please use a different email.");
-                } else {
-                    User guest = new User();                 
-                    guest.setFirstName(firstName);
-                    guest.setLastName(lastName);
-                    guest.setEmail(email);
-                    guest.setPhoneNumber(phone);
-                    guest.setPasswordHash(password);
-                    guest.setCode(code);
-
-                    
-                    boolean emailSent = guestDao.sendEmail(guest);
-                    if (emailSent) {
-                        HttpSession session = request.getSession();
-                        session.setAttribute("authcode", guest);
-                        jsonResponse.put("success", true);
-                    } else {
-                        jsonResponse.put("success", false);
-                        jsonResponse.put("message", "An error occurred while sending the verification email.");
-                    }
-                }
-            } catch (Exception ex) {
-                jsonResponse.put("success", false);
-                jsonResponse.put("message", "An error occurred while checking email.");
-            }
-        } else if(agreed != null && isOwner!=null) {
+        if (agreed != null) { // Chỉ tiếp tục nếu người dùng đã đồng ý với Terms of Service
             try {
                 boolean emailExists = guestDao.emailExists(email);
                 if (emailExists) {
@@ -73,8 +43,13 @@ public class RegisterAccountServlet extends HttpServlet {
                     guest.setPhoneNumber(phone);
                     guest.setPasswordHash(password);
                     guest.setCode(code);
-                    guest.setOwner(true);
 
+                    // Kiểm tra trạng thái của isOwner và gán giá trị đúng
+                    if (isOwner != null && isOwner.equals("on")) {
+                        guest.setOwner(true);
+                    } else {
+                        guest.setOwner(false);
+                    }
 
                     boolean emailSent = guestDao.sendEmail(guest);
                     if (emailSent) {
@@ -90,8 +65,7 @@ public class RegisterAccountServlet extends HttpServlet {
                 jsonResponse.put("success", false);
                 jsonResponse.put("message", "An error occurred while checking email.");
             }
-        }
-        else {
+        } else {
             jsonResponse.put("success", false);
             jsonResponse.put("message", "Please accept the Terms of Service.");
         }
@@ -99,4 +73,5 @@ public class RegisterAccountServlet extends HttpServlet {
         response.setContentType("application/json");
         response.getWriter().write(jsonResponse.toString());
     }
+
 }
