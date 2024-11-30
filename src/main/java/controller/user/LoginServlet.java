@@ -51,21 +51,23 @@ public class LoginServlet extends HttpServlet {
             session.setAttribute("currentUser", user);
             response.sendRedirect("dashboard");
             return; // Kết thúc phương thức sau khi chuyển hướng
-        }else if(user != null && user.isOwner()){
-              HttpSession session = request.getSession();
+        }else if (user != null && user.isOwner()) {
+            HttpSession session = request.getSession();
             session.setAttribute("currentUser", user);
+            session.setAttribute("accountId", user.getId());
 
             try {
-                Integer ownerId = ownerDAO.getOwnerIDbyAccountID(user.getId());
-                if (ownerId != null) {
-                    session.setAttribute("ownerId", ownerId);
+                boolean ownerExists = ownerDAO.isOwnerExist(user.getId());
+                if (ownerExists) {
+                    response.sendRedirect("owner.jsp");
+                } else {
+                    response.sendRedirect("owner/registerOwner.jsp");
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
+                response.sendRedirect("error.jsp");
             }
-
-            response.sendRedirect("owner.jsp");
-            return; // Kết thúc phương thức sau khi chuyển hướng
+            return;
         }
 
         // Nếu không phải quản trị viên, tiếp tục xác thực như người dùng thông thường
