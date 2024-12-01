@@ -70,7 +70,7 @@
                 <th>Region</th>
                 <th>Identification</th>
                 <th>Tax Code</th>
-                <th>Image</th>
+                <th>Contract Document</th>
                 <th>Start Date</th>
                 <th>End Date</th>
                 <th>Notes</th>
@@ -88,7 +88,7 @@
                     <td>${owner.region}</td>
                     <td>${owner.identification}</td>
                     <td>${owner.taxCode}</td>
-                    <td><img src="${owner.image}" alt="Owner Image" width="100"></td>
+                    <td><a href="${owner.image}" download>Download Contract</a></td>
                     <td>${owner.startDate}</td>
                     <td>${owner.endDate}</td>
                     <td>${owner.notes}</td>
