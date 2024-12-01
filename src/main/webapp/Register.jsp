@@ -1,58 +1,89 @@
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <jsp:include page="header.jsp"></jsp:include>
-    <div class="container">
-        <div class="row">
-            <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
-                <div class="card border-e shadow rounded-3" style="margin-top: 200px">
-                    <div class="card-body p-4 p-sm-5">
-                        <h5 class="card-title text-center mb-5 fw-light fs-5">Register Account</h5>
-                        <form id="form">
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card shadow-lg border-0 rounded-4" style="margin-top: 100px;">
+                <div class="card-body p-4">
+                    <h3 class="text-center text-primary mb-4">Create Your Account</h3>
+                    <form id="form">
                         <c:if test="${not empty successMessage}">
                             <div class="alert alert-success">
-                                ${successMessage}
+                                    ${successMessage}
                             </div>
                         </c:if>
-                        <div id="error" style="color:red;"></div>
-                        <div class="form-floating mb-3">
-                            <input type="text" class="form-control" id="firstname" placeholder="firstName" name="firstname" required>
-                            <label for="firstname">First Name</label>
-                        </div>
-                        <div class="form-floating mb-3">
-                            <input type="text" class="form-control" id="lastname" placeholder="lastName" name="lastname" required>
-                            <label for="lastname">Last Name</label>
-                        </div>
-                        <div class="form-floating mb-3">
-                            <input type="email" class="form-control" id="email" name="email" placeholder="Email" required>
-                            <label for="email">Email</label>
-                        </div>
-                        <div class="form-floating mb-3">
-                            <input type="tel" class="form-control" id="phonenumber" name="phone" placeholder="phoneNumber" pattern="(09|03|07|08|05)[0-9]{8}" required>
-                            <label for="phonenumber">Phone</label>
-                        </div>                             
-                        <div class="form-floating mb-3">
-                            <input type="password" name="password" class="form-control" id="password" placeholder="Password" required>
-                            <label for="password">Password</label>
+                        <div id="error" class="text-danger mb-3"></div>
+
+                        <!-- First Name -->
+                        <div class="input-group mb-3">
+                            <span class="input-group-text bg-primary text-white">
+                                <i class="bi bi-person"></i>
+                            </span>
+                            <input type="text" class="form-control" id="firstname" placeholder="First Name" name="firstname" required>
                         </div>
 
+                        <!-- Last Name -->
+                        <div class="input-group mb-3">
+                            <span class="input-group-text bg-primary text-white">
+                                <i class="bi bi-person-fill"></i>
+                            </span>
+                            <input type="text" class="form-control" id="lastname" placeholder="Last Name" name="lastname" required>
+                        </div>
+
+                        <!-- Email -->
+                        <div class="input-group mb-3">
+                            <span class="input-group-text bg-primary text-white">
+                                <i class="bi bi-envelope"></i>
+                            </span>
+                            <input type="email" class="form-control" id="email" placeholder="Email" name="email" required>
+                        </div>
+
+                        <!-- Phone -->
+                        <div class="input-group mb-3">
+                            <span class="input-group-text bg-primary text-white">
+                                <i class="bi bi-telephone"></i>
+                            </span>
+                            <input type="tel" class="form-control" id="phonenumber" placeholder="Phone Number" name="phone" pattern="(09|03|07|08|05)[0-9]{8}" required>
+                        </div>
+
+                        <!-- Password -->
+                        <div class="input-group mb-3">
+                            <span class="input-group-text bg-primary text-white">
+                                <i class="bi bi-lock"></i>
+                            </span>
+                            <input type="password" class="form-control" id="password" placeholder="Password" name="password" required>
+                        </div>
+
+                        <!-- Agree to terms -->
                         <div class="form-check mb-3">
-                            <input class="form-check-input" type="checkbox" value="on" name="agreed" id="rememberPasswordCheck" required>
+                            <input class="form-check-input" type="checkbox" id="rememberPasswordCheck" name="agreed" required>
                             <label class="form-check-label" for="rememberPasswordCheck">
-                                Agree with us <a href="#" class="term-service">Terms of service</a>
+                                I agree to the <a href="#" class="text-decoration-underline">Terms of Service</a>
                             </label>
                         </div>
+
+                        <!-- reCAPTCHA -->
                         <div class="g-recaptcha mb-3" data-sitekey="6LeBdOMpAAAAAO6dT9JJxUoS5-ZLBelui2f3Fma9"></div>
-                        <div class="d-grid">
-                            <button class="btn btn-primary btn-login text-uppercase fw-bold" type="submit">Sign up</button>
+
+                        <!-- Submit Button -->
+                        <div class="d-grid mb-3">
+                            <button class="btn btn-primary btn-lg fw-bold" type="submit">Sign Up</button>
                         </div>
-                        <hr class="my-4">
-                        <p>Already have an account? <a href="login.jsp" class="link-info">Sign in</a></p>
-                        <div class="d-grid mb-2">
-                            <button class="btn btn-google btn-login text-uppercase fw-bold" type="button">
-                                <i class="fab fa-google me-2"></i> Sign in with Google
+
+                        <!-- Alternative Sign-In -->
+                        <p class="text-center mb-2">or sign in with:</p>
+                        <div class="d-grid">
+                            <button class="btn btn-outline-danger btn-lg fw-bold" type="button">
+                                <i class="fab fa-google me-2"></i> Google
                             </button>
                         </div>
-                    </form>                
+
+                        <!-- Sign In Link -->
+                        <div class="text-center mt-3">
+                            <p>Already have an account? <a href="login.jsp" class="text-primary">Sign In</a></p>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -102,4 +133,3 @@
     };
 </script>
 <jsp:include page="footer.jsp"></jsp:include>
-                                
