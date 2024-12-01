@@ -18,20 +18,26 @@ import model.Comment;
  * @author vietn
  */
 public class CommentDAO extends DBContext {
-    
+
     public List<Comment> getAllRiverComment() throws Exception {
         List<Comment> cmt = new ArrayList<>();
         try (Connection con = getConnection();
-             PreparedStatement pst = con.prepareStatement("SELECT C.*, A.last_name FROM COMMENT C INNER JOIN ACCOUNT A ON C.Account_id = A.Account_id WHERE C.CampsiteAddress LIKE N'%Sông%';"); 
+             PreparedStatement pst = con.prepareStatement(
+                     "SELECT C.*, A.last_name " +
+                             "FROM COMMENT C " +
+                             "INNER JOIN CUSTOMER CU ON C.commenter = CU.customer_id " +
+                             "INNER JOIN ACCOUNT A ON CU.Account_id = A.Account_id " +
+                             "WHERE C.CampsiteAddress LIKE N'%Sông%';");
              ResultSet rs = pst.executeQuery()) {
+
             while (rs.next()) {
                 Comment comment = new Comment();
                 comment.setCommentId(rs.getInt("Comment_id"));
                 comment.setTimeStamp(rs.getTimestamp("TimeStamp"));
                 comment.setContent(rs.getString("Content"));
-                comment.setAccountId(rs.getInt("Account_id"));
+                comment.setAccountId(rs.getInt("commenter")); // Cập nhật thành 'commenter'
                 comment.setCampAddress(rs.getString("CampsiteAddress"));
-                comment.setName(rs.getString("last_name"));
+                comment.setName(rs.getString("last_name")); // Lấy last_name từ bảng ACCOUNT
                 cmt.add(comment);
             }
         } catch (SQLException e) {
@@ -42,16 +48,22 @@ public class CommentDAO extends DBContext {
     public List<Comment> getAllMountainComment() throws Exception {
         List<Comment> cmt = new ArrayList<>();
         try (Connection con = getConnection();
-             PreparedStatement pst = con.prepareStatement("SELECT C.*, A.last_name FROM COMMENT C INNER JOIN ACCOUNT A ON C.Account_id = A.Account_id WHERE C.CampsiteAddress LIKE N'%Núi%';"); 
+             PreparedStatement pst = con.prepareStatement(
+                     "SELECT C.*, A.last_name " +
+                             "FROM COMMENT C " +
+                             "INNER JOIN CUSTOMER CU ON C.commenter = CU.customer_id " +
+                             "INNER JOIN ACCOUNT A ON CU.Account_id = A.Account_id " +
+                             "WHERE C.CampsiteAddress LIKE N'%Núi%';");
              ResultSet rs = pst.executeQuery()) {
+
             while (rs.next()) {
                 Comment comment = new Comment();
                 comment.setCommentId(rs.getInt("Comment_id"));
                 comment.setTimeStamp(rs.getTimestamp("TimeStamp"));
                 comment.setContent(rs.getString("Content"));
-                comment.setAccountId(rs.getInt("Account_id"));
+                comment.setAccountId(rs.getInt("commenter")); // Cập nhật thành 'commenter'
                 comment.setCampAddress(rs.getString("CampsiteAddress"));
-                comment.setName(rs.getString("last_name"));
+                comment.setName(rs.getString("last_name")); // Lấy last_name từ bảng ACCOUNT
                 cmt.add(comment);
             }
         } catch (SQLException e) {
@@ -59,19 +71,26 @@ public class CommentDAO extends DBContext {
         }
         return cmt;
     }
+
     public List<Comment> getAllBeachComment() throws Exception {
         List<Comment> cmt = new ArrayList<>();
         try (Connection con = getConnection();
-             PreparedStatement pst = con.prepareStatement("SELECT C.*, A.last_name FROM COMMENT C INNER JOIN ACCOUNT A ON C.Account_id = A.Account_id WHERE C.CampsiteAddress LIKE N'%Biển%';"); 
+             PreparedStatement pst = con.prepareStatement(
+                     "SELECT C.*, A.last_name " +
+                             "FROM COMMENT C " +
+                             "INNER JOIN CUSTOMER CU ON C.commenter = CU.customer_id " +
+                             "INNER JOIN ACCOUNT A ON CU.Account_id = A.Account_id " +
+                             "WHERE C.CampsiteAddress LIKE N'%Biển%';");
              ResultSet rs = pst.executeQuery()) {
+
             while (rs.next()) {
                 Comment comment = new Comment();
                 comment.setCommentId(rs.getInt("Comment_id"));
                 comment.setTimeStamp(rs.getTimestamp("TimeStamp"));
                 comment.setContent(rs.getString("Content"));
-                comment.setAccountId(rs.getInt("Account_id"));
+                comment.setAccountId(rs.getInt("commenter")); // Cập nhật thành 'commenter'
                 comment.setCampAddress(rs.getString("CampsiteAddress"));
-                comment.setName(rs.getString("last_name"));
+                comment.setName(rs.getString("last_name")); // Lấy last_name từ bảng ACCOUNT
                 cmt.add(comment);
             }
         } catch (SQLException e) {
@@ -79,8 +98,9 @@ public class CommentDAO extends DBContext {
         }
         return cmt;
     }
+
     public void insertComment(Comment comment) throws Exception {
-    String query = "INSERT INTO COMMENT (TimeStamp, Content, Account_id, CampsiteAddress) VALUES (?, ?, ?, ?)";
+    String query = "INSERT INTO COMMENT (TimeStamp, Content, commenter, CampsiteAddress) VALUES (?, ?, ?, ?)";
     try (Connection con = getConnection(); PreparedStatement pst = con.prepareStatement(query)) {
         pst.setTimestamp(1, comment.getTimeStamp());
         pst.setString(2, comment.getContent());

@@ -25,27 +25,6 @@ public class TentDAO {
     public TentDAO() {
     }
   
-  
-  
-  public List<Gear> getAllTents() {
-    List<Gear> tents = new ArrayList<>();
-    try (PreparedStatement pst = this.con.prepareStatement("SELECT G.*, P.Price FROM GEAR G INNER JOIN PRICE P ON G.Price_id = P.Price_id WHERE G.Name LIKE N'%Lều%'");
-         ResultSet rs = pst.executeQuery()) {
-      while (rs.next()) {
-        Gear tent = new Gear();
-        tent.setGearId(rs.getInt("Gear_id"));
-        tent.setGearPrice(rs.getInt("Price"));
-        tent.setGearName(rs.getString("Name"));
-        tent.setGearDecription(rs.getString("Description"));
-        tent.setGearImage(rs.getString("Image"));
-        tents.add(tent);
-      }
-    } catch (SQLException e) {
-      e.printStackTrace();
-    }
-    return tents;
-  }
-  
   public List<Gear> searchByName(String txtSearch) throws Exception {
         List<Gear> gears = new ArrayList<>();
         String query = "SELECT g.Gear_id, g.Name, g.Description, g.Image, p.Price "
@@ -77,8 +56,8 @@ public class TentDAO {
   
     public List<Gear> getAllTent(int page, int size) {
         List<Gear> gears = new ArrayList<>();
-        String query = "SELECT G.*, P.Price FROM GEAR G INNER JOIN PRICE P ON G.Price_id = P.Price_id WHERE G.Name LIKE N'%Lều%' "
-                + "ORDER BY G.Gear_id "
+        String query = "SELECT * FROM GEAR WHERE Name LIKE N'%Lều%' "
+                + "ORDER BY Gear_id "
                 + "OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
         try (PreparedStatement pst = this.con.prepareStatement(query)) {
             int offset = (page - 1) * size;
@@ -105,7 +84,7 @@ public class TentDAO {
         try {
             String sql = "SELECT COUNT(*) AS total_items \n"
                     + "FROM GEAR \n"
-                    + "WHERE Name LIKE N'Lều%';";
+                    + "WHERE Name LIKE N'Lều%'";
             PreparedStatement ps = this.con.prepareStatement(sql);
 
             ResultSet rs = ps.executeQuery();
@@ -159,9 +138,10 @@ public class TentDAO {
             if (rs.next()) {
                 return new Gear(rs.getInt(1),
                         rs.getInt(2),
-                        rs.getString(3),
+                        rs.getInt(3),
                         rs.getString(4),
-                        rs.getString(5));
+                        rs.getString(5),
+                        rs.getString(6));
             }
         } catch (SQLException e) {
             e.printStackTrace();

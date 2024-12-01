@@ -93,7 +93,7 @@ if (cart_list != null) {
                             <h6 class="price">${g.gearPrice}</h6>
                             <h6 class="category">${g.gearDecription}</h6>
                             <div class="mt-3 d-flex justify-content-between" style="width: 125%">
-                                <a href="cartservlet?id=${g.gearId}&redirectPage=/Login/gearcontroller?action=viewgear" class="btn btn-primary">Add to Cart</a>
+                                <a href="cartservlet?id=${g.gearId}&redirectPage=/login_war/gearcontroller?action=viewgear" class="btn btn-primary">Add to Cart</a>
                                 <!--<a href="ordernow?quantity=1&id=${g.gearId}" class="btn btn-primary">Order Now</a>-->
                             </div>
                         </div>

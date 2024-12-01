@@ -15,17 +15,17 @@ public class CampsiteOrder extends Campsite {
     private String discount;
     private int bookingDays;
     private boolean discountApplied;
-    
     private int totalAmountBooking;
     private int totalAmount;
     private Integer voucherId;
     private String campsiteName;
+    private int onwer;
     
     public CampsiteOrder(){
         
     }
     
-    public CampsiteOrder(int orderId, Timestamp timeStamp, int booker, int campsiteId, int quantity, Timestamp startDate, Timestamp endDate, boolean approveStatus, boolean paymentStatus, String discount, int bookingDays, boolean discountApplied) {
+    public CampsiteOrder(int orderId, Timestamp timeStamp, int booker, int campsiteId, int quantity, Timestamp startDate, Timestamp endDate, boolean approveStatus, boolean paymentStatus, String discount, int bookingDays, boolean discountApplied, int owner) {
         this.orderId = orderId;
         this.timeStamp = timeStamp;
         this.booker = booker;
@@ -38,6 +38,7 @@ public class CampsiteOrder extends Campsite {
         this.discount = discount;
         this.bookingDays = bookingDays;
         this.discountApplied = discountApplied;
+        this.onwer = owner;
         
     }
 
@@ -135,6 +136,14 @@ public class CampsiteOrder extends Campsite {
 
     public void setDiscountApplied(boolean discountApplied) {
         this.discountApplied = discountApplied;
+    }
+
+    public int getOnwer() {
+        return onwer;
+    }
+
+    public void setOnwer(int onwer) {
+        this.onwer = onwer;
     }
 
     public int getTotalAmountBooking() {

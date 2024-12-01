@@ -10,22 +10,22 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.Campsite;
 import model.CampsiteOrder;
-import model.User;
 
 public class CampsiteDAO extends DBContext {
 
     public List<Campsite> getAllRiverCampsite() throws Exception {
         List<Campsite> campsites = new ArrayList<>();
-        try (Connection con = getConnection(); PreparedStatement pst = con.prepareStatement("SELECT C.*, P.Price FROM CAMPSITE C INNER JOIN PRICE P ON C.Price_id = P.Price_id WHERE C.Name LIKE N'%Sông%' and C.Status = 1"); ResultSet rs = pst.executeQuery()) {
+        try (Connection con = getConnection(); PreparedStatement pst = con.prepareStatement("SELECT C.*, C.Price FROM CAMPSITE C WHERE C.Name LIKE N'%Sông%' AND C.Status = 1"); ResultSet rs = pst.executeQuery()) {
             while (rs.next()) {
                 Campsite campsite = new Campsite();
                 campsite.setCampId(rs.getInt("Campsite_id"));
-                campsite.setCampPrice(rs.getInt("Price_id"));
+                campsite.setCampPrice(rs.getInt("Price"));
+                campsite.setCampOwner(rs.getInt("Campsite_owner"));
                 campsite.setCampAddress(rs.getString("Address"));
                 campsite.setCampName(rs.getString("Name"));
                 campsite.setCampDescription(rs.getString("Description"));
                 campsite.setCampImage(rs.getString("Image"));
-                campsite.setLimite(rs.getInt("Limite"));
+                campsite.setLimite(rs.getInt("Quantity"));
                 campsites.add(campsite);
             }
         } catch (SQLException e) {
@@ -36,16 +36,17 @@ public class CampsiteDAO extends DBContext {
 
     public List<Campsite> getAllMountainCampsite() throws Exception {
         List<Campsite> campsites = new ArrayList<>();
-        try (Connection con = getConnection(); PreparedStatement pst = con.prepareStatement("SELECT C.*, P.Price FROM CAMPSITE C INNER JOIN PRICE P ON C.Price_id = P.Price_id WHERE C.Name LIKE N'%Núi%' and C.Status = 1"); ResultSet rs = pst.executeQuery()) {
+        try (Connection con = getConnection(); PreparedStatement pst = con.prepareStatement("SELECT C.*, C.Price FROM CAMPSITE C WHERE C.Name LIKE N'%Núi%' AND C.Status = 1"); ResultSet rs = pst.executeQuery()) {
             while (rs.next()) {
                 Campsite campsite = new Campsite();
                 campsite.setCampId(rs.getInt("Campsite_id"));
-                campsite.setCampPrice(rs.getInt("Price_id"));
+                campsite.setCampPrice(rs.getInt("Price"));
+                campsite.setCampOwner(rs.getInt("Campsite_owner"));
                 campsite.setCampAddress(rs.getString("Address"));
                 campsite.setCampName(rs.getString("Name"));
                 campsite.setCampDescription(rs.getString("Description"));
                 campsite.setCampImage(rs.getString("Image"));
-                campsite.setLimite(rs.getInt("Limite"));
+                campsite.setLimite(rs.getInt("Quantity"));
                 campsites.add(campsite);
             }
         } catch (SQLException e) {
@@ -56,16 +57,17 @@ public class CampsiteDAO extends DBContext {
 
     public List<Campsite> getAllBeachCampsite() throws Exception {
         List<Campsite> campsites = new ArrayList<>();
-        try (Connection con = getConnection(); PreparedStatement pst = con.prepareStatement("SELECT C.*, P.Price FROM CAMPSITE C INNER JOIN PRICE P ON C.Price_id = P.Price_id WHERE C.Name LIKE N'%Biển%' and C.Status = 1"); ResultSet rs = pst.executeQuery()) {
+        try (Connection con = getConnection(); PreparedStatement pst = con.prepareStatement("SELECT C.*, C.Price FROM CAMPSITE C WHERE C.Name LIKE N'%Biển%' AND C.Status = 1"); ResultSet rs = pst.executeQuery()) {
             while (rs.next()) {
                 Campsite campsite = new Campsite();
                 campsite.setCampId(rs.getInt("Campsite_id"));
-                campsite.setCampPrice(rs.getInt("Price_id"));
+                campsite.setCampPrice(rs.getInt("Price"));
+                campsite.setCampOwner(rs.getInt("Campsite_owner"));
                 campsite.setCampAddress(rs.getString("Address"));
                 campsite.setCampName(rs.getString("Name"));
                 campsite.setCampDescription(rs.getString("Description"));
                 campsite.setCampImage(rs.getString("Image"));
-                campsite.setLimite(rs.getInt("Limite"));
+                campsite.setLimite(rs.getInt("Quantity"));
                 campsites.add(campsite);
             }
         } catch (SQLException e) {
@@ -104,18 +106,19 @@ public class CampsiteDAO extends DBContext {
 
     public Campsite getSingleCampsite(int id) {
         Campsite row = null;
-        try (Connection con = getConnection(); PreparedStatement pst = con.prepareStatement("SELECT * FROM CAMPSITE C INNER JOIN PRICE P ON C.Price_id = P.Price_id WHERE C.Campsite_id = ?")) {
+        try (Connection con = getConnection(); PreparedStatement pst = con.prepareStatement("SELECT * FROM CAMPSITE C WHERE C.Campsite_id = ?")) {
             pst.setInt(1, id);
             try (ResultSet rs = pst.executeQuery()) {
                 if (rs.next()) {
                     row = new Campsite();
                     row.setCampId(rs.getInt("Campsite_id"));
                     row.setCampName(rs.getString("Name"));
+                    row.setCampOwner(rs.getInt("Campsite_owner"));
                     row.setCampAddress(rs.getString("Address"));
                     row.setCampDescription(rs.getString("Description"));
                     row.setCampPrice(rs.getInt("Price"));
                     row.setCampImage(rs.getString("Image"));
-                    row.setLimite(rs.getInt("Limite"));
+                    row.setLimite(rs.getInt("Quantity"));
                 }
             }
         } catch (Exception e) {
