@@ -109,7 +109,7 @@ if(campsiteOrder != null && campsiteOrder.getVoucherId() != null){
                                  <h3 style="color: red">Total: <span id="bill-total"><%=billTotal%></span> ₫</h3>
                                 <input type="radio" name="paymentMethod" value="VNPay" checked=""/>VNpay<br>
                                 <input type="radio" name="paymentMethod" value="PayLater"/>Pay later<br>
-                                <button type="summit" class="mx-3 btn btn-primary" onclick="submitSelectedItems()">Order Selected</button>
+                                <button type="submit" class="mx-3 btn btn-primary" onclick="submitSelectedItems()">Order Selected</button>
                             </div>
                         </form>
                     </div>
