@@ -20,32 +20,12 @@ public class GearDAO {
         this.con = con; 
     }
 
-    public List<Gear> getAllGears() {
-        List<Gear> gears = new ArrayList<>();
-        String query = "SELECT G.*, P.Price FROM GEAR G INNER JOIN PRICE P ON G.Price_id = P.Price_id WHERE G.Name LIKE N'%Lều%'";
-        try (PreparedStatement pst = this.con.prepareStatement(query); 
-             ResultSet rs = pst.executeQuery()) {
-            while (rs.next()) {
-                Gear gear = new Gear();
-                gear.setGearId(rs.getInt("Gear_id"));
-                gear.setGearPrice(rs.getInt("Price"));
-                gear.setGearName(rs.getString("Name"));
-                gear.setGearDecription(rs.getString("Description"));
-                gear.setGearImage(rs.getString("Image"));
-                gears.add(gear);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return gears;
-    }
-
     public List<Cart> getCartGears(ArrayList<Cart> cartList) {
         List<Cart> gears = new ArrayList<>();
         try {
             if (cartList.size() > 0) {
                 for (Cart item : cartList) {
-                    PreparedStatement pst = this.con.prepareStatement("SELECT G.*, P.Price FROM GEAR G INNER JOIN PRICE P ON G.Price_id = P.Price_id WHERE G.Gear_id = ?");
+                    PreparedStatement pst = this.con.prepareStatement("SELECT * FROM GEAR  WHERE Gear_id = ?");
                     pst.setInt(1, item.getGearId());
                     ResultSet rs = pst.executeQuery();
                     while (rs.next()) {
@@ -64,26 +44,6 @@ public class GearDAO {
             e.printStackTrace();
         }
         return gears;
-    }
-
-    public int getTotalCartPrice(ArrayList<Cart> cartList) {
-        int sum = 0;
-        try {
-            if (cartList.size() > 0) {
-                for (Cart item : cartList) {
-                    PreparedStatement pst = this.con.prepareStatement("SELECT P.Price FROM GEAR G INNER JOIN PRICE P ON G.Price_id = P.Price_id WHERE G.Gear_id = ?");
-                    pst.setInt(1, item.getGearId());
-                    ResultSet rs = pst.executeQuery();
-                    while (rs.next()) {
-                        sum += rs.getInt("Price") * item.getQuantity();
-                    }
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            System.out.println(e.getMessage());
-        }
-        return sum;
     }
 
     public Gear getSingleGear(int id) {
@@ -110,7 +70,7 @@ public class GearDAO {
         try {
             String sql = "SELECT COUNT(*) AS total_items \n"
                     + "FROM GEAR \n"
-                    + "WHERE Name NOT LIKE N'Lều%';";
+                    + "WHERE Name NOT LIKE N'Lều%'";
             PreparedStatement ps = this.con.prepareStatement(sql);
 
             ResultSet rs = ps.executeQuery();
@@ -125,8 +85,8 @@ public class GearDAO {
     }
     public List<Gear> getAllGears(int page, int size) {
         List<Gear> gears = new ArrayList<>();
-        String query = "SELECT G.*, P.Price FROM GEAR G INNER JOIN PRICE P ON G.Price_id = P.Price_id WHERE G.Name NOT LIKE N'%Lều%' "
-                + "ORDER BY G.Gear_id "
+        String query = "SELECT * FROM GEAR WHERE Name NOT LIKE N'%Lều%' "
+                + "ORDER BY Gear_id "
                 + "OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
         try (PreparedStatement pst = this.con.prepareStatement(query)) {
             int offset = (page - 1) * size;
@@ -153,7 +113,6 @@ public class GearDAO {
         List<Gear> gears = new ArrayList<>();
         String query = "SELECT g.Gear_id, g.Name, g.Description, g.Image, p.Price "
                 + "FROM GEAR g "
-                + "JOIN PRICE p ON g.Price_id = p.Price_id "
                 + "WHERE g.Name LIKE ?";
 
         try {
@@ -217,9 +176,10 @@ public class GearDAO {
             if (rs.next()) {
                 return new Gear(rs.getInt(1),
                         rs.getInt(2),
-                        rs.getString(3),
+                        rs.getInt(3),
                         rs.getString(4),
-                        rs.getString(5));
+                        rs.getString(5),
+                        rs.getString(6));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -227,10 +187,28 @@ public class GearDAO {
         return null;
 
     }
+    public int getTotalCartPrice(ArrayList<Cart> cartList) {
+        int sum = 0;
+        try {
+            if (cartList.size() > 0) {
+                for (Cart item : cartList) {
+                    PreparedStatement pst = this.con.prepareStatement("SELECT Price FROM GEAR  WHERE Gear_id = ?");
+                    pst.setInt(1, item.getGearId());
+                    ResultSet rs = pst.executeQuery();
+                    while (rs.next()) {
+                        sum += rs.getInt("Price") * item.getQuantity();
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println(e.getMessage());
+        }
+        return sum;
+    }
     
     public Gear getGearByIDPrice(String id) throws Exception {
-        String query = "select G.*, P.Price from GEAR G left join PRICE P on G.Price_id = P.Price_id\n"
-                + "	where Gear_id = ?";
+        String query = "SELECT * FROM GEAR G WHERE G.Gear_id = ?";
         try {
             con = new DBContext().getConnection();
             ps = con.prepareStatement(query);
@@ -238,10 +216,11 @@ public class GearDAO {
             rs = ps.executeQuery();
             if (rs.next()) {
                 return new Gear(rs.getInt(1),
+                        rs.getInt(2),
                         rs.getInt("Price"),
-                        rs.getString(3),
                         rs.getString(4),
-                        rs.getString(5));
+                        rs.getString(5),
+                        rs.getString(6));
             }
         } catch (SQLException e) {
             e.printStackTrace();

@@ -4,6 +4,7 @@ package model;
 public class Gear {
     private int gearId;
     private int gearPrice;
+    private int gearOwner;
     private String gearName;
     private String gearDecription;
     private String gearImage;
@@ -12,9 +13,10 @@ public class Gear {
         
     }
 
-    public Gear(int gearId, int gearPrice, String gearName, String gearDecription, String gearImage) {
+    public Gear(int gearId, int gearPrice, int gearOwner, String gearName, String gearDecription, String gearImage) {
         this.gearId = gearId;
         this.gearPrice = gearPrice;
+        this.gearOwner = gearOwner;
         this.gearName = gearName;
         this.gearDecription = gearDecription;
         this.gearImage = gearImage;
@@ -34,6 +36,14 @@ public class Gear {
 
     public void setGearPrice(int gearPrice) {
         this.gearPrice = gearPrice;
+    }
+
+    public int getGearOwner() {
+        return gearOwner;
+    }
+
+    public void setGearOwner(int gearOwner) {
+        this.gearOwner = gearOwner;
     }
 
     public String getGearName() {

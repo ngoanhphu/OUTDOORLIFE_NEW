@@ -5,8 +5,6 @@
 <%@page import = "dao.DBContext"%>
 <%@page import = "model.*" %>
 <%@page import = "java.util.*"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 
 <%
@@ -113,15 +111,15 @@ List<Comment> comments = cm.getAllBeachComment();
                 </div>
             </div>
 
-                <form action="comment" method="post" ">
+                <form action="comment" method="post">
                     <!-- Comment Section Start -->
-                    <input type="hidden" name="campAddress" value="Sông">
-                    <input type="hidden" name="originPage" value="form1.jsp">
+                    <input type="hidden" name="campAddress" value="Biển">
+                    <input type="hidden" name="originPage" value="form3.jsp">
                     <div class="comment-section mt-5">
                         <h5 class="text-uppercase text-primary mb-4">Comments</h5>
                         <div class="comment-box mb-2">
                             <textarea name="comment" id="comment" class="form-control" rows="3" placeholder="Write a comment..."></textarea>
-                            <button class="btn btn-primary mt-3" type="submit" name="commentId" ">Post Comment</button>
+                            <button class="btn btn-primary mt-3" type="submit" name="commentId">Post Comment</button>
                         </div>                       
                     </div>
                     <!-- Comment Section End -->

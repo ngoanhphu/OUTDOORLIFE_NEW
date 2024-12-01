@@ -16,18 +16,13 @@ if (auth != null) {
 
 ArrayList<Cart> cart_list = (ArrayList<Cart>) session.getAttribute("cart-list");
 List<Cart> cartProduct = null;
-double total = 0;
 DBContext dbContext = new DBContext();
 if (cart_list != null) {
     GearDAO pDao = new GearDAO(dbContext.getConnection());
     cartProduct = pDao.getCartGears(cart_list);
-    total = pDao.getTotalCartPrice(cart_list);
-    request.setAttribute("total", total);
     request.setAttribute("cart_list", cart_list);
     request.setAttribute("cartProduct", cartProduct);
 }
-int totalInt = (int) total;
-session.setAttribute("totalInt", totalInt);
 int discount = 0;
 int billTotal = 0;
 CampsiteOrder campsiteOrder = (CampsiteOrder) session.getAttribute("CampsiteOrder");
@@ -61,8 +56,6 @@ if(campsiteOrder != null && campsiteOrder.getVoucherId() != null){
                         </div>
                         <h3>Gear order information:</h3>
                         <div class="total-price-container">
-                            <!--<h3>Total: <%= total > 0 ? dcf.format(total) + "₫" : "0 ₫" %> </h3>-->
-                            <!--<a class="mx-3 btn btn-primary" href="checkout">Order All</a>-->
                         </div>
                         <form id="cart-form" action="partialCheckout" method="post">
                             <table class="table table-light">
@@ -116,7 +109,7 @@ if(campsiteOrder != null && campsiteOrder.getVoucherId() != null){
                                  <h3 style="color: red">Total: <span id="bill-total"><%=billTotal%></span> ₫</h3>
                                 <input type="radio" name="paymentMethod" value="VNPay" checked=""/>VNpay<br>
                                 <input type="radio" name="paymentMethod" value="PayLater"/>Pay later<br>
-                                <button type="summit" class="mx-3 btn btn-primary" onclick="submitSelectedItems()">Order Selected</button>
+                                <button type="submit" class="mx-3 btn btn-primary" onclick="submitSelectedItems()">Order Selected</button>
                             </div>
                         </form>
                     </div>
