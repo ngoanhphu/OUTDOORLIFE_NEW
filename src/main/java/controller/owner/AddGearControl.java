@@ -13,29 +13,56 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import model.User;
 
 /**
  *
  * @author ADMIN
  */
-@WebServlet(name = "AddControl", urlPatterns = {"/add"})
+@WebServlet(name = "AddControl", urlPatterns = {"/addGear"})
 public class AddGearControl extends HttpServlet {
-    
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String price = request.getParameter("gearPrice");
+        // Lấy thông tin từ form
         String name = request.getParameter("gearName");
+        String price = request.getParameter("gearPrice");
         String description = request.getParameter("gearDescription");
         String image = request.getParameter("gearImage");
-        
-        try {
-            DBContext con = new DBContext();
-        GearDAO gear = new GearDAO(con.getConnection());
-            gear.insertGear(price, name, description, image);
-        } catch(Exception e) {
-            e.printStackTrace();
+
+        // Lấy thông tin user từ session
+        HttpSession session = request.getSession();
+        User currentUser = (User) session.getAttribute("currentUser");
+
+        // Kiểm tra nếu người dùng đã đăng nhập và là chủ cắm trại
+        if (currentUser != null && currentUser.isOwner()) {
+            // Lấy ownerId từ đối tượng User
+            int ownerId = currentUser.getId();
+
+            try {
+                // Kết nối đến cơ sở dữ liệu
+                DBContext con = new DBContext();
+                GearDAO gearDAO = new GearDAO(con.getConnection());
+
+                // Thêm gear vào cơ sở dữ liệu, bao gồm ownerId
+                gearDAO.insertGear(name, price, description, image, ownerId);
+
+                // Chuyển hướng về trang admin sau khi thêm gear thành công
+                response.sendRedirect("viewOwner");
+            } catch (Exception e) {
+                e.printStackTrace();
+                // Hiển thị lỗi nếu có
+                request.setAttribute("error", "Error adding gear");
+                request.getRequestDispatcher("createGearForm.jsp").forward(request, response);
+            }
+        } else {
+            // Nếu người dùng chưa đăng nhập hoặc không phải owner, chuyển hướng về trang đăng nhập
+            response.sendRedirect("login.jsp");
         }
-        response.sendRedirect("admin");
     }
 }
+
+
+
