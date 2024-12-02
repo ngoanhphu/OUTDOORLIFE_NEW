@@ -64,25 +64,24 @@
                 </div>
                 <div class="form-group">
                     <label for="gearName">Gear Name:</label>
-                    <input type="text" id="gearName" name="gearName" value="${st.name}" required>
+                    <input type="text" id="gearName" name="gearName" value="${st.gearName}" required>
                 </div>
                 <div class="form-group">
                     <label for="gearPrice">Gear Price:</label>
-                    <input type="number" id="gearPrice" name="gearPrice" value="${st.price}" required>
+                    <input type="number" id="gearPrice" name="gearPrice" value="${st.gearPrice}" required>
                 </div>
                 <div class="form-group">
                     <label for="gearDescription">Description:</label>
-                    <textarea id="gearDescription" name="gearDescription" required>${st.description}</textarea>
+                    <textarea id="gearDescription" name="gearDecription" required>${st.gearDecription}</textarea>
                 </div>
                 <div class="form-group">
                     <label for="gearImage">Image URL:</label>
-                    <input type="text" id="gearImage" name="gearImage" value="${st.image}" required>
+                    <input type="text" id="gearImage" name="gearImage" value="${st.gearImage}" required>
                 </div>
                 <div class="form-group">
                     <input type="submit" value="Update Gear">
                 </div>
             </form>
-
         </div>
     </div>
 </body>

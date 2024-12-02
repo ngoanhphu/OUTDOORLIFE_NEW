@@ -43,7 +43,7 @@ public class VerifyCode extends HttpServlet {
             } else {
                 request.setAttribute("errorMessage", "An error occurred during registration.");
             }
-            request.getRequestDispatcher("login.jsp").forward(request, response);
+            request.getRequestDispatcher("Register.jsp").forward(request, response);
         } else {
             request.setAttribute("errorMessage", "Incorrect verification code.");
             request.getRequestDispatcher("verify.jsp").forward(request, response);

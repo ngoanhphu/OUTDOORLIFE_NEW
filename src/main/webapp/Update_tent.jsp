@@ -52,38 +52,37 @@
     </style>
 </head>
 <body>
-<div class="container" style="margin-top: 200px">
-    <div class="form-container">
-        <div class="form-header">
-            <h2>Update Tent</h2>
+    <div class="container" style="margin-top: 200px">
+        <div class="form-container">
+            <div class="form-header">
+                <h2>Update Tent</h2>
+            </div>
+            <form action="updatetent" method="post">
+                <div class="form-group">
+                    <label for="gearId">Tent ID:</label>
+                    <input type="text" id="gearId" name="gearId" value="${st.gearId}" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="gearName">Tent Name:</label>
+                    <input type="text" id="gearName" name="gearName" value="${st.gearName}" required>
+                </div>
+                <div class="form-group">
+                    <label for="gearPrice">Tent Price:</label>
+                    <input type="number" id="gearPrice" name="gearPrice" value="${st.gearPrice}" required>
+                </div>
+                <div class="form-group">
+                    <label for="gearDescription">Description:</label>
+                    <textarea id="gearDescription" name="gearDecription" required>${st.gearDecription}</textarea>
+                </div>
+                <div class="form-group">
+                    <label for="gearImage">Image URL:</label>
+                    <input type="text" id="gearImage" name="gearImage" value="${st.gearImage}" required>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Update Tent">
+                </div>
+            </form>
         </div>
-        <form action="update" method="post">
-            <div class="form-group">
-                <label for="gearId">Tent ID:</label>
-                <input type="text" id="gearId" name="gearId" value="${st.gearId}" readonly>
-            </div>
-            <div class="form-group">
-                <label for="gearName">Tent Name:</label>
-                <input type="text" id="gearName" name="gearName" value="${st.name}" required>
-            </div>
-            <div class="form-group">
-                <label for="gearPrice">Tent Price:</label>
-                <input type="number" id="gearPrice" name="gearPrice" value="${st.price}" required>
-            </div>
-            <div class="form-group">
-                <label for="gearDescription">Tent Description:</label>
-                <textarea id="gearDescription" name="gearDescription" required>${st.description}</textarea>
-            </div>
-            <div class="form-group">
-                <label for="gearImage">Image URL:</label>
-                <input type="text" id="gearImage" name="gearImage" value="${st.image}" required>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Update Tent">
-            </div>
-        </form>
-
     </div>
-</div>
 </body>
 </html>
