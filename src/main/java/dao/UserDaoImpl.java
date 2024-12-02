@@ -65,7 +65,7 @@ public class UserDaoImpl extends DBContext implements UserDAO {
     }
 
     @Override
-    public boolean insertGuest(String firstName, String lastName, String email, String phoneNumber, String password) {
+    public boolean insertGuest(String firstName, String lastName, String email, String phoneNumber, String password,boolean isOwner) {
         try {
             // Get connection
             Connection conn = getConnection();
@@ -74,13 +74,14 @@ public class UserDaoImpl extends DBContext implements UserDAO {
             String hashedPassword = hashPassword(password);
 
             // Prepare SQL statement
-            String sql = "INSERT INTO ACCOUNT (first_name, last_name,  Gmail, phone_number, passwordHash) VALUES (?, ?, ?, ?, ?)";
+            String sql = "INSERT INTO ACCOUNT (first_name, last_name,  Gmail, phone_number, passwordHash,isOwner) VALUES (?, ?, ?, ?, ?,?)";
             try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
                 pstmt.setString(1, firstName);
                 pstmt.setString(2, lastName);
                 pstmt.setString(3, email);
                 pstmt.setString(4, phoneNumber);
                 pstmt.setString(5, hashedPassword);
+                pstmt.setBoolean(6, isOwner);
 
                 System.out.println(firstName + " " + lastName + " " + email + " " + phoneNumber + " " + hashedPassword);
 

@@ -2,11 +2,11 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <jsp:include page="header.jsp"></jsp:include>
 <div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-6 col-lg-5">
-            <div class="card shadow-lg border-0 rounded-4" style="margin-top: 100px;">
-                <div class="card-body p-4">
-                    <h3 class="text-center text-primary mb-4">Create Your Account</h3>
+    <div class="row">
+        <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
+            <div class="card border-e shadow rounded-3" style="margin-top: 200px">
+                <div class="card-body p-4 p-sm-5">
+                    <h5 class="card-title text-center mb-5 fw-light fs-5">Register Account</h5>
                     <form id="form">
                         <c:if test="${not empty successMessage}">
                             <div class="alert alert-success">
@@ -38,13 +38,13 @@
                             </span>
                             <input type="email" class="form-control" id="email" placeholder="Email" name="email" required>
                         </div>
-
-                        <!-- Phone -->
-                        <div class="input-group mb-3">
-                            <span class="input-group-text bg-primary text-white">
-                                <i class="bi bi-telephone"></i>
-                            </span>
-                            <input type="tel" class="form-control" id="phonenumber" placeholder="Phone Number" name="phone" pattern="(09|03|07|08|05)[0-9]{8}" required>
+                        <div class="form-floating mb-3">
+                            <input type="tel" class="form-control" id="phonenumber" name="phone" placeholder="phoneNumber" pattern="(09|03|07|08|05)[0-9]{8}" required>
+                            <label for="phonenumber">Phone</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input type="password" name="password" class="form-control" id="password" placeholder="Password" required>
+                            <label for="password">Password</label>
                         </div>
 
                         <!-- Password -->
@@ -62,8 +62,13 @@
                                 I agree to the <a href="#" class="text-decoration-underline">Terms of Service</a>
                             </label>
                         </div>
-
-                        <!-- reCAPTCHA -->
+                        <!-- Thêm checkbox đăng ký làm owner -->
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" value="on" name="isOwner" id="isOwnerCheck">
+                            <label class="form-check-label" for="isOwnerCheck">
+                                Register as Owner
+                            </label>
+                        </div>
                         <div class="g-recaptcha mb-3" data-sitekey="6LeBdOMpAAAAAO6dT9JJxUoS5-ZLBelui2f3Fma9"></div>
 
                         <!-- Submit Button -->
@@ -77,11 +82,6 @@
                             <button class="btn btn-outline-danger btn-lg fw-bold" type="button">
                                 <i class="fab fa-google me-2"></i> Google
                             </button>
-                        </div>
-
-                        <!-- Sign In Link -->
-                        <div class="text-center mt-3">
-                            <p>Already have an account? <a href="login.jsp" class="text-primary">Sign In</a></p>
                         </div>
                     </form>
                 </div>
@@ -110,7 +110,8 @@
                     email: $("#email").val(),
                     phone: $("#phonenumber").val(),
                     password: $("#password").val(),
-                    agreed: $("#rememberPasswordCheck").is(":checked")
+                    agreed: $("#rememberPasswordCheck").is(":checked"),
+                    isOwner: $("#isOwnerCheck").is(":checked") // Truyền trạng thái checkbox "Register as Owner"
                 };
 
                 $.ajax({

@@ -36,7 +36,7 @@ public class VerifyCode extends HttpServlet {
 
         if (code.equals(user.getCode())) {
             UserDaoImpl guestDao = new UserDaoImpl();
-            boolean status = guestDao.insertGuest(user.getFirstName(), user.getLastName(), user.getEmail(),user.getPhoneNumber() , user.getPasswordHash());
+            boolean status = guestDao.insertGuest(user.getFirstName(), user.getLastName(), user.getEmail(),user.getPhoneNumber() , user.getPasswordHash(),user.isOwner());
             if (status) {
                 session.removeAttribute("authcode");
                     request.setAttribute("successMessage", "Registration successful! You can now log in.");
