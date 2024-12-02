@@ -45,17 +45,17 @@
                     <div class="row align-items-center justify-content-center">
                         <div class="col-md-8">
                             <div class="topbar-info d-flex flex-wrap">
-                                <a href="#" class="text-light me-4"><i class="fas fa-envelope text-white me-2"></i>phucnhde170706@fpt.edu.vn</a>
-                                <a href="#" class="text-light"><i class="fas fa-phone-alt text-white me-2"></i>0941887045</a>
+                                <a href="#" class="text-light me-4"><i class="fas fa-envelope text-white me-2"></i>@@@@@@fpt.edu.vn</a>
+                                <a href="#" class="text-light"><i class="fas fa-phone-alt text-white me-2"></i>@@@@@</a>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="topbar-icon d-flex align-items-center justify-content-end">
-                                <a href="https://www.facebook.com/Phuc250703/" class="btn-square text-white me-2"><i class="fab fa-facebook-f"></i></a>
-                                <a href="https://www.facebook.com/Phuc250703/" class="btn-square text-white me-2"><i class="fab fa-twitter"></i></a>
-                                <a href="https://www.facebook.com/Phuc250703/" class="btn-square text-white me-2"><i class="fab fa-instagram"></i></a>
-                                <a href="https://www.facebook.com/Phuc250703/" class="btn-square text-white me-2"><i class="fab fa-pinterest"></i></a>
-                                <a href="https://www.facebook.com/Phuc250703/" class="btn-square text-white me-0"><i class="fab fa-linkedin-in"></i></a>
+                                <a href="@@@@@" class="btn-square text-white me-2"><i class="fab fa-facebook-f"></i></a>
+                                <a href="@@@@@" class="btn-square text-white me-2"><i class="fab fa-twitter"></i></a>
+                                <a href="@@@@@" class="btn-square text-white me-2"><i class="fab fa-instagram"></i></a>
+                                <a href="@@@@@" class="btn-square text-white me-2"><i class="fab fa-pinterest"></i></a>
+                                <a href="@@@@@" class="btn-square text-white me-0"><i class="fab fa-linkedin-in"></i></a>
                             </div>
                         </div>
                     </div>
