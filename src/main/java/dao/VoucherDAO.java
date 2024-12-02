@@ -117,8 +117,8 @@ public class VoucherDAO extends DBContext {
             PreparedStatement ps = con.prepareStatement(query);
             ps.setString(1, c.getCode());
             ps.setInt(2, c.getPercent());
-            ps.setDate(3, new java.sql.Date(c.getStartDate().getTime()));
-            ps.setDate(4, new java.sql.Date(c.getEndDate().getTime()));
+            ps.setDate(3, new Date(c.getStartDate().getTime()));
+            ps.setDate(4, new Date(c.getEndDate().getTime()));
             ps.executeUpdate();
         } catch (Exception ex) {
             Logger.getLogger(UserDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
@@ -134,8 +134,8 @@ public class VoucherDAO extends DBContext {
         try {
             Connection con = getConnection();
             PreparedStatement ps = con.prepareStatement(query);
-            ps.setDate(1, new java.sql.Date(c.getStartDate().getTime()));
-            ps.setDate(2, new java.sql.Date(c.getEndDate().getTime()));
+            ps.setDate(1, new Date(c.getStartDate().getTime()));
+            ps.setDate(2, new Date(c.getEndDate().getTime()));
             ps.setBoolean(3, c.isIsUsed());
             ps.setInt(4, c.getPercent());
             ps.setInt(5, c.getId());
