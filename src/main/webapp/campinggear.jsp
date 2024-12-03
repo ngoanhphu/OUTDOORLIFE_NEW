@@ -25,7 +25,7 @@
                         <h5 class="text-uppercase text-primary mb-4">Tent</h5>
                         <p class="text-white mb-4">Use the tent for sleep or to do a storage if you want</p>
                         <div class="donation-btn d-flex align-items-center justify-content-start">
-                            <a class="btn-hover-bg btn btn-primary text-white py-2 px-4" href="/Login//tentcontrol?action=viewtent">View Tent</a>
+                            <a class="btn-hover-bg btn btn-primary text-white py-2 px-4" href="/login_war/tentcontrol?action=viewtent">View Tent</a>
 
                         </div>
                     </div>
@@ -38,7 +38,7 @@
                         <h5 class="text-uppercase text-primary mb-4">Gear</h5>
                         <p class="text-white mb-4">Gear can help you to easy have the camping day</p>
                         <div class="donation-btn d-flex align-items-center justify-content-start">
-                            <a class="btn-hover-bg btn btn-primary text-white py-2 px-4" href="/Login/gearcontroller?action=viewgear">View Gear</a>
+                            <a class="btn-hover-bg btn btn-primary text-white py-2 px-4" href="/login_war/gearcontroller?action=viewgear">View Gear</a>
                         </div>  
                     </div>
                 </div>

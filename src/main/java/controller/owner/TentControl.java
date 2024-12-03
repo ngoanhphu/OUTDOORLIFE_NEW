@@ -46,7 +46,6 @@ public class TentControl extends HttpServlet {
         request.setAttribute("itemsPerPage", 8);
         request.setAttribute("gears", gears);
 
-        request.setAttribute("gears", gears);
         request.getRequestDispatcher("/viewtent.jsp").forward(request, response);
     }
     

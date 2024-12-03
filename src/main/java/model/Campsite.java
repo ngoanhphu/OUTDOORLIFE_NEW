@@ -4,6 +4,7 @@ package model;
 public class Campsite {
     private int campId;
     private int campPrice;
+    private int campOwner;
     private String campAddress;
     private String campName;
     private String campDescription;
@@ -20,9 +21,10 @@ public class Campsite {
         this.limite = limite;
     }
 
-    public Campsite(int campId, int campPrice, String campAddress, String campName, String campDecription,String campImage, boolean campStatus) {
+    public Campsite(int campId, int campPrice, int campOwner, String campAddress, String campName, String campDecription,String campImage, boolean campStatus) {
         this.campId = campId;
         this.campPrice = campPrice;
+        this.campOwner = campOwner;
         this.campAddress = campAddress;
         this.campName = campName;
         this.campDescription = campDecription;
@@ -45,6 +47,10 @@ public class Campsite {
     public void setCampPrice(int campPrice) {
         this.campPrice = campPrice;
     }
+
+    public int getCampOwner() { return campOwner; }
+
+    public void setCampOwner(int campOwner) { this.campOwner = campOwner; }
 
     public String getCampAddress() {
         return campAddress;

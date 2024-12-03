@@ -40,9 +40,8 @@ public class GearController extends HttpServlet {
         request.setAttribute("itemsPerPage", 8);
         request.setAttribute("gears", gears);
 
-        request.setAttribute("gears", gears);
         request.getRequestDispatcher("/viewgear.jsp").forward(request, response);
-        
+
         
     }
 }
