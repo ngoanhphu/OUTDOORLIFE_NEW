@@ -1,41 +1,75 @@
 package model;
+
+
 public class Gear {
     private int gearId;
-    private int campsiteOwner;
-    private int price;
-    private String name;
-    private String description;
-    private String image;
+    private int gearPrice;
+    private int gearOwner;
+    private String gearName;
+    private String gearDecription;
+    private String gearImage;
+    
+    public Gear(){
+        
+    }
 
-    // Getters and Setters
-    public int getGearId() { return gearId; }
-    public void setGearId(int gearId) { this.gearId = gearId; }
-
-    public int getCampsiteOwner() { return campsiteOwner; }
-    public void setCampsiteOwner(int campsiteOwner) { this.campsiteOwner = campsiteOwner; }
-
-    public int getPrice() { return price; }
-    public void setPrice(int price) { this.price = price; }
-
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
-
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
-
-    public String getImage() { return image; }
-    public void setImage(String image) { this.image = image; }
-
-    public Gear(int gearId, int campsiteOwner, int price, String name, String description, String image) {
+    public Gear(int gearId, int gearPrice, int gearOwner, String gearName, String gearDecription, String gearImage) {
         this.gearId = gearId;
-        this.campsiteOwner = campsiteOwner;
-        this.price = price;
-        this.name = name;
-        this.description = description;
-        this.image = image;
+        this.gearPrice = gearPrice;
+        this.gearOwner = gearOwner;
+        this.gearName = gearName;
+        this.gearDecription = gearDecription;
+        this.gearImage = gearImage;
     }
 
-    public Gear() {
-
+    public int getGearId() {
+        return gearId;
     }
+
+    public void setGearId(int gearId) {
+        this.gearId = gearId;
+    }
+
+    public int getGearPrice() {
+        return gearPrice;
+    }
+
+    public void setGearPrice(int gearPrice) {
+        this.gearPrice = gearPrice;
+    }
+
+    public int getGearOwner() {
+        return gearOwner;
+    }
+
+    public void setGearOwner(int gearOwner) {
+        this.gearOwner = gearOwner;
+    }
+
+    public String getGearName() {
+        return gearName;
+    }
+
+    public void setGearName(String gearName) {
+        this.gearName = gearName;
+    }
+
+    public String getGearDecription() {
+        return gearDecription;
+    }
+
+    public void setGearDecription(String gearDecription) {
+        this.gearDecription = gearDecription;
+    }
+
+    public String getGearImage() {
+        return gearImage;
+    }
+
+    public void setGearImage(String gearImage) {
+        this.gearImage = gearImage;
+    }
+
+    
+    
 }

@@ -31,6 +31,6 @@ public class DeleteControl extends HttpServlet {
         } catch (Exception ex) {
             
         }
-        response.sendRedirect("viewOwner");
+        response.sendRedirect("admin");
     }
 }

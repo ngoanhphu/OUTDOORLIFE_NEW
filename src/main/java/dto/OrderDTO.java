@@ -12,7 +12,7 @@ public class OrderDTO {
     private int year;
     private int month;
     private int numberOfOrders;
-       private int totalAmount;
+    private int totalAmount;
 
     public OrderDTO() {
     }

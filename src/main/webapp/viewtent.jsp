@@ -6,8 +6,6 @@
 <%@page import = "model.Gear" %>
 <%@page import = "model.Cart" %>
 <%@page import = "java.util.*"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <%
 
@@ -68,7 +66,7 @@ if (cart_list != null) {
     }
 </style>
 <body>
-<%--    <jsp:include page="header.jsp"></jsp:include>  --%>
+    <jsp:include page="header.jsp"></jsp:include>  
         <div class="container" style="margin-top: 200px">
             <div class="search-container">
                 <form action="search" method="post" class="form-inline my-2 my-lg-0">
@@ -83,30 +81,23 @@ if (cart_list != null) {
                 </form>
             </div>
             <div class="row">
-                <c:forEach var="g" items="${gears}">
-                    <div class="col-md-3 d-flex">
-                        <div class="card border-e shadow rounded-3 w-100">
-                            <!-- Sửa đường dẫn ảnh -->
-                            <img class="card-img-top" src="img/${g.image}" alt="${g.name}" />
-                            <div class="card-body">
-                                <!-- Hiển thị tên dụng cụ -->
-                                <h5 class="card-title">${g.name}</h5>
-                                <!-- Hiển thị giá -->
-                                <h6 class="price">${g.price}</h6>
-                                <!-- Hiển thị mô tả -->
-                                <h6 class="category">${g.description}</h6>
-                                <!-- Hiển thị owner -->
-                                <h6 class="owner">Campsite Owner ID: ${g.campsiteOwner}</h6>
-                                <div class="mt-3 d-flex justify-content-between" style="width: 125%">
-                                    <a href="cartservlet?id=${g.gearId}&redirectPage=/Login/gearcontroller" class="btn btn-primary">Add to Cart</a>
-                                    <!--<a href="ordernow?quantity=1&id=${g.gearId}" class="btn btn-primary">Buy Now</a>-->
-                                </div>
+            <c:forEach var="g" items="${gears}">
+                <div class="col-md-3 d-flex">
+                    <div class="card border-e shadow rounded-3 w-100">
+                        <img class="card-img-top" src="img/${g.gearImage}" alt="Card image cap" />
+                        <div class="card-body">
+                            <h5 class="card-title">${g.gearName}</h5>
+                            <h6 class="price">${g.gearPrice}</h6>
+                            <h6 class="category">${g.gearDecription}</h6>
+                            <div class="mt-3 d-flex justify-content-between" style="width: 125%">
+                                <a href="cartservlet?id=${g.gearId}&redirectPage=/login_war/tentcontrol?action=viewtent" class="btn btn-primary">Add to Cart</a>
+                                <!--<a href="ordernow?quantity=1&id=${g.gearId}" class="btn btn-primary">Buy Now</a>-->
                             </div>
                         </div>
                     </div>
-                </c:forEach>
-
-            </div>
+                </div>
+            </c:forEach>
+        </div>
 
         <div class="d-flex justify-content-center mt-2">
             <div id="pagination"></div>
