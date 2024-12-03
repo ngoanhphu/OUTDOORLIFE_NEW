@@ -38,14 +38,13 @@
                             </span>
                             <input type="email" class="form-control" id="email" placeholder="Email" name="email" required>
                         </div>
-                        <div class="form-floating mb-3">
-                            <input type="tel" class="form-control" id="phonenumber" name="phone" placeholder="phoneNumber" pattern="(09|03|07|08|05)[0-9]{8}" required>
-                            <label for="phonenumber">Phone</label>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text bg-primary text-white">
+                                <i class="bi bi-telephone"></i>
+                            </span>
+                            <input type="tel" class="form-control" id="phonenumber" placeholder="Phone Number" name="phone" pattern="(09|03|07|08|05)[0-9]{8}" required>
                         </div>
-                        <div class="form-floating mb-3">
-                            <input type="password" name="password" class="form-control" id="password" placeholder="Password" required>
-                            <label for="password">Password</label>
-                        </div>
+
 
                         <!-- Password -->
                         <div class="input-group mb-3">
@@ -75,7 +74,7 @@
                         <div class="d-grid mb-3">
                             <button class="btn btn-primary btn-lg fw-bold" type="submit">Sign Up</button>
                         </div>
-
+                        <p>If you have an account? <a href="login.jsp" class="link-info">login here</a></p>
                         <!-- Alternative Sign-In -->
                         <p class="text-center mb-2">or sign in with:</p>
                         <div class="d-grid">
