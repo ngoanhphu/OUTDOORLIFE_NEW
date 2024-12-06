@@ -59,7 +59,7 @@ public class LoginServlet extends HttpServlet {
             try {
                 boolean ownerExists = ownerDAO.isOwnerExist(user.getId());
                 if (ownerExists) {
-                    response.sendRedirect("owner.jsp");
+                    response.sendRedirect(request.getContextPath() + "/schedule-rent");
                 } else {
                     response.sendRedirect("owner/registerOwner.jsp");
                 }
