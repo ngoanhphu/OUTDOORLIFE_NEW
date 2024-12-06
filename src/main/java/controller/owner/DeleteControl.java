@@ -20,7 +20,7 @@ import java.sql.Connection;
  */
 @WebServlet(name = "DeleteControl", urlPatterns = {"/delete"})
 public class DeleteControl extends HttpServlet {
-    private Connection con; 
+    private Connection con;
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -29,8 +29,8 @@ public class DeleteControl extends HttpServlet {
         try {
             gear.deleteGear(id);
         } catch (Exception ex) {
-            
+
         }
-        response.sendRedirect("admin");
+        response.sendRedirect("viewOwner");
     }
 }

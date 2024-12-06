@@ -48,33 +48,33 @@
 </style>
 
 <body>
-    <jsp:include page="header.jsp"></jsp:include>
-    <div class="container" style="margin-top: 200px">
-        <div class="form-container">
-            <div class="form-header">
-                <h2>Add New Tent</h2>
-            </div>
-            <form action="addtent" method="post">
-                <div class="form-group">
-                    <label for="gearName">Tent Name:</label>
-                    <input type="text" id="gearName" name="gearName" required>
-                </div>
-                <div class="form-group">
-                    <label for="gearPrice">Tent Price:</label>
-                    <input type="number" id="gearPrice" name="gearPrice" required>
-                </div>
-                <div class="form-group">
-                    <label for="gearDescription">Description:</label>
-                    <textarea id="gearDescription" name="gearDescription" required></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="gearImage">Image URL:</label>
-                    <input type="text" id="gearImage" name="gearImage" required>
-                </div>
-                <div class="form-group">
-                    <input type="submit" value="Add Tent">
-                </div>
-            </form>
+<%--    <jsp:include page="headeradmin.jsp"></jsp:include>--%>
+<div class="container" style="margin-top: 200px">
+    <div class="form-container">
+        <div class="form-header">
+            <h2>Add New Gear</h2>
         </div>
+        <form action="addtent" method="post">
+            <div class="form-group">
+                <label for="gearName">Tent Name:</label>
+                <input type="text" id="gearName" name="gearName" required>
+            </div>
+            <div class="form-group">
+                <label for="gearPrice">Tent Price:</label>
+                <input type="number" id="gearPrice" name="gearPrice" required>
+            </div>
+            <div class="form-group">
+                <label for="gearDescription">Description:</label>
+                <textarea id="gearDescription" name="gearDescription" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="gearImage">Image URL:</label>
+                <input type="text" id="gearImage" name="gearImage" required>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Add Gear">
+            </div>
+        </form>
     </div>
+</div>
 </body>

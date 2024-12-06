@@ -23,39 +23,43 @@ import model.Gear;
 @WebServlet(name = "UpdateGearControl", urlPatterns = {"/update"})
 public class UpdateGearControll extends HttpServlet {
     private Connection con;
-@Override
+    @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String id = request.getParameter("id"); 
+        String id = request.getParameter("id"); // Lấy Gear ID từ URL
         try {
-            DBContext con = new DBContext();
-            GearDAO ga = new GearDAO(con.getConnection());
-            Gear gear = ga.getGearByID(id);
-            request.setAttribute("st", gear);
-            
-        } catch (Exception ex) {
-            
+            DBContext db = new DBContext();
+            GearDAO gearDAO = new GearDAO(db.getConnection());
+            Gear gear = gearDAO.getGearByID(id); // Lấy thông tin gear từ cơ sở dữ liệu
+            request.setAttribute("st", gear); // Đưa gear vào request attribute
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        
-        request.getRequestDispatcher("UpdateGear.jsp").forward(request, response);
+        request.getRequestDispatcher("UpdateGear.jsp").forward(request, response); // Forward đến JSP
     }
 
-    
+
+
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-            String id = request.getParameter("gearId");
-            String name = request.getParameter("gearName");
-            String price = request.getParameter("gearPrice");
-            String decription = request.getParameter("gearDecription");
-            String image = request.getParameter("gearImage");
-            GearDAO gear = new GearDAO(con);
-            try{
-            gear.UpdateGear(id, name, price, decription, image);
+        String id = request.getParameter("gearId");
+        String name = request.getParameter("gearName");
+        String price = request.getParameter("gearPrice");
+        String description = request.getParameter("gearDescription");
+        String image = request.getParameter("gearImage");
+
+        try {
+            DBContext db = new DBContext();
+            GearDAO gearDAO = new GearDAO(db.getConnection());
+            gearDAO.updateGear(id, name, Integer.parseInt(price), description, image); // Gửi dữ liệu mới đến DB
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-            catch(Exception ex){
-                
-            }
-            response.sendRedirect("admin");
-        }
+        response.sendRedirect("viewOwner"); // Quay lại trang quản lý sau khi cập nhật
     }
+
+
+
+}

@@ -72,7 +72,7 @@
                 </div>
                 <div class="form-group">
                     <label for="gearDescription">Description:</label>
-                    <textarea id="gearDescription" name="gearDecription" required>${st.gearDecription}</textarea>
+                    <textarea id="gearDescription" name="gearDescription" required>${st.gearDecription}</textarea>
                 </div>
                 <div class="form-group">
                     <label for="gearImage">Image URL:</label>
