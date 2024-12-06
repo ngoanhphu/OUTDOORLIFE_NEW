@@ -75,7 +75,7 @@
         <div class="form-grid">
             <div class="form-group full-width">
                 <label for="downloadDoc">Download Contract Document:</label>
-                <a href="<c:url value='/resources/contract.doc'/>" download>Download contract.doc</a>
+                <a href="<c:url value='/resources/contract.doc'/>" download>Contract</a>
             </div>
             <div class="form-group">
                 <label for="occupation">Occupation:</label>
