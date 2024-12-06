@@ -48,13 +48,13 @@
 </style>
 
 <body>
-    <jsp:include page="headeradmin.jsp"></jsp:include>
+<%--    <jsp:include page="headeradmin.jsp"></jsp:include>--%>
     <div class="container" style="margin-top: 200px">
         <div class="form-container">
             <div class="form-header">
                 <h2>Add New Gear</h2>
             </div>
-            <form action="add" method="post">
+            <form action="addGear" method="post">
                 <div class="form-group">
                     <label for="gearName">Gear Name:</label>
                     <input type="text" id="gearName" name="gearName" required>
