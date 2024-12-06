@@ -9,6 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.sql.Date;
 import java.util.List;
 
 public class OwnerDAO {
@@ -166,4 +167,76 @@ public class OwnerDAO {
             throw new RuntimeException(e);
         }
     }
+
+    public Owner getOwnerByAccountId(int accountId) throws SQLException {
+        String sql = "SELECT * FROM OWNER WHERE Account_id = ?";
+        try (Connection conn = db.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, accountId);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    Owner owner = new Owner();
+                    owner.setOwnerId(rs.getInt("owner_id"));
+                    owner.setAccountId(rs.getInt("Account_id"));
+                    owner.setOwnerSince(rs.getDate("owner_since"));
+                    owner.setOccupation(rs.getString("occupation"));
+                    owner.setAddress(rs.getString("address"));
+                    owner.setDob(rs.getDate("date_of_birth"));
+                    owner.setGender(rs.getString("gender"));
+                    owner.setRegion(rs.getString("region"));
+                    owner.setIdentification(rs.getInt("identification"));
+                    owner.setTaxCode(rs.getInt("tax_code"));
+                    owner.setImage(rs.getString("attached_files"));
+                    owner.setStatus(rs.getString("status"));
+                    owner.setStartDate(rs.getDate("start_date"));
+                    owner.setEndDate(rs.getDate("end_date"));
+                    owner.setNotes(rs.getString("notes"));
+                    return owner;
+                }
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return null;
+    }
+
+    public String getOwnerStatusByAccountId(HttpSession session) throws SQLException {
+        Integer accountId = (Integer) session.getAttribute("accountId");
+
+        if (accountId == null) {
+            throw new IllegalArgumentException("Account_id is not present in the session");
+        }
+
+        String sql = "SELECT status FROM OWNER WHERE Account_id = ?";
+        try (Connection conn = db.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, accountId);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getString("status");
+                }
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return null;
+    }
+
+    public boolean updateOwnerEndDate(int accountId, Date newEndDate) throws SQLException {
+        String sql = "UPDATE OWNER SET end_date = ? WHERE Account_id = ?";
+        try (Connection conn = db.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setDate(1, newEndDate);
+            pstmt.setInt(2, accountId);
+
+            int rowsAffected = pstmt.executeUpdate();
+            return rowsAffected > 0;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+
+
 }
