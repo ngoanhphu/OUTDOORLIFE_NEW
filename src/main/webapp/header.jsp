@@ -80,6 +80,7 @@
                              </c:if>
                             <!--<a href="contact.jsp" class="nav-item nav-link">Contact</a>-->
                              <li class="nav-item"><a class="nav-link" href="Cart.jsp">Cart <span class="badge-custom">${cart_list.size()}</span> </a></li>
+                            <a href="map.jsp" class="nav-item nav-link"><Map></Map></a>
                         </div>
 
                         <c:choose>

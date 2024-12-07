@@ -70,21 +70,25 @@
                     </button>
                     <div class="collapse navbar-collapse bg-light" id="navbarCollapse">
                         <div class="navbar-nav ms-auto">
-                            <c:if test = "${not empty currentUser && currentUser.staff}">
+                            <c:if test = "${not empty currentUser && currentUser.owner}">
                                 <a href="schedule-rent" class="nav-item nav-link">Schedule Rent</a>
+                                <a href="viewTent" class="nav-item nav-link">Manage Tents</a>
+                                <a href="manage-campsite" class="nav-item nav-link">Manage Campsites</a>
+                                <a href="manage-order" class="nav-item nav-link">Manage Orders</a>
+                                <a href="manage-voucher" class="nav-item nav-link">Manage Vouchers</a>
+
                             </c:if>
                             <c:if test = "${not empty currentUser && currentUser.admin}">
                                 <a href="dashboard" class="nav-item nav-link active">Dashboard</a>
-                                <a href="admin" class="nav-item nav-link">Manage Gears</a>
-                                <a href="admintent" class="nav-item nav-link">Manage Tents</a>
+<%--                                <a href="admintent" class="nav-item nav-link">Manage Tents</a>--%>
                                 <a href="manage-account" class="nav-item nav-link">Manage Accounts</a>
-                                <a href="manage-campsite" class="nav-item nav-link">Manage Campsites</a>
+<%--                                <a href="manage-campsite" class="nav-item nav-link">Manage Campsites</a>--%>
                                  <a href="show-feedback" class="nav-item nav-link">Manage Feedbacks</a>
                             </c:if>
-                            <a href="manage-order" class="nav-item nav-link">Manage Orders</a>
-                            <c:if test = "${not empty currentUser && currentUser.staff}">
-                                <a href="manage-voucher" class="nav-item nav-link">Manage Vouchers</a>
-                            </c:if>
+
+<%--                            <c:if test = "${not empty currentUser && currentUser.owner}">--%>
+<%--                                <a href="manage-voucher" class="nav-item nav-link">Manage Vouchers</a>--%>
+<%--                            </c:if>--%>
 
                             <!--                            <a href="service.jsp" class="nav-item nav-link">Services</a>
                                                         <a href="campinggear.jsp" class="nav-item nav-link">Camping gear</a>
