@@ -69,12 +69,9 @@
 </style>
 
 <body>
-    <jsp:include page="headeradmin.jsp"></jsp:include>
+    <jsp:include page="headerAdmin.jsp"></jsp:include>
         <div class="container" style="margin-top: 200px">
             <!-- Create Gear Button -->
-            <div class="create-button-container">
-                <button class="btn-create" onclick="window.location.href = 'addStaff.jsp'">Create Staff</button>
-            </div>
 
             <!--        <div class="search-container">
                         <form action="search" method="post" class="form-inline my-2 my-lg-0">
