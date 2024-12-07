@@ -22,7 +22,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.UUID;
 
-
 @MultipartConfig
 @WebServlet("/owner/registerOwner")
 public class RegisterOwner extends HttpServlet {
@@ -31,7 +30,25 @@ public class RegisterOwner extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.getRequestDispatcher("owner/registerOwner.jsp").forward(request, response);
+        HttpSession session = request.getSession();
+        OwnerDAO ownerDAO = new OwnerDAO(new DBContext());
+
+        try {
+            String status = ownerDAO.getOwnerStatusByAccountId(session);
+            if ("approved".equals(status)) {
+                session.setAttribute("message", "Already became an approved owner!");
+                response.sendRedirect(request.getContextPath() + "/index.jsp");
+            }
+            else if ("pending".equals(status)) {
+                session.setAttribute("message", "Already submitted an owner registration request!");
+                response.sendRedirect(request.getContextPath() + "/index.jsp");
+            }
+            else {
+                request.getRequestDispatcher("registerOwner.jsp").forward(request, response);
+            }
+        } catch (SQLException e) {
+            throw new ServletException("Database error", e);
+        }
     }
 
     @Override
@@ -68,9 +85,7 @@ public class RegisterOwner extends HttpServlet {
             String originalFileName = extractFileName(filePart);
             String uniqueFileName = generateUniqueFileName(originalFileName);
 
-            String projectRoot = System.getProperty("user.dir");
-            System.out.println("Project Root: " + projectRoot);
-            Path uploadPath = Paths.get(projectRoot, "src", "main", "resources", "docs");
+            Path uploadPath = Paths.get(getServletContext().getRealPath(""));
             System.out.println("Upload Path: " + uploadPath);
             Files.createDirectories(uploadPath);
             Path filePath = uploadPath.resolve(uniqueFileName);
@@ -80,8 +95,6 @@ public class RegisterOwner extends HttpServlet {
                 Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
             }
             owner.setImage(uniqueFileName);
-
-
 
             // Parse and set start date
             String startDateStr = request.getParameter("startDate");
