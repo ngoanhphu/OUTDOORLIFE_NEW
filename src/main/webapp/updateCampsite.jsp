@@ -48,49 +48,48 @@
 </style>
 
 <body>
-    <jsp:include page="headeradmin.jsp"></jsp:include>
-    <div class="container" style="margin-top: 200px">
-        <div class="form-container">
-            <div class="form-header">
-                <h2>Update Campsite</h2>
-            </div>
-            <form action="update-campsite" method="post">
-                <div class="form-group">
-                    <label for="name">Campsite Name:</label>
-                    <input type="hidden" id="id" name="id" value="${c.campId}">
-                    <input type="text" id="name" name="name" required value="${c.campName}">
-                </div>
-                <div class="form-group">
-                    <label for="price">Campsite Price:</label>
-                    <input type="number" id="price" name="price" required value="${c.campPrice}">
-                </div>
-                 <div class="form-group">
-                    <label for="address">Address:</label>
-                    <textarea id="address" name="address" required>${c.campAddress}</textarea>
-                </div>
-                <div class="form-group">
-                    <label for="description">Description:</label>
-                    <textarea id="description" name="description" required>${c.campDescription}</textarea>
-                </div>
-                <div class="form-group">
-                    <label for="image">Image URL:</label>
-                    <input type="text" id="image" name="image" required value="${c.campImage}">
-                </div>
-                 <div class="form-group">
-                    <label for="limit">Limite:</label>
-                    <input type="number" id="limit" name="limit" required value="${c.limite}">
-                </div>
-                 <div class="form-group">
-                    <label for="status">Status:</label>
-                    <select id="status" name="status">
-                        <option value="1" ${c.campStatus == true ? 'selected':''}>Active</option>
-                        <option value="0" ${c.campStatus == false ? 'selected':''}>InActive</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <input type="submit" value="Update">
-                </div>
-            </form>
+<div class="container" style="margin-top: 200px">
+    <div class="form-container">
+        <div class="form-header">
+            <h2>Update Campsite</h2>
         </div>
+        <form action="update-campsite" method="post">
+            <div class="form-group">
+                <label for="name">Campsite Name:</label>
+                <input type="hidden" id="id" name="id" value="${c.campId}">
+                <input type="text" id="name" name="name" required value="${c.campName}">
+            </div>
+            <div class="form-group">
+                <label for="price">Campsite Price:</label>
+                <input type="number" id="price" name="price" required value="${c.campPrice}">
+            </div>
+            <div class="form-group">
+                <label for="address">Address:</label>
+                <textarea id="address" name="address" required>${c.campAddress}</textarea>
+            </div>
+            <div class="form-group">
+                <label for="description">Description:</label>
+                <textarea id="description" name="description" required>${c.campDescription}</textarea>
+            </div>
+            <div class="form-group">
+                <label for="image">Image URL:</label>
+                <input type="text" id="image" name="image" required value="${c.campImage}">
+            </div>
+            <div class="form-group">
+                <label for="limit">Limite:</label>
+                <input type="number" id="limit" name="limit" required value="${c.limite}">
+            </div>
+            <div class="form-group">
+                <label for="status">Status:</label>
+                <select id="status" name="status">
+                    <option value="1" ${c.campStatus == true ? 'selected' : ''}>Active</option>
+                    <option value="0" ${c.campStatus == false ? 'selected' : ''}>Inactive</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Update">
+            </div>
+        </form>
     </div>
+</div>
 </body>
