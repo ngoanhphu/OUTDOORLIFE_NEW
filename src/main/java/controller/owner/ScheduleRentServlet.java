@@ -98,7 +98,8 @@ public class ScheduleRentServlet extends HttpServlet {
                 session.setAttribute("message", "Your owner's contract is over!");
                 response.sendRedirect(request.getContextPath() + "/index.jsp");
             } else {
-                request.getRequestDispatcher("scheduleRent.jsp").forward(request, response);
+                processRequest(request, response);
+//                request.getRequestDispatcher("scheduleRent.jsp").forward(request, response);
             }
         } catch (SQLException e) {
             throw new ServletException("Database error", e);

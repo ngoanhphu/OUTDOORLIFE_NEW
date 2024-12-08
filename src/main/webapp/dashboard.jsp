@@ -69,7 +69,7 @@
 </style>
 
 <body>
-    <jsp:include page="headerAdmin.jsp"></jsp:include>
+    <jsp:include page="headeradmin.jsp"></jsp:include>
         <div class="container" style="margin-top: 200px">
 
             <div class="row">
