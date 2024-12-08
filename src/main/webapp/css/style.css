@@ -806,12 +806,11 @@
 
 .comment-section {
     background: #f9f9f9;
-    padding: 20px;
-    border-radius: 5px;
 }
 
 .comment-box textarea {
     resize: none;
+    margin: 50px;
 }
 
 .comment-list .comment-item {
@@ -863,4 +862,106 @@
 .number-left:hover::before,
 .number-right:hover::after {
   background-color: #666666;
+}
+/* Tổng thể danh sách */
+.campsite-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin: 30px auto;
+    max-width: 1200px;
+    justify-content: space-between;
+}
+
+/* Mỗi mục trong danh sách */
+.campsite-item {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    width: 30%;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s ease;
+}
+
+.campsite-item:hover {
+    transform: scale(1.02);
+}
+
+/* Hình ảnh */
+.campsite-image {
+    background-size: cover;
+    background-position: center;
+    height: 180px;
+    width: 100%;
+}
+
+/* Thông tin */
+.campsite-info {
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.campsite-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #333;
+    text-decoration: none;
+}
+
+.campsite-title:hover {
+    color: #B983A9; /* Màu tím nhạt */
+}
+
+.campsite-location {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.campsite-description {
+    font-size: 0.9rem;
+    color: #444;
+}
+
+.add-to-list-btn {
+    margin-top: auto;
+    background-color: #B983A9;
+    color: #fff;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    width: fit-content;
+    align-self: flex-end;
+}
+
+.add-to-list-btn:hover {
+    background-color: #A76B98;
+}
+
+.fixed-rectangle {
+    width: 300px; /* Đặt chiều rộng cố định */
+    height: 200px; /* Đặt chiều cao cố định */
+    object-fit: cover; /* Cắt ảnh để khớp khung mà không bị méo */
+    object-position: center; /* Căn giữa ảnh trong khung */
+    display: block; /* Ngăn ảnh bị kéo dài khi kế thừa CSS khác */
+}
+
+.comment-box {
+    max-width: 600px; /* Đặt chiều rộng tối đa, bạn có thể điều chỉnh theo ý muốn */
+    width: 100%; /* Đảm bảo nó không vượt quá kích thước cha */
+    margin: 0 auto; /* Căn giữa comment box */
+}
+textarea {
+    resize: none; /* Ngăn kéo dài kích thước khung nhập */
+    width: 100%; /* Đảm bảo textarea lấp đầy khung cha */
+}
+.comment-box {
+    max-width: 100%; /* Không vượt quá khung trên màn hình nhỏ */
+    margin: 0 auto;
 }
