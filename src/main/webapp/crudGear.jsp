@@ -1,7 +1,7 @@
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 <style>
     body {
         font-family: Arial, sans-serif;
@@ -181,26 +181,82 @@
         max-width: calc(25% - 1.5rem);
         box-sizing: border-box;
     }
+    .search-container {
+        margin-bottom: 2rem;
+        text-align: left; /* Canh trái */
+    }
+
+    .input-group {
+        display: flex;
+        align-items: center;
+        max-width: 500px;
+        margin: 0 auto;
+    }
+
+    .input-group input {
+        flex: 1;
+        padding: 0.5rem;
+        font-size: 1rem;
+        border: 1px solid #ccc;
+        border-radius: 0 5px 5px 0; /* Bo góc bên phải */
+        outline: none;
+        transition: box-shadow 0.3s ease, border-color 0.3s ease;
+    }
+
+    .input-group input:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    }
+
+    .input-group button {
+        background-color: #007bff;
+        color: white;
+        border: 1px solid #007bff;
+        border-radius: 5px 0 0 5px; /* Bo góc bên trái */
+        padding: 0.5rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background-color 0.3s ease;
+    }
+
+    .input-group button:hover {
+        background-color: #0056b3;
+    }
+
+    .input-group button i {
+        font-size: 1rem; /* Kích thước icon */
+    }
+    .row {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between; /* Đảm bảo không gian được phân bổ đều */
+    }
+
+    .col-md-3 {
+        width: 23%; /* Cho phép không gian cho 4 sản phẩm mỗi hàng */
+        margin-bottom: 20px; /* Thêm khoảng cách giữa các hàng */
+        box-sizing: border-box;
+    }
 </style>
 
-
 <body>
-<%--<jsp:include page="headeradmin.jsp"></jsp:include>--%>
+<jsp:include page="headeradmin.jsp"></jsp:include>
 <div class="container" style="margin-top: 200px">
     <!-- Create Gear Button -->
     <div class="create-button-container">
         <button class="btn-create" onclick="window.location.href='createGearForm.jsp'">Create Gear</button>
     </div>
 
+    <!-- Search Form -->
     <div class="search-container">
-        <form action="search" method="post" class="form-inline my-2 my-lg-0">
-            <div class="input-group input-group-sm">
-                <input name="txt" type="text" placeholder="Search..." value="${param.txt}">
-                <div class="input-group-append">
-                    <button type="submit" class="btn btn-secondary btn-number">
-                        <i class="fa fa-search"></i>
-                    </button>
-                </div>
+        <form action="search" method="post" class="form-inline">
+            <div class="input-group">
+                <button type="submit" class="btn btn-secondary">
+                    <i class="fa fa-search"></i>
+                </button>
+                <input name="txt" type="text" placeholder="Search..." class="form-control" />
             </div>
         </form>
     </div>
