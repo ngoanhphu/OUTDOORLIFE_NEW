@@ -29,6 +29,7 @@
 
     <!-- Template Stylesheet -->
     <link href="css/style.css" tyle="text/css" rel="stylesheet">
+    <link href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet" />
 </head>
 
 <body>
@@ -45,17 +46,17 @@
             <div class="row align-items-center justify-content-center">
                 <div class="col-md-8">
                     <div class="topbar-info d-flex flex-wrap">
-                        <a href="#" class="text-light me-4"><i class="fas fa-envelope text-white me-2"></i>@@@@@fpt.edu.vn</a>
-                        <a href="#" class="text-light"><i class="fas fa-phone-alt text-white me-2"></i>@@@@@</a>
+                        <a href="#" class="text-light me-4"><i class="fas fa-envelope text-white me-2"></i>phucnhde170706@fpt.edu.vn</a>
+                        <a href="#" class="text-light"><i class="fas fa-phone-alt text-white me-2"></i>0941887045</a>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="topbar-icon d-flex align-items-center justify-content-end">
-                        <a href="@@@@" class="btn-square text-white me-2"><i class="fab fa-facebook-f"></i></a>
-                        <a href="@@@@" class="btn-square text-white me-2"><i class="fab fa-twitter"></i></a>
-                        <a href="@@@@" class="btn-square text-white me-2"><i class="fab fa-instagram"></i></a>
-                        <a href="@@@@" class="btn-square text-white me-2"><i class="fab fa-pinterest"></i></a>
-                        <a href="@@@@" class="btn-square text-white me-0"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="https://www.facebook.com/Phuc250703/" class="btn-square text-white me-2"><i class="fab fa-facebook-f"></i></a>
+                        <a href="https://www.facebook.com/Phuc250703/" class="btn-square text-white me-2"><i class="fab fa-twitter"></i></a>
+                        <a href="https://www.facebook.com/Phuc250703/" class="btn-square text-white me-2"><i class="fab fa-instagram"></i></a>
+                        <a href="https://www.facebook.com/Phuc250703/" class="btn-square text-white me-2"><i class="fab fa-pinterest"></i></a>
+                        <a href="https://www.facebook.com/Phuc250703/" class="btn-square text-white me-0"><i class="fab fa-linkedin-in"></i></a>
                     </div>
                 </div>
             </div>
@@ -69,9 +70,33 @@
             </button>
             <div class="collapse navbar-collapse bg-light" id="navbarCollapse">
                 <div class="navbar-nav ms-auto">
-                    <a href="admin.jsp.jsp" class="nav-item nav-link active">Home</a>
-                    <a href="manageAccount.jsp" class="nav-item nav-link">ManageAccount</a>
-                    <a href="dashboard.jsp" class="nav-item nav-link">Dashboard</a>
+                    <c:if test = "${not empty currentUser && currentUser.owner}">
+                        <a href="schedule-rent" class="nav-item nav-link">Schedule Rent</a>
+                        <a href="viewTent" class="nav-item nav-link">Manage Tents</a>
+                        <a href="manage-campsite" class="nav-item nav-link">Manage Campsites</a>
+                        <a href="manage-order" class="nav-item nav-link">Manage Orders</a>
+                        <a href="manage-voucher" class="nav-item nav-link">Manage Vouchers</a>
+
+                    </c:if>
+                    <c:if test = "${not empty currentUser && currentUser.admin}">
+                        <a href="dashboard" class="nav-item nav-link active">Dashboard</a>
+                        <%--                                <a href="admintent" class="nav-item nav-link">Manage Tents</a>--%>
+                        <a href="manage-account" class="nav-item nav-link">Manage Accounts</a>
+                        <%--                                <a href="manage-campsite" class="nav-item nav-link">Manage Campsites</a>--%>
+                        <a href="show-feedback" class="nav-item nav-link">Manage Feedbacks</a>
+                    </c:if>
+
+                    <%--                            <c:if test = "${not empty currentUser && currentUser.owner}">--%>
+                    <%--                                <a href="manage-voucher" class="nav-item nav-link">Manage Vouchers</a>--%>
+                    <%--                            </c:if>--%>
+
+                    <!--                            <a href="service.jsp" class="nav-item nav-link">Services</a>
+                                                        <a href="campinggear.jsp" class="nav-item nav-link">Camping gear</a>
+                            <%--<c:if test = "${not empty currentUser }">--%>
+                           <a href="#" class="nav-item nav-link" onclick="openOrderPopup()">Order History</a>
+                            <%--</c:if>--%>
+                           <a href="contact.jsp" class="nav-item nav-link">Contact</a>
+                            <li class="nav-item"><a class="nav-link" href="Cart.jsp">Cart <span class="badge-custom">${cart_list.size()}</span> </a></li>-->
                 </div>
 
                 <c:choose>
