@@ -71,7 +71,7 @@ public class ExtendContract extends HttpServlet {
         try {
             String status = ownerDAO.getOwnerStatusByAccountId(session);
             if ("disapproved".equals(status) || "pending".equals(status)) {
-                request.setAttribute("message", "You are not an approved owner!");
+                session.setAttribute("message", "You are not an approved owner!");
                 response.sendRedirect(request.getContextPath() + "/index.jsp");
             } else {
                 String responseCode = request.getParameter("vnp_ResponseCode");

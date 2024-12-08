@@ -225,24 +225,29 @@ public class CampsiteDAO extends DBContext {
         return campsites;
     }
 
-    public void insertCampsite(Campsite c) {
-        String query = "INSERT INTO CAMPSITE \n"
-                + "              VALUES (?,?,?,?,?,?,?)";
-        try {
-            Connection con = getConnection();
-            PreparedStatement ps = con.prepareStatement(query);
-            ps.setInt(1, c.getCampPrice());
-            ps.setString(2, c.getCampAddress());
-            ps.setString(3, c.getCampName());
-            ps.setString(4, c.getCampDescription());
-            ps.setBoolean(5, c.isCampStatus());
-            ps.setString(6, c.getCampImage());
-            ps.setInt(7, c.getLimite());
+    public void insertCampsite(Campsite c, int ownerId) {
+        String query = "INSERT INTO CAMPSITE (Campsite_owner, Price, Address, Name, Description, Status, Image, Quantity) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        try (Connection con = getConnection();
+             PreparedStatement ps = con.prepareStatement(query)) {
+
+            // Thiết lập các giá trị
+            ps.setInt(1, ownerId);  // Đặt ownerId lấy từ session
+            ps.setInt(2, c.getCampPrice());
+            ps.setString(3, c.getCampAddress());
+            ps.setString(4, c.getCampName());
+            ps.setString(5, c.getCampDescription());
+            ps.setBoolean(6, c.isCampStatus());
+            ps.setString(7, c.getCampImage());
+            ps.setInt(8, c.getLimite());
+
+            // Thực thi câu lệnh chèn
             ps.executeUpdate();
         } catch (Exception ex) {
-            Logger.getLogger(UserDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CampsiteDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
 
     public Campsite getCampsiteByID(String id) {
         String query = "select * from CAMPSITE\n"
@@ -272,15 +277,15 @@ public class CampsiteDAO extends DBContext {
     }
 
     public void updateCampsite(Campsite c) {
-        String query = "update CAMPSITE\n"
-                + " set [Price_id] = ?,\n"
-                + "	[Address] = ?,\n"
-                + "	[Name] = ?,\n"
-                + "	[Description] = ?,\n"
-                + "	[Status] = ?,\n"
-                + "	[Image] = ?,\n"
-                + "	[Limite] = ?\n"
-                + "	where [Campsite_id] = ?";
+        String query = "UPDATE CAMPSITE "
+                + "SET [Price] = ?, "
+                + "    [Address] = ?, "
+                + "    [Name] = ?, "
+                + "    [Description] = ?, "
+                + "    [Status] = ?, "
+                + "    [Image] = ?, "
+                + "    [Quantity] = ? "
+                + "WHERE [Campsite_id] = ?";
         try {
             Connection con = getConnection();
             PreparedStatement ps = con.prepareStatement(query);
@@ -297,6 +302,7 @@ public class CampsiteDAO extends DBContext {
             Logger.getLogger(UserDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
 
     public void updateQuantityCampsite(CampsiteOrder c) {
         String query = "update CAMPSITE\n"
@@ -328,4 +334,114 @@ public class CampsiteDAO extends DBContext {
             Logger.getLogger(UserDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
+    public List<Campsite> getCampsitesByOwner(int ownerId, int page, int size) {
+        List<Campsite> campsites = new ArrayList<>();
+        String query = "SELECT [Campsite_id], [Campsite_owner], [Price], [Address], [Name], [Description], [Status], [Image], [Quantity] "
+                + "FROM [CAMPSITE] "
+                + "WHERE [Campsite_owner] = ? "
+                + "ORDER BY [Campsite_id] DESC "
+                + "OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+
+        try (Connection con = getConnection(); PreparedStatement pst = con.prepareStatement(query)) {
+            // Tính toán offset
+            int offset = (page - 1) * size;
+            pst.setInt(1, ownerId); // Gán giá trị ownerId cho tham số đầu tiên
+            pst.setInt(2, offset);  // Gán giá trị offset cho tham số thứ hai
+            pst.setInt(3, size);    // Gán giá trị size cho tham số thứ ba
+
+            try (ResultSet rs = pst.executeQuery()) {
+                while (rs.next()) {
+                    Campsite campsite = new Campsite();
+                    campsite.setCampId(rs.getInt("Campsite_id"));
+                    campsite.setCampOwner(rs.getInt("Campsite_owner"));
+                    campsite.setCampPrice(rs.getInt("Price"));
+                    campsite.setCampAddress(rs.getString("Address"));
+                    campsite.setCampName(rs.getString("Name"));
+                    campsite.setCampDescription(rs.getString("Description"));
+                    campsite.setCampStatus(rs.getBoolean("Status"));
+                    campsite.setCampImage(rs.getString("Image"));
+                    campsite.setLimite(rs.getInt("Quantity"));
+                    campsites.add(campsite);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (Exception ex) {
+            Logger.getLogger(UserDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return campsites;
+    }
+    public int getTotalCampsitesByOwner(int ownerId) {
+        int totalCampsites = 0;
+        String query = "SELECT COUNT(*) FROM [CAMPSITE] WHERE Campsite_owner = ?";
+
+        // Kết nối tới cơ sở dữ liệu và thực hiện truy vấn
+        try (Connection con = getConnection(); PreparedStatement pst = con.prepareStatement(query)) {
+            // Gán giá trị ownerId vào câu lệnh SQL
+            pst.setInt(1, ownerId);
+
+            try (ResultSet rs = pst.executeQuery()) {
+                if (rs.next()) {
+                    totalCampsites = rs.getInt(1); // Lấy kết quả trả về từ COUNT(*)
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return totalCampsites;
+    }
+
+    public Campsite getCampsiteById(int campsiteId) {
+        String query = "SELECT * FROM CAMPSITE WHERE Campsite_id = ?";
+        Campsite campsite = null;
+        try (Connection con = getConnection(); PreparedStatement ps = con.prepareStatement(query)) {
+            ps.setInt(1, campsiteId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    campsite = new Campsite();
+                    campsite.setCampId(rs.getInt("Campsite_id"));
+                    campsite.setCampPrice(rs.getInt("Price"));
+                    campsite.setCampAddress(rs.getString("Address"));
+                    campsite.setCampName(rs.getString("Name"));
+                    campsite.setCampDescription(rs.getString("Description"));
+                    campsite.setCampImage(rs.getString("Image"));
+                    campsite.setCampStatus(rs.getBoolean("Status"));
+                    campsite.setLimite(rs.getInt("Quantity"));
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return campsite;
+    }
+    public void updateCampsite(int campsiteId, String name, int price, String address, String description, boolean status, String image, int limite) throws Exception {
+        String query = "UPDATE CAMPSITE\n"
+                + "SET [Price] = ?,\n"
+                + "    [Address] = ?,\n"
+                + "    [Name] = ?,\n"
+                + "    [Description] = ?,\n"
+                + "    [Status] = ?,\n"
+                + "    [Image] = ?,\n"
+                + "    [Limite] = ?\n"
+                + "WHERE [Campsite_id] = ?";
+        try (Connection con = getConnection(); PreparedStatement ps = con.prepareStatement(query)) {
+            ps.setString(1, name);
+            ps.setInt(2, price);
+            ps.setString(3, address);
+            ps.setString(4, description);
+            ps.setInt(5, status ? 1 : 0);  // Trạng thái: 1 cho active, 0 cho inactive
+            ps.setString(6, image);
+            ps.setInt(7, limite);
+            ps.setInt(8, campsiteId);  // ID của trại cắm trại cần cập nhật
+
+            ps.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(UserDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+
 }

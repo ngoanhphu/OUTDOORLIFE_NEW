@@ -36,11 +36,11 @@ public class RegisterOwner extends HttpServlet {
         try {
             String status = ownerDAO.getOwnerStatusByAccountId(session);
             if ("approved".equals(status)) {
-                request.setAttribute("message", "Already became an approved owner!");
+                session.setAttribute("message", "Already became an approved owner!");
                 response.sendRedirect(request.getContextPath() + "/index.jsp");
             }
             else if ("pending".equals(status)) {
-                request.setAttribute("message", "Already submitted an owner registration request!");
+                session.setAttribute("message", "Already submitted an owner registration request!");
                 response.sendRedirect(request.getContextPath() + "/index.jsp");
             }
             else {
