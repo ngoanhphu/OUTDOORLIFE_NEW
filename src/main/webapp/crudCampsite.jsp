@@ -183,7 +183,7 @@
 </style>
 
 <body>
-<%--    <jsp:include page="headeradmin.jsp"></jsp:include>--%>
+    <jsp:include page="headeradmin.jsp"></jsp:include>
     <div class="container" style="margin-top: 200px">
         <!-- Create Gear Button -->
         <div class="create-button-container">
