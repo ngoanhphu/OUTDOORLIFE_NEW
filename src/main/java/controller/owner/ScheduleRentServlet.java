@@ -9,13 +9,18 @@ import dao.DBContext;
 import dao.OrderDAO;
 import java.io.IOException;
 
+import dao.OwnerDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
+
+import jakarta.servlet.http.HttpSession;
 import model.Campsite;
 import model.Order;
 
@@ -85,7 +90,20 @@ public class ScheduleRentServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        HttpSession session = request.getSession();
+        OwnerDAO ownerDAO = new OwnerDAO(new DBContext());
+
+        try {
+            if (!ownerDAO.isOwnerEndDateValid(session)) {
+                session.setAttribute("message", "Your owner's contract is over!");
+                response.sendRedirect(request.getContextPath() + "/index.jsp");
+            } else {
+                processRequest(request, response);
+//                request.getRequestDispatcher("scheduleRent.jsp").forward(request, response);
+            }
+        } catch (SQLException e) {
+            throw new ServletException("Database error", e);
+        }
     }
 
     /**

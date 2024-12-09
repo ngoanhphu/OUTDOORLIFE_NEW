@@ -116,17 +116,6 @@ public class BookingServlet extends HttpServlet {
                 }
 
                 session.setAttribute("CampsiteOrder", order);
-
-                // Kiểm tra và áp dụng mã giảm giá nếu có
-//                    if (discountCode != null && !discountCode.isEmpty()) {
-//                        Discount discount = campsiteOrderDAO.getDiscountByCode(discountCode);
-//                        if (discount != null) {
-//                            order.setDiscount(discountCode); // Lưu mã giảm giá vào order
-//                            order.setDiscountApplied(true); // Đánh dấu là đã áp dụng giảm giá
-//                        }
-//                    }
-//                    campsiteDAO.bookCampsite(order); // Sử dụng campsiteOrderDAO để bookCampsite
-//                    response.sendRedirect("success.jsp");
                 response.sendRedirect("Cart.jsp");
 
             } catch (Exception ex) {

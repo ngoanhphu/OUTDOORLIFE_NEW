@@ -35,20 +35,32 @@
         resize: vertical;
         height: 100px;
     }
-    .form-group input[type="submit"] {
+    .form-group input[type="submit"], .btn {
         background-color: #007bff;
         color: white;
         border: none;
         cursor: pointer;
         transition: background-color 0.3s ease;
     }
-    .form-group input[type="submit"]:hover {
+    .form-group input[type="submit"]:hover, .btn:hover {
         background-color: #0056b3;
+    }
+    .btn {
+        margin: 5px;
+        padding: 0.5rem 1rem;
+        border-radius: 0.3rem;
+    }
+    .gear-list-container {
+        margin-top: 20px;
+    }
+    .gear-item {
+        border-bottom: 1px solid #ddd;
+        padding: 10px 0;
     }
 </style>
 
 <body>
-    <jsp:include page="headeradmin.jsp"></jsp:include>
+<%--    <jsp:include page="headeradmin.jsp"></jsp:include>--%>
     <div class="container" style="margin-top: 200px">
         <div class="form-container">
             <div class="form-header">

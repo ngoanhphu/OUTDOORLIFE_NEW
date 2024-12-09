@@ -1,75 +1,251 @@
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
-<style>
-    .container {
-        padding: 2rem 0;
-    }
-    .card {
-        background-color: #fff;
-        border: none;
-        border-radius: 0.5rem;
-        margin-bottom: 1.5rem;
-        display: flex;
-        flex-direction: column;
-        height: 100%;
-    }
-    .card-header {
-        padding: 1rem 1.5rem;
-        margin-bottom: 1rem;
-        background-color: #f8f9fa;
-        border-radius: 0.5rem 0.5rem 0 0;
-        text-align: center;
-        font-size: 1.25rem;
-        font-weight: bold;
-    }
-    .card-body {
-        padding: 1.5rem;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-    }
-    .card-img-top {
-        height: 200px;
-        object-fit: cover;
-        border-radius: 0.5rem 0.5rem 0 0;
-    }
-    .card-title {
-        font-size: 1.25rem;
-        margin: 0.5rem 0;
-    }
-    .price, .category {
-        font-size: 1rem;
-        margin: 0.25rem 0;
-    }
-    .btn {
-        width: 80%;
-    }
-    .row {
-        margin-bottom: 1.5rem; /* Adjust this value to increase/decrease spacing between rows */
-    }
-    .create-button-container {
-        display: flex;
-        justify-content: center;
-        margin-bottom: 2rem;
-    }
-    .btn-create {
-        background-color: #007bff;
-        color: white;
-        padding: 0.75rem 1.5rem;
-        font-size: 1rem;
-        border: none;
-        border-radius: 0.5rem;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-    }
-    .btn-create:hover {
-        background-color: #0056b3;
-    }
-</style>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f9;
+        }
 
-<body>
-    <jsp:include page="headeradmin.jsp"></jsp:include>
+        .container {
+            padding: 3rem 2rem;
+        }
+
+        .create-button-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+
+        .btn-create {
+            background-color: #007bff;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 123, 255, 0.3);
+        }
+
+        .btn-create:hover {
+            background-color: #0056b3;
+            box-shadow: 0 6px 10px rgba(0, 123, 255, 0.5);
+        }
+
+        .search-container {
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .input-group {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .input-group input {
+            width: 80%;
+            padding: 0.5rem;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 0.5rem;
+        }
+
+        .input-group button {
+            padding: 0.5rem 1rem;
+            background-color: #007bff;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .input-group button:hover {
+            background-color: #0056b3;
+        }
+
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            gap: 1.5rem;
+        }
+
+        .col-md-3 {
+            max-width: 22%;
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            width: 100%;
+            transition: box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .card-img-top {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+
+        .price {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #28a745;
+            margin-bottom: 0.75rem;
+        }
+
+        .category {
+            font-size: 1rem;
+            color: #555;
+            margin-bottom: 1rem;
+        }
+
+        .btn {
+            padding: 0.5rem 1.5rem;
+            font-size: 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+
+        .mt-3 {
+            margin-top: 1rem;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        #pagination {
+            padding: 10px;
+        }
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-start; /* Canh trái */
+            gap: 1.5rem; /* Khoảng cách giữa các sản phẩm */
+        }
+
+        .col-md-3 {
+            flex: 1 1 calc(25% - 1.5rem); /* Đảm bảo 4 sản phẩm trên 1 hàng */
+            max-width: calc(25% - 1.5rem);
+            box-sizing: border-box;
+        }
+        .search-container {
+            margin-bottom: 2rem;
+            text-align: left; /* Canh trái */
+        }
+
+        .input-group {
+            display: flex;
+            align-items: center;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .input-group input {
+            flex: 1;
+            padding: 0.5rem;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 0 5px 5px 0; /* Bo góc bên phải */
+            outline: none;
+            transition: box-shadow 0.3s ease, border-color 0.3s ease;
+        }
+
+        .input-group input:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+        }
+
+        .input-group button {
+            background-color: #007bff;
+            color: white;
+            border: 1px solid #007bff;
+            border-radius: 5px 0 0 5px; /* Bo góc bên trái */
+            padding: 0.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s ease;
+        }
+
+        .input-group button:hover {
+            background-color: #0056b3;
+        }
+
+        .input-group button i {
+            font-size: 1rem; /* Kích thước icon */
+        }
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between; /* Đảm bảo không gian được phân bổ đều */
+        }
+
+        .col-md-3 {
+            width: 23%; /* Cho phép không gian cho 4 sản phẩm mỗi hàng */
+            margin-bottom: 20px; /* Thêm khoảng cách giữa các hàng */
+            box-sizing: border-box;
+        }
+        .create-button-container{
+            margin-top: -220px;
+        }
+    </style>
+
+    <body>
+        <jsp:include page="headeradmin.jsp"></jsp:include>
     <div class="container" style="margin-top: 200px">
         <!-- Create Gear Button -->
         <div class="create-button-container">
@@ -77,36 +253,45 @@
         </div>
 
         <div class="search-container">
-            <form action="search" method="post" class="form-inline my-2 my-lg-0">
-                <div class="input-group input-group-sm">
-                    <input name="txt" type="text" placeholder="Search...">
-                    <div class="input-group-append">
-                        <button type="submit" class="btn btn-secondary btn-number">
-                            <i class="fa fa-search"></i>
-                        </button>
-                    </div>
+            <form action="searchTent" method="post" class="form-inline">
+                <div class="input-group">
+                    <button type="submit" class="btn btn-secondary">
+                        <i class="fa fa-search"></i>
+                    </button>
+                    <input name="txt" type="text" placeholder="Search..." class="form-control" />
                 </div>
             </form>
         </div>
-        
+
         <div class="row">
             <c:forEach var="g" items="${gears}">
                 <div class="col-md-3 d-flex">
                     <div class="card border-e shadow rounded-3 w-100">
                         <img class="card-img-top" src="img/${g.gearImage}" alt="Card image cap" />
                         <div class="card-body">
-                            <h5 class="card-title">${g.gearName}</h5>
-                            <h6 class="price">${g.gearPrice}</h6>
-                            <h6 class="category">${g.gearDecription}</h6>
+                            <h5 class="card-title">
+                                <i class="fas fa-campground me-2"></i> ${g.gearName}
+                            </h5>
+                            <h6 class="price">
+                                <i class="fas fa-dollar-sign me-2"></i> ${g.gearPrice}
+                            </h6>
+                            <h6 class="category">
+                                <i class="fas fa-tag me-2"></i> ${g.gearDecription}
+                            </h6>
                             <div class="mt-3 d-flex justify-content-between">
-                                <a href="updatetent?id=${g.gearId}" class="btn btn-primary">Update</a>
-                                <a href="#" onclick="showMess(${g.gearId})" class="btn btn-primary">Delete</a>
+                                <a href="updatetent?id=${g.gearId}" class="btn btn-primary">
+                                    <i class="fas fa-edit me-2"></i>Update
+                                </a>
+                                <a href="#" onclick="showMess(${g.gearId})" class="btn btn-danger">
+                                    <i class="fas fa-trash-alt me-2"></i>Delete
+                                </a>
                             </div>
                         </div>
                     </div>
                 </div>
             </c:forEach>
         </div>
+
 
         <div class="d-flex justify-content-center mt-2">
             <div id="pagination"></div>
@@ -128,7 +313,7 @@
             visiblePages: 10,
             initiateStartPageClick: false,
             onPageClick: function (event, page) {
-                window.location.href = 'admintent?page=' + page;
+                window.location.href = 'viewTent?page=' + page;
             }
         });
     </script>

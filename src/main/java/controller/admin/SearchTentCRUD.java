@@ -1,8 +1,6 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
- */
-package controller.others;
+package controller.admin;
+
+
 
 import dao.DBContext;
 import dao.GearDAO;
@@ -18,9 +16,12 @@ import java.util.logging.Logger;
 import model.Gear;
 import model.User;
 
-
-@WebServlet(name = "SearchControl", urlPatterns = {"/search"})
-public class SearchControl extends HttpServlet {
+/**
+ *
+ * @author ADMIN
+ */
+@WebServlet(name = "SearchControl", urlPatterns = {"/searchTent"})
+public class SearchTentCRUD extends HttpServlet {
 
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
@@ -42,11 +43,11 @@ public class SearchControl extends HttpServlet {
             // Gọi DAO để tìm kiếm Gear của chủ sở hữu
             DBContext db = new DBContext();
             GearDAO dao = new GearDAO(db.getConnection());
-            List<Gear> list = dao.searchByNameAndOwner(txtSearch, campsiteOwnerId);
+            List<Gear> list = dao.searchByNameAndOwnerTent(txtSearch, campsiteOwnerId);
 
             // Gửi dữ liệu kết quả tìm kiếm sang JSP
             request.setAttribute("gears", list);
-            request.getRequestDispatcher("crudGear.jsp").forward(request, response);
+            request.getRequestDispatcher("crudTent.jsp").forward(request, response);
         } else {
             // Nếu không hợp lệ, chuyển hướng về trang đăng nhập hoặc báo lỗi
             response.sendRedirect("login.jsp");
@@ -59,7 +60,7 @@ public class SearchControl extends HttpServlet {
         try {
             processRequest(request, response);
         } catch (Exception ex) {
-            Logger.getLogger(SearchControl.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(controller.others.SearchControl.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

@@ -20,6 +20,7 @@ public class ProfileServlet extends HttpServlet {
 
     private UserDAO userDAO = new UserDaoImpl();
 
+    @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
         User currentUser = (User) session.getAttribute("currentUser");
@@ -29,10 +30,7 @@ public class ProfileServlet extends HttpServlet {
             return;
         }
 
-        System.out.println("Current user in session: " + currentUser.getEmail()); // Log
-
         User user = userDAO.findByEmail(currentUser.getEmail());
-
         if (user != null) {
             request.setAttribute("user", user);
             request.getRequestDispatcher("UserProfile.jsp").forward(request, response);
@@ -41,6 +39,7 @@ public class ProfileServlet extends HttpServlet {
         }
     }
 
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
             HttpSession session = request.getSession();
@@ -78,7 +77,7 @@ public class ProfileServlet extends HttpServlet {
                 boolean updateSuccessful = userDAO.updateInfo(currentUser);
                 if (updateSuccessful) {
                     session.setAttribute("currentUser", currentUser);
-                    request.setAttribute("message", "Profile updated successfully.");
+                    request.setAttribute("successMessage", "Cập nhật thông tin thành công!");
                     url = "/UserProfile.jsp";
                 } else {
                     error = "Failed to update profile. Please try again.";
@@ -86,6 +85,7 @@ public class ProfileServlet extends HttpServlet {
                     url = "/UserProfile.jsp";
                 }
             }
+
             RequestDispatcher rd = getServletContext().getRequestDispatcher(url);
             rd.forward(request, response);
         } catch (Exception ex) {

@@ -11,21 +11,44 @@ import jakarta.servlet.annotation.WebServlet;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.UUID;
 
 @MultipartConfig
 @WebServlet("/owner/registerOwner")
 public class RegisterOwner extends HttpServlet {
-    private static final String UPLOAD_DIR = "src/main/webapp/img/";
+    private static final String UPLOAD_DIR = "src/main/webapp/docs/";
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.getRequestDispatcher("owner/registerOwner.jsp").forward(request, response);
+        HttpSession session = request.getSession();
+        OwnerDAO ownerDAO = new OwnerDAO(new DBContext());
+
+        try {
+            String status = ownerDAO.getOwnerStatusByAccountId(session);
+            if ("approved".equals(status)) {
+                session.setAttribute("message", "Already became an approved owner!");
+                response.sendRedirect(request.getContextPath() + "/index.jsp");
+            }
+            else if ("pending".equals(status)) {
+                session.setAttribute("message", "Already submitted an owner registration request!");
+                response.sendRedirect(request.getContextPath() + "/index.jsp");
+            }
+            else {
+                request.getRequestDispatcher("registerOwner.jsp").forward(request, response);
+            }
+        } catch (SQLException e) {
+            throw new ServletException("Database error", e);
+        }
     }
 
     @Override
@@ -58,14 +81,20 @@ public class RegisterOwner extends HttpServlet {
             owner.setIdentification(Integer.parseInt(request.getParameter("identification")));
             owner.setTaxCode(Integer.parseInt(request.getParameter("taxCode")));
 
-            // Handle file upload
             Part filePart = request.getPart("fileInput");
-            String projectPath = System.getProperty("user.dir");
-            String imgUploadPath = projectPath + File.separator + UPLOAD_DIR;
-            createDirectoryIfNotExists(imgUploadPath);
-            String imageDocPath = saveFile(filePart, imgUploadPath);
-            String relativeDocPath = UPLOAD_DIR + File.separator + imageDocPath;
-            owner.setImage(relativeDocPath);
+            String originalFileName = extractFileName(filePart);
+            String uniqueFileName = generateUniqueFileName(originalFileName);
+
+            Path uploadPath = Paths.get(getServletContext().getRealPath(""));
+            System.out.println("Upload Path: " + uploadPath);
+            Files.createDirectories(uploadPath);
+            Path filePath = uploadPath.resolve(uniqueFileName);
+            System.out.println("File Path: " + filePath);
+
+            try (InputStream inputStream = filePart.getInputStream()) {
+                Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
+            }
+            owner.setImage(uniqueFileName);
 
             // Parse and set start date
             String startDateStr = request.getParameter("startDate");
@@ -99,28 +128,23 @@ public class RegisterOwner extends HttpServlet {
         }
     }
 
-    private void createDirectoryIfNotExists(String path) {
-        File directory = new File(path);
-        if (!directory.exists()) {
-            directory.mkdirs();
-        }
-    }
-
-    private String saveFile(Part filePart, String uploadPath) throws IOException {
-        String fileName = extractFileName(filePart);
-        String filePath = uploadPath + File.separator + fileName;
-        filePart.write(filePath);
-        return fileName;
-    }
-
     private String extractFileName(Part part) {
-        String contentDisposition = part.getHeader("content-disposition");
-        String[] items = contentDisposition.split(";");
-        for (String s : items) {
-            if (s.trim().startsWith("filename")) {
-                return s.substring(s.indexOf("=") + 2, s.length() - 1);
+        String contentDisp = part.getHeader("content-disposition");
+        for (String token : contentDisp.split(";")) {
+            if (token.trim().startsWith("filename")) {
+                return token.substring(token.indexOf("=") + 2, token.length() - 1);
             }
         }
         return "";
+    }
+
+    // Generate a unique filename to prevent overwriting
+    private String generateUniqueFileName(String originalFileName) {
+        String extension = "";
+        int dotIndex = originalFileName.lastIndexOf('.');
+        if (dotIndex > 0) {
+            extension = originalFileName.substring(dotIndex);
+        }
+        return UUID.randomUUID().toString() + extension;
     }
 }

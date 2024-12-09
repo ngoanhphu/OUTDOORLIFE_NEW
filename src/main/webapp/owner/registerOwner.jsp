@@ -58,12 +58,6 @@
         input[type="submit"]:hover {
             background-color: #0056b3;
         }
-        .image-preview {
-            display: block;
-            margin-top: 10px;
-            max-width: 100%;
-            max-height: 200px;
-        }
         .form-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -79,6 +73,10 @@
     <h2>Owner Registration</h2>
     <form action="registerOwner" method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
         <div class="form-grid">
+            <div class="form-group full-width">
+                <label for="downloadDoc">Download Contract Document:</label>
+                <a href="<c:url value='/resources/contract.doc'/>" download>Contract</a>
+            </div>
             <div class="form-group">
                 <label for="occupation">Occupation:</label>
                 <input type="text" id="occupation" name="occupation" required>
@@ -112,17 +110,18 @@
                 </select>
             </div>
             <div class="form-group full-width">
-                <label for="fileInput">Image:</label>
-                <input type="file" id="fileInput" name="fileInput" accept="image/*" required>
-                <img id="imagePreview" class="image-preview" src="#" alt="Image Preview" style="display: none;">
+                <label for="fileInput">Upload Signed Contract Document:</label>
+                <input type="file" id="fileInput" name="fileInput" accept=".doc" required>
             </div>
             <div class="form-group">
                 <label for="startDate">Start Date:</label>
                 <input type="date" id="startDate" name="startDate" required>
             </div>
-            <div class="form-group">
-                <label for="endDate">End Date:</label>
-                <input type="date" id="endDate" name="endDate" required>
+            <div class="form-group full-width">
+                <label for="duration">Contract Duration:</label>
+                <input type="radio" id="duration3" name="duration" value="3" required> 3 months
+                <input type="radio" id="duration6" name="duration" value="6" required> 6 months
+                <input type="radio" id="duration12" name="duration" value="12" required> 12 months
             </div>
             <div class="form-group full-width">
                 <label for="notes">Notes:</label>
@@ -136,31 +135,9 @@
 </div>
 
 <script>
-    const fileInput = document.getElementById('fileInput');
-    const imagePreview = document.getElementById('imagePreview');
-
-    fileInput.addEventListener('change', (event) => {
-        const file = event.target.files[0];
-        if (file) {
-            if (file.size > 4 * 1024 * 1024) {
-                alert('File size exceeds 4MB. Please choose a smaller file.');
-                fileInput.value = '';
-                imagePreview.style.display = 'none';
-                return;
-            }
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                imagePreview.src = e.target.result;
-                imagePreview.style.display = 'block';
-            };
-            reader.readAsDataURL(file);
-        }
-    });
-
     function validateForm() {
         const dob = new Date(document.getElementById('dob').value);
         const startDate = new Date(document.getElementById('startDate').value);
-        const endDate = new Date(document.getElementById('endDate').value);
         const today = new Date();
         let age = today.getFullYear() - dob.getFullYear();
         const monthDiff = today.getMonth() - dob.getMonth();
@@ -180,13 +157,15 @@
             return false;
         }
 
-        const oneMonthLater = new Date(startDate);
-        oneMonthLater.setMonth(oneMonthLater.getMonth() + 1);
+        const duration = document.querySelector('input[name="duration"]:checked').value;
+        const endDate = new Date(startDate);
+        endDate.setMonth(endDate.getMonth() + parseInt(duration));
 
-        if (endDate <= oneMonthLater) {
-            alert('End date must be at least one month after the start date.');
-            return false;
-        }
+        const endDateInput = document.createElement('input');
+        endDateInput.type = 'hidden';
+        endDateInput.name = 'endDate';
+        endDateInput.value = endDate.toISOString().split('T')[0];
+        document.querySelector('form').appendChild(endDateInput);
 
         return true;
     }

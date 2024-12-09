@@ -37,7 +37,7 @@
         <!-- Header Start -->
         <div class="container-fluid bg-breadcrumb">
             <div class="container text-center py-5" style="max-width: 900px;">
-                <h3 class="text-white display-3 mb-4">CAMPSITE </h1>
+                <h3 class="text-white display-3 mb-4">CAMPSITE </h3>
                 <p class="fs-5 text-white mb-4">CHOOSE THE CAMPSITE TO CHILL</p>
                 <ol class="breadcrumb justify-content-center mb-0">
                     <li class="breadcrumb-item"><a href="index.jsp">Home</a></li>
