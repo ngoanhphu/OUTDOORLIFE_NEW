@@ -65,7 +65,6 @@ if(campsiteOrder != null && campsiteOrder.getVoucherId() != null){
                                         <th scope="col">Name</th>
                                         <th scope="col">Category</th>
                                         <th scope="col">Price</th>
-                                        <th scope="col">Order now</th>
                                         <th scope="col">Quantity</th>
                                         <th scope="col">Cancel</th>
                                     </tr>
@@ -80,9 +79,6 @@ if(campsiteOrder != null && campsiteOrder.getVoucherId() != null){
                                         <td><%=c.getGearName()%></td>
                                         <td><%=c.getGearDecription()%></td>
                                         <td class="gear-price"><%= dcf.format(c.getGearPrice()) %></td>
-                                        <td>
-                                            <button type="button" class="btn btn-primary btn-sm" onclick="orderNow('<%= c.getGearId()%>')">Order</button>
-                                        </td>
                                         <td>
                                             <div class="form-group d-flex justify-content-between">
                                                 <a class="btn btn-sm btn-incre" href="quantityset?action=inc&id=<%=c.getGearId()%>">
@@ -109,7 +105,7 @@ if(campsiteOrder != null && campsiteOrder.getVoucherId() != null){
                                  <h3 style="color: red">Total: <span id="bill-total"><%=billTotal%></span> ₫</h3>
                                 <input type="radio" name="paymentMethod" value="VNPay" checked=""/>VNpay<br>
                                 <input type="radio" name="paymentMethod" value="PayLater"/>Pay later<br>
-                                <button type="submit" class="mx-3 btn btn-primary" onclick="submitSelectedItems()">Order Selected</button>
+                                <button type="submit" class="mx-3 btn btn-primary" >Order Selected</button>
                             </div>
                         </form>
                     </div>
@@ -137,33 +133,6 @@ if(campsiteOrder != null && campsiteOrder.getVoucherId() != null){
             document.getElementById('sub-total').innerText = total + totalCampsite;
             document.getElementById('bill-total').innerText = (total + totalCampsite) * (100 - <%=discount%>)/100;
         }
-
-        function orderNow(gearId) {
-            let quantityElement = document.querySelector('input[name="quantity"]');
-            let quantity = parseInt(quantityElement.value); // Lấy số lượng từ input
-
-            // Cài đặt logic để gửi yêu cầu đặt hàng tới servlet
-            let form = document.createElement('form');
-            form.setAttribute('method', 'post');
-            form.setAttribute('action', 'ordernow');
-
-            let idInput = document.createElement('input');
-            idInput.setAttribute('type', 'hidden');
-            idInput.setAttribute('name', 'id');
-            idInput.setAttribute('value', gearId);
-            form.appendChild(idInput);
-
-            let quantityInput = document.createElement('input');
-            quantityInput.setAttribute('type', 'hidden');
-            quantityInput.setAttribute('name', 'quantity');
-            quantityInput.setAttribute('value', quantity);
-            form.appendChild(quantityInput);
-
-            document.body.appendChild(form);
-            form.submit();
-        }
-
-
     </script>
     <link href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet" />
             <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>

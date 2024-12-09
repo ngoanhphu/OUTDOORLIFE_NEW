@@ -307,7 +307,7 @@ public class CampsiteDAO extends DBContext {
     public void updateQuantityCampsite(CampsiteOrder c) {
         String query = "update CAMPSITE\n"
                 + " set "
-                + "	[Limite] = [Limite] - ?\n"
+                + "	[Quantity] = [Quantity] - ?\n"
                 + "	where [Campsite_id] = ?";
         try {
             Connection con = getConnection();

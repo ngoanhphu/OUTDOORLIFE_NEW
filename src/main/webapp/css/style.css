@@ -945,7 +945,7 @@
 }
 
 .fixed-rectangle {
-    width: 300px; /* Đặt chiều rộng cố định */
+    width: 359px; /* Đặt chiều rộng cố định */
     height: 200px; /* Đặt chiều cao cố định */
     object-fit: cover; /* Cắt ảnh để khớp khung mà không bị méo */
     object-position: center; /* Căn giữa ảnh trong khung */
@@ -964,4 +964,97 @@ textarea {
 .comment-box {
     max-width: 100%; /* Không vượt quá khung trên màn hình nhỏ */
     margin: 0 auto;
+}
+.booking-form {
+    background-color: #f8f9fa;
+    border-radius: 15px;
+    padding: 40px;
+}
+
+.booking-form h1 {
+    color: #007bff;
+    letter-spacing: 1.5px;
+    text-shadow: 0 2px 3px rgba(0, 0, 0, 0.2);
+}
+
+.booking-form .owner-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.booking-form .owner-image-container {
+    width: 120px;
+    height: 120px;
+    border: 3px solid #007bff;
+    border-radius: 50%;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.booking-form .owner-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease-in-out;
+}
+
+.booking-form .owner-image:hover {
+    transform: scale(1.1);
+}
+
+.booking-form .owner-name {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #333;
+}
+
+.booking-form .campsite-address {
+    font-size: 1.0rem;
+    font-weight: bold;
+    color: #c4e3f3;
+}
+
+.booking-form form {
+    background: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 15px;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+}
+
+.booking-form label {
+    font-weight: 700;
+    color: #495057;
+}
+
+.booking-form input[type="text"],
+.booking-form input[type="number"],
+.booking-form input[type="date"],
+.booking-form select {
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    padding: 10px 15px;
+    transition: all 0.3s ease;
+}
+
+.booking-form input:focus,
+.booking-form select:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 10px rgba(0, 123, 255, 0.3);
+}
+
+.booking-form button {
+    background: #28a745;
+    color: white;
+    border-radius: 8px;
+    font-size: 1.2rem;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.booking-form button:hover {
+    background: #218838;
+    transform: translateY(-2px);
 }
