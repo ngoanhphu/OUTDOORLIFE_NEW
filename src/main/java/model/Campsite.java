@@ -11,6 +11,7 @@ public class Campsite {
     private String campImage;
     private boolean campStatus;
     private int limite;
+    private String campsiteOwnerName;
     
     public Campsite (){
         
@@ -21,7 +22,7 @@ public class Campsite {
         this.limite = limite;
     }
 
-    public Campsite(int campId, int campPrice, int campOwner, String campAddress, String campName, String campDecription,String campImage, boolean campStatus) {
+    public Campsite(int campId, int campPrice, int campOwner, String campAddress, String campName, String campDecription,String campImage, boolean campStatus, String campsiteOwnerName) {
         this.campId = campId;
         this.campPrice = campPrice;
         this.campOwner = campOwner;
@@ -30,6 +31,7 @@ public class Campsite {
         this.campDescription = campDecription;
         this.campImage= campImage;
         this.campStatus = campStatus;
+        this.campsiteOwnerName = campsiteOwnerName;
     }
 
     public int getCampId() {
@@ -99,6 +101,12 @@ public class Campsite {
     public void setLimite(int limite) {
         this.limite = limite;
     }
-    
-    
+
+    public String getCampsiteOwnerName() {
+        return campsiteOwnerName;
+    }
+
+    public void setCampsiteOwnerName(String campsiteOwnerName) {
+        this.campsiteOwnerName = campsiteOwnerName;
+    }
 }
