@@ -13,6 +13,7 @@
     }
 
     .create-button-container {
+        margin-top: -250px;
         display: flex;
         justify-content: center;
         margin-bottom: 2rem;
@@ -267,14 +268,32 @@
                 <div class="card border-e shadow rounded-3 w-100">
                     <img class="card-img-top" src="img/${g.gearImage}" alt="Gear image" />
                     <div class="card-body">
-                        <h5 class="card-title">${g.gearName}</h5>
+                        <!-- Thêm icon vào tên gear -->
+                        <h5 class="card-title">
+                            <i class="fas fa-campground me-2"></i>${g.gearName}
+                        </h5>
+
+                        <!-- Thêm icon vào giá -->
                         <h6 class="price">
+                            <i class="fas fa-dollar-sign me-2"></i>
                             <fmt:formatNumber value="${g.gearPrice}" type="currency"/>
                         </h6>
-                        <h6 class="category">${g.gearDecription}</h6>
+
+                        <!-- Thêm icon vào mô tả -->
+                        <h6 class="category">
+                            <i class="fas fa-info-circle me-2"></i>${g.gearDecription}
+                        </h6>
+
                         <div class="mt-3 d-flex justify-content-between">
-                            <a href="update?id=${g.gearId}" class="btn btn-primary">Update</a>
-                            <a href="#" onclick="showMess(${g.gearId})" class="btn btn-danger">Delete</a>
+                            <!-- Thêm icon vào nút Update -->
+                            <a href="update?id=${g.gearId}" class="btn btn-primary">
+                                <i class="fas fa-edit me-2"></i>Update
+                            </a>
+
+                            <!-- Thêm icon vào nút Delete -->
+                            <a href="#" onclick="showMess(${g.gearId})" class="btn btn-danger">
+                                <i class="fas fa-trash-alt me-2"></i>Delete
+                            </a>
                         </div>
                         <!-- Additional information -->
                     </div>
@@ -282,6 +301,7 @@
             </div>
         </c:forEach>
     </div>
+
 
     <!-- Pagination -->
     <div class="d-flex justify-content-center mt-2">
@@ -304,7 +324,7 @@
         visiblePages: 10,
         initiateStartPageClick: false,
         onPageClick: function (event, page) {
-            window.location.href = 'admin?page=' + page;
+            window.location.href = 'viewOwner?page=' + page;
         }
     });
 </script>

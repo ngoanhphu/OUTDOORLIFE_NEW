@@ -20,7 +20,7 @@ import model.User;
  *
  * @author ADMIN
  */
-@WebServlet(name = "SearchControl", urlPatterns = {"/search"})
+@WebServlet(name = "SearchControl", urlPatterns = {"/searchTent"})
 public class SearchTentCRUD extends HttpServlet {
 
 
