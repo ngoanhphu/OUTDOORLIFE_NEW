@@ -18,10 +18,7 @@ import java.util.logging.Logger;
 import model.Gear;
 import model.User;
 
-/**
- *
- * @author ADMIN
- */
+
 @WebServlet(name = "SearchControl", urlPatterns = {"/search"})
 public class SearchControl extends HttpServlet {
 

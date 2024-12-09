@@ -1,5 +1,6 @@
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
     <style>
         body {
@@ -238,6 +239,9 @@
             margin-bottom: 20px; /* Thêm khoảng cách giữa các hàng */
             box-sizing: border-box;
         }
+        .create-button-container{
+            margin-top: -220px;
+        }
     </style>
 
     <body>
@@ -249,7 +253,7 @@
         </div>
 
         <div class="search-container">
-            <form action="search" method="post" class="form-inline">
+            <form action="searchTent" method="post" class="form-inline">
                 <div class="input-group">
                     <button type="submit" class="btn btn-secondary">
                         <i class="fa fa-search"></i>
@@ -258,26 +262,36 @@
                 </div>
             </form>
         </div>
-        
+
         <div class="row">
             <c:forEach var="g" items="${gears}">
                 <div class="col-md-3 d-flex">
                     <div class="card border-e shadow rounded-3 w-100">
                         <img class="card-img-top" src="img/${g.gearImage}" alt="Card image cap" />
                         <div class="card-body">
-                            <h5 class="card-title">${g.gearName}</h5>
-                            <h6 class="price">${g.gearPrice}</h6>
-                            <h6 class="category">${g.gearDecription}</h6>
+                            <h5 class="card-title">
+                                <i class="fas fa-campground me-2"></i> ${g.gearName}
+                            </h5>
+                            <h6 class="price">
+                                <i class="fas fa-dollar-sign me-2"></i> ${g.gearPrice}
+                            </h6>
+                            <h6 class="category">
+                                <i class="fas fa-tag me-2"></i> ${g.gearDecription}
+                            </h6>
                             <div class="mt-3 d-flex justify-content-between">
-                                <a href="updatetent?id=${g.gearId}" class="btn btn-primary">Update</a>
-                                <a href="#" onclick="showMess(${g.gearId})" class="btn btn-danger">Delete</a>
+                                <a href="updatetent?id=${g.gearId}" class="btn btn-primary">
+                                    <i class="fas fa-edit me-2"></i>Update
+                                </a>
+                                <a href="#" onclick="showMess(${g.gearId})" class="btn btn-danger">
+                                    <i class="fas fa-trash-alt me-2"></i>Delete
+                                </a>
                             </div>
-
                         </div>
                     </div>
                 </div>
             </c:forEach>
         </div>
+
 
         <div class="d-flex justify-content-center mt-2">
             <div id="pagination"></div>
@@ -299,7 +313,7 @@
             visiblePages: 10,
             initiateStartPageClick: false,
             onPageClick: function (event, page) {
-                window.location.href = 'admintent?page=' + page;
+                window.location.href = 'viewTent?page=' + page;
             }
         });
     </script>
