@@ -15,7 +15,7 @@ public class CampsiteDAO extends DBContext {
 
     public List<Campsite> getAllRiverCampsite() throws Exception {
         List<Campsite> campsites = new ArrayList<>();
-        try (Connection con = getConnection(); PreparedStatement pst = con.prepareStatement("SELECT C.*, A.first_name, A.last_name FROM CAMPSITE C JOIN OWNER O ON C.Campsite_owner = O.owner_id JOIN ACCOUNT A ON O.Account_id = A.Account_id WHERE C.Name LIKE N'%Sông%' AND C.Status = 1;\n"); ResultSet rs = pst.executeQuery()) {
+        try (Connection con = getConnection(); PreparedStatement pst = con.prepareStatement("SELECT C.*, C.Price FROM CAMPSITE C WHERE C.Name LIKE N'%Sông%' AND C.Status = 1"); ResultSet rs = pst.executeQuery()) {
             while (rs.next()) {
                 Campsite campsite = new Campsite();
                 campsite.setCampId(rs.getInt("Campsite_id"));
@@ -26,23 +26,17 @@ public class CampsiteDAO extends DBContext {
                 campsite.setCampDescription(rs.getString("Description"));
                 campsite.setCampImage(rs.getString("Image"));
                 campsite.setLimite(rs.getInt("Quantity"));
-
-                // Lấy thêm tên chủ sở hữu
-                String ownerName = rs.getString("first_name") + " " + rs.getString("last_name");
-                campsite.setCampsiteOwnerName(ownerName);
-
                 campsites.add(campsite);
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new Exception("Error fetching campsites", e);
         }
         return campsites;
     }
 
     public List<Campsite> getAllMountainCampsite() throws Exception {
         List<Campsite> campsites = new ArrayList<>();
-        try (Connection con = getConnection(); PreparedStatement pst = con.prepareStatement("SELECT C.*, A.first_name, A.last_name FROM CAMPSITE C JOIN OWNER O ON C.Campsite_owner = O.owner_id JOIN ACCOUNT A ON O.Account_id = A.Account_id WHERE C.Name LIKE N'%Núi%' AND C.Status = 1;\n"); ResultSet rs = pst.executeQuery()) {
+        try (Connection con = getConnection(); PreparedStatement pst = con.prepareStatement("SELECT C.*, C.Price FROM CAMPSITE C WHERE C.Name LIKE N'%Núi%' AND C.Status = 1"); ResultSet rs = pst.executeQuery()) {
             while (rs.next()) {
                 Campsite campsite = new Campsite();
                 campsite.setCampId(rs.getInt("Campsite_id"));
@@ -53,24 +47,17 @@ public class CampsiteDAO extends DBContext {
                 campsite.setCampDescription(rs.getString("Description"));
                 campsite.setCampImage(rs.getString("Image"));
                 campsite.setLimite(rs.getInt("Quantity"));
-
-                // Lấy thêm tên chủ sở hữu
-                String ownerName = rs.getString("first_name") + " " + rs.getString("last_name");
-                campsite.setCampsiteOwnerName(ownerName);
-
                 campsites.add(campsite);
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new Exception("Error fetching campsites", e);
         }
         return campsites;
     }
 
-
     public List<Campsite> getAllBeachCampsite() throws Exception {
         List<Campsite> campsites = new ArrayList<>();
-        try (Connection con = getConnection(); PreparedStatement pst = con.prepareStatement("SELECT C.*, A.first_name, A.last_name FROM CAMPSITE C JOIN OWNER O ON C.Campsite_owner = O.owner_id JOIN ACCOUNT A ON O.Account_id = A.Account_id WHERE C.Name LIKE N'%Biển%' AND C.Status = 1;\n"); ResultSet rs = pst.executeQuery()) {
+        try (Connection con = getConnection(); PreparedStatement pst = con.prepareStatement("SELECT C.*, C.Price FROM CAMPSITE C WHERE C.Name LIKE N'%Biển%' AND C.Status = 1"); ResultSet rs = pst.executeQuery()) {
             while (rs.next()) {
                 Campsite campsite = new Campsite();
                 campsite.setCampId(rs.getInt("Campsite_id"));
@@ -81,16 +68,10 @@ public class CampsiteDAO extends DBContext {
                 campsite.setCampDescription(rs.getString("Description"));
                 campsite.setCampImage(rs.getString("Image"));
                 campsite.setLimite(rs.getInt("Quantity"));
-
-                // Lấy thêm tên chủ sở hữu
-                String ownerName = rs.getString("first_name") + " " + rs.getString("last_name");
-                campsite.setCampsiteOwnerName(ownerName);
-
                 campsites.add(campsite);
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new Exception("Error fetching campsites", e);
         }
         return campsites;
     }
@@ -307,7 +288,7 @@ public class CampsiteDAO extends DBContext {
     public void updateQuantityCampsite(CampsiteOrder c) {
         String query = "update CAMPSITE\n"
                 + " set "
-                + "	[Quantity] = [Quantity] - ?\n"
+                + "	[Limite] = [Limite] - ?\n"
                 + "	where [Campsite_id] = ?";
         try {
             Connection con = getConnection();
@@ -442,6 +423,41 @@ public class CampsiteDAO extends DBContext {
             Logger.getLogger(UserDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    public List<Campsite> getCampsitesByOwner(int ownerId) {
+        List<Campsite> campsites = new ArrayList<>(); // Danh sách lưu trữ các campsite
+        String query = "SELECT [Campsite_id], [Campsite_owner], [Price], [Address], [Name], [Description], [Status], [Image], [Quantity] "
+                + "FROM [CAMPSITE] "
+                + "WHERE [Campsite_owner] = ? " // Lọc theo owner ID
+                + "ORDER BY [Campsite_id] DESC"; // Sắp xếp theo ID giảm dần
+
+        try (Connection con = getConnection(); PreparedStatement pst = con.prepareStatement(query)) {
+            pst.setInt(1, ownerId); // Gán giá trị ownerId cho tham số đầu tiên
+
+            try (ResultSet rs = pst.executeQuery()) {
+                while (rs.next()) {
+                    // Tạo đối tượng Campsite và gán dữ liệu từ ResultSet
+                    Campsite campsite = new Campsite();
+                    campsite.setCampId(rs.getInt("Campsite_id")); // Gán ID cho campsite
+                    campsite.setCampOwner(rs.getInt("Campsite_owner")); // Gán ID owner
+                    campsite.setCampPrice(rs.getInt("Price")); // Gán giá
+                    campsite.setCampAddress(rs.getString("Address")); // Gán địa chỉ
+                    campsite.setCampName(rs.getString("Name")); // Gán tên
+                    campsite.setCampDescription(rs.getString("Description")); // Gán mô tả
+                    campsite.setCampStatus(rs.getBoolean("Status")); // Gán trạng thái
+                    campsite.setCampImage(rs.getString("Image")); // Gán hình ảnh
+                    campsite.setLimite(rs.getInt("Quantity")); // Gán số lượng giới hạn
+                    campsites.add(campsite); // Thêm vào danh sách
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); // In ra lỗi SQL
+        } catch (Exception ex) {
+            Logger.getLogger(UserDaoImpl.class.getName()).log(Level.SEVERE, null, ex); // Ghi log các lỗi khác
+        }
+        return campsites; // Trả về danh sách campsite
+    }
+
+
 
 
 }
