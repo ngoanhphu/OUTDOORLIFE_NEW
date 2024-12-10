@@ -51,12 +51,12 @@ public class AdminTentControl extends HttpServlet {
             int totalItems = geardao.getTotalItemByOwner(campsiteOwnerId);
 
             // Lấy danh sách đồ cắm trại của chủ cắm trại
-            List<Gear> gears = geardao.getTentByOwner(campsiteOwnerId, page, 8);
+            List<Gear> gears = geardao.getTentByOwner(campsiteOwnerId, page, 9);
 
             // Thiết lập các thuộc tính cho view
             request.setAttribute("currentPage", page);
-            request.setAttribute("totalPages", Math.ceil((totalItems / (double) 8)));
-            request.setAttribute("itemsPerPage", 8);
+            request.setAttribute("totalPages", Math.ceil((totalItems / (double) 9)));
+            request.setAttribute("itemsPerPage", 9);
             request.setAttribute("gears", gears);
 
             // Chuyển hướng đến trang crudGear.jsp
