@@ -57,7 +57,6 @@
     </style>
 </head>
 <body>
-<%@ include file="../headeradmin.jsp" %>
 <div class="container">
     <h2>Pending Owners</h2>
     <c:if test="${not empty pendingOwners}">
