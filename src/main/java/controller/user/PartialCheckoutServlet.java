@@ -144,6 +144,9 @@ public class PartialCheckoutServlet extends HttpServlet {
 //                            }
                             }
                         }
+                        for (Cart cart : cart_list_selected) {
+                            System.out.println(cart);
+                        }
                     }
                 }
 //                cart_list.clear();

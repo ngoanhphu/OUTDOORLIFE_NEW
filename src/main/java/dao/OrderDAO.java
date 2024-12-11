@@ -322,4 +322,62 @@ public class OrderDAO {
         return list;
     }
 
+    public List<Order> getOrdersByOwnerId(int ownerId) {
+        List<Order> ordersList = new ArrayList<>();
+        try {
+             PreparedStatement pst = this.con.prepareStatement("SELECT o.Orders_id, o.TimeStamp, o.Booker, o.Campsite_id, o.Quantity, " +
+                     "o.StartDate, o.EndDate, o.ApproveStatus, o.PaymentStatus, " +
+                     "o.TotalAmount, o.BookingPrice " +
+                     "FROM [dbo].[ORDERS] o " +
+                     "INNER JOIN [dbo].[CAMPSITE] c ON o.Campsite_id = c.Campsite_id " +
+                     "WHERE c.Campsite_owner = ?");
+            pst.setInt(1, ownerId);
+            try (ResultSet resultSet = pst.executeQuery()) {
+                while (resultSet.next()) {
+                    Order order = new Order();
+                    order.setOrdersId(resultSet.getInt("Orders_id"));
+                    order.setTimeStamp(resultSet.getTimestamp("TimeStamp"));
+                    order.setBooker(resultSet.getInt("Booker"));
+                    order.setCampsiteId(resultSet.getInt("Campsite_id"));
+                    order.setQuantity(resultSet.getInt("Quantity"));
+                    order.setStartDate(resultSet.getTimestamp("StartDate"));
+                    order.setEndDate(resultSet.getTimestamp("EndDate"));
+                    order.setApproveStatus(resultSet.getBoolean("ApproveStatus"));
+                    order.setPaymentStatus(resultSet.getBoolean("PaymentStatus"));
+                    order.setTotalAmount(resultSet.getInt("TotalAmount"));
+                    order.setBookingPrice(resultSet.getInt("BookingPrice"));
+                    int bookerId = resultSet.getInt("Booker"); // Lấy Booker ID từ ResultSet
+                    String bookerName = getFullNameById(bookerId); // Gọi hàm getFullNameById để lấy tên đầy đủ
+                    order.setBookerName(bookerName); // Gán giá trị vào order
+                    ordersList.add(order);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return ordersList;
+    }
+    public String getFullNameById(int accountId) {
+        String fullName = null;
+        String sql = "SELECT first_name, last_name FROM ACCOUNT WHERE Account_id = ?";
+
+        try (
+             PreparedStatement preparedStatement = this.con.prepareStatement(sql)) {
+            preparedStatement.setInt(1, accountId);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    String firstName = resultSet.getString("first_name");
+                    String lastName = resultSet.getString("last_name");
+                    fullName = (firstName != null ? firstName : "") +
+                            (lastName != null ? " " + lastName : "");
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return fullName;
+    }
+
+
 }
