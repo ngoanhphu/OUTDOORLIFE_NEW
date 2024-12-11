@@ -20,12 +20,13 @@ public class CampsiteOrder extends Campsite {
     private Integer voucherId;
     private String campsiteName;
     private int onwer;
+    private String image;
     
     public CampsiteOrder(){
         
     }
     
-    public CampsiteOrder(int orderId, Timestamp timeStamp, int booker, int campsiteId, int quantity, Timestamp startDate, Timestamp endDate, boolean approveStatus, boolean paymentStatus, String discount, int bookingDays, boolean discountApplied, int owner) {
+    public CampsiteOrder(int orderId, Timestamp timeStamp, int booker, int campsiteId, int quantity, Timestamp startDate, Timestamp endDate, boolean approveStatus, boolean paymentStatus, String discount, int bookingDays, boolean discountApplied, int owner, String image) {
         this.orderId = orderId;
         this.timeStamp = timeStamp;
         this.booker = booker;
@@ -39,6 +40,7 @@ public class CampsiteOrder extends Campsite {
         this.bookingDays = bookingDays;
         this.discountApplied = discountApplied;
         this.onwer = owner;
+        this.image = image;
         
     }
 
@@ -177,7 +179,12 @@ public class CampsiteOrder extends Campsite {
     public void setCampsiteName(String campsiteName) {
         this.campsiteName = campsiteName;
     }
-    
-    
-    
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
 }

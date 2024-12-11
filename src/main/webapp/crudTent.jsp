@@ -242,25 +242,6 @@
         .create-button-container{
             margin-top: -220px;
         }
-
-        .row {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: flex-start; /* Căn các cột từ trái sang phải */
-            gap: 7rem; /* Khoảng cách giữa các sản phẩm */
-        }
-        .row {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center; /* Căn giữa các cột trong hàng */
-            gap: 7rem; /* Khoảng cách giữa các sản phẩm */
-        }
-
-        .col-md-3 {
-            width: calc(33.33% - 1.5rem); /* Hiển thị 3 sản phẩm mỗi hàng */
-            margin-bottom: 20px; /* Khoảng cách giữa các hàng */
-            box-sizing: border-box;
-        }
     </style>
 
     <body>
@@ -321,7 +302,7 @@
 
     <script type="text/javascript">
         // Setup variables for pagination
-        let itemsPerPage = 9;
+        let itemsPerPage = 8;
         let totalPages = ${totalPages};
         let currentPage = ${currentPage};
 
