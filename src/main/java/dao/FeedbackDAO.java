@@ -61,7 +61,7 @@ public class FeedbackDAO extends DBContext {
             // Sử dụng JOIN để kết hợp dữ liệu từ hai bảng
             String query = "SELECT top 5 f.Feedback_id, a.Account_id, a.first_name, a.last_name, f.TimeStamp, f.Content, f.StarNumber "
                     + "FROM FEEDBACK f "
-                    + "JOIN ACCOUNT a ON f.Account_id = a.Account_id";
+                    + "JOIN ACCOUNT a ON f.commenter = a.Account_id";
             ps = conn.prepareStatement(query);
             rs = ps.executeQuery();
             while (rs.next()) {
@@ -80,29 +80,33 @@ public class FeedbackDAO extends DBContext {
         return list;
     }
 
-    public boolean insertFeedback(Feedback feedback) {
+    public boolean insertFeedback(int rating, String feedbackDate, int accountId, int campsiteId, String content) {
         try {
-            conn = getConnection();//mo ket noi
+            conn = getConnection(); // Mở kết nối
 
-            String query = "insert FEEDBACK(Account_id,StarNumber,TimeStamp,Content)\n"
-                    + "values (?,?,?,?)";
+            // Sửa lại câu lệnh SQL để đúng với bảng và các cột
+            String query = "INSERT INTO FEEDBACK (StarNumber, TimeStamp, commenter, Campsite_id, Content) VALUES (?, ?, ?, ?, ?)";
 
             ps = conn.prepareStatement(query);
-            ps.setInt(1, feedback.getAccountId());
-            ps.setString(2, feedback.getRating());
-            ps.setString(3, feedback.getFeedbackDate());
-            ps.setString(4, feedback.getContent());
 
+            // Gán giá trị vào các tham số trong câu lệnh SQL
+            ps.setInt(1 , rating); // StarNumber
+            ps.setString(2, feedbackDate); // TimeStamp
+            ps.setInt(3, accountId); // commenter
+            ps.setInt(4, campsiteId); // Campsite_id
+            ps.setString(5, content); // Content
+
+            // Thực hiện cập nhật vào cơ sở dữ liệu
             int rs = ps.executeUpdate();
             if (rs > 0) {
-                return true;
-
+                return true; // Nếu thành công
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            e.printStackTrace(); // Xử lý ngoại lệ
         }
-        return false;
+        return false; // Nếu có lỗi hoặc không thành công
     }
+
 
     public List<Feedback> searchFeedbackByUser(String txtSearch) {
 
@@ -186,9 +190,6 @@ public class FeedbackDAO extends DBContext {
         return false;
     }
 
-    public static void main(String[] args) {
-        FeedbackDAO f = new FeedbackDAO();
-        System.out.println(f.getAllFeedback());
 
-    }
+
 }

@@ -116,11 +116,14 @@
                                 </td>
                                 <td>
                                     <% if (o.isApproveStatus() && o.isPaymentStatus()) { %>
-                                    <a class="btn btn-sm btn-info" href="feedback.jsp?orderId=<%= o.getOrderId() %>">Give Feedback</a>
+<%--                                    <a class="btn btn-sm btn-info" href="feedback.jsp?orderId=<%= o.getOrderId() %>&campsiteId=<%= o.getCampsiteId() %>">Give Feedback</a>--%>
+                                    <a class="btn btn-sm btn-info" href="feedback?orderId=<%= o.getOrderId() %>&campsiteId=<%= o.getCampsiteId() %>">Give Feedback</a>
+
                                     <% } else { %>
                                     <span>N/A</span>
                                     <% } %>
                                 </td>
+
 
                             </tr>
                             <% }
