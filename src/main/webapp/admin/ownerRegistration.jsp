@@ -1,7 +1,8 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+
+<!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
     <title>Pending Owners</title>
     <style>
         body {
@@ -56,6 +57,7 @@
     </style>
 </head>
 <body>
+<%@ include file="../headeradmin.jsp" %>
 <div class="container">
     <h2>Pending Owners</h2>
     <c:if test="${not empty pendingOwners}">
@@ -67,13 +69,11 @@
                 <th>Address</th>
                 <th>Date of Birth</th>
                 <th>Gender</th>
-                <th>Region</th>
                 <th>Identification</th>
                 <th>Tax Code</th>
                 <th>Contract Document</th>
                 <th>Start Date</th>
                 <th>End Date</th>
-                <th>Notes</th>
                 <th>Actions</th>
             </tr>
             </thead>
@@ -83,15 +83,13 @@
                     <td>${owner.accountId}</td>
                     <td>${owner.occupation}</td>
                     <td>${owner.address}</td>
-                    <td>${owner.dob}</td>
+                    <td class="date-format">${owner.dob}</td>
                     <td>${owner.gender}</td>
-                    <td>${owner.region}</td>
                     <td>${owner.identification}</td>
                     <td>${owner.taxCode}</td>
                     <td><a href="${owner.image}" download>Download Contract</a></td>
-                    <td>${owner.startDate}</td>
-                    <td>${owner.endDate}</td>
-                    <td>${owner.notes}</td>
+                    <td class="date-format">${owner.startDate}</td>
+                    <td class="date-format">${owner.endDate}</td>
                     <td class="actions">
                         <form action="manageOwners" method="post" style="display:inline;">
                             <input type="hidden" name="ownerId" value="${owner.accountId}">
@@ -113,5 +111,17 @@
         <p>No pending owners found.</p>
     </c:if>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.date-format').forEach(function(element) {
+            const date = new Date(element.textContent);
+            const formattedDate = ('0' + date.getDate()).slice(-2) + '/' +
+                ('0' + (date.getMonth() + 1)).slice(-2) + '/' +
+                date.getFullYear().toString().slice(-2);
+            element.textContent = formattedDate;
+        });
+    });
+</script>
 </body>
 </html>
