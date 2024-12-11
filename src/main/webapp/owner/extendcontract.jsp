@@ -1,13 +1,3 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@page import="java.text.DecimalFormat"%>
-<%@page import="java.util.*"%>
-
-<%
-    DecimalFormat dcf = new DecimalFormat("#.##");
-    request.setAttribute("dcf", dcf);
-%>
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -16,7 +6,7 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+            background-color: #e8f5e9;
             margin: 0;
             padding: 0;
             display: flex;
@@ -33,7 +23,7 @@
         }
         h2 {
             text-align: center;
-            color: #333;
+            color: #2e7d32;
         }
         .form-group {
             margin-bottom: 15px;
@@ -46,21 +36,28 @@
         input[type="radio"] {
             margin-right: 10px;
         }
-        input[type="submit"] {
+        input[type="submit"], .btn-home {
             width: 100%;
             padding: 10px;
-            background-color: #007bff;
+            background-color: #4caf50;
             border: none;
             border-radius: 4px;
             color: #fff;
             font-size: 16px;
             cursor: pointer;
+            margin-top: 10px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
         }
-        input[type="submit"]:hover {
-            background-color: #0056b3;
+        input[type="submit"]:hover, .btn-home:hover {
+            background-color: #388e3c;
         }
         .total-price-container {
             margin-top: 20px;
+        }
+        .total-price-container h3 {
+            color: #2e7d32;
         }
     </style>
 </head>
@@ -75,13 +72,13 @@
             <input type="radio" id="duration24" name="duration" value="24" data-price="320000" required> 24 Months
         </div>
         <div class="total-price-container">
-            <h3>Total: <span id="total-price">0</span> ₫</h3>
+            <h3>Total <span id="total-price"></span> vnd</h3>
             <input type="hidden" id="total-price-input" name="total-price" value="0">
             <input type="radio" name="paymentMethod" value="VNPay" checked=""/>VNpay<br>
-            <input type="radio" name="paymentMethod" value="PayLater"/>Pay later<br>
-            <input type="submit" value="Extend Contract">
+            <input type="submit" value="Pay with VNPay">
         </div>
     </form>
+    <a href="../index.jsp" class="btn-home">Return to Homepage</a>
 </div>
 
 <script>
