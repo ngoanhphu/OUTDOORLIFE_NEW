@@ -13,6 +13,8 @@ import model.CampsiteOrder;
 
 public class CampsiteDAO extends DBContext {
 
+
+
     public List<Campsite> getAllRiverCampsite() throws Exception {
         List<Campsite> campsites = new ArrayList<>();
         try (Connection con = getConnection(); PreparedStatement pst = con.prepareStatement("SELECT C.*, C.Price FROM CAMPSITE C WHERE C.Name LIKE N'%Sông%' AND C.Status = 1"); ResultSet rs = pst.executeQuery()) {
@@ -459,5 +461,38 @@ public class CampsiteDAO extends DBContext {
 
 
 
+    public List<Campsite> searchCampsiteByNameAndOwner(String txtSearch, int ownerId) throws Exception {
+        List<Campsite> campsites = new ArrayList<>();
+        String query = "SELECT Campsite_id, Name, Address, Price, Description, Image, Quantity, Status " +
+                "FROM CAMPSITE " +
+                "WHERE Name LIKE ? AND Campsite_owner = ?";
+
+        try (Connection con = new DBContext().getConnection();
+             PreparedStatement ps = con.prepareStatement(query)) {
+
+            // Gán tham số tìm kiếm
+            ps.setString(1, "%" + txtSearch + "%");  // Gán từ khóa tìm kiếm
+            ps.setInt(2, ownerId);                  // Gán ID của owner hiện tại
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Campsite campsite = new Campsite();
+                    campsite.setCampId(rs.getInt("Campsite_id"));      // Gán ID campsite
+                    campsite.setCampName(rs.getString("Name"));                // Gán tên campsite
+                    campsite.setCampAddress(rs.getString("Address"));          // Gán địa chỉ
+                    campsite.setCampPrice(rs.getInt("Price"));                 // Gán giá
+                    campsite.setCampDescription(rs.getString("Description"));  // Gán mô tả
+                    campsite.setCampImage(rs.getString("Image"));              // Gán hình ảnh
+                    campsite.setLimite(rs.getInt("Quantity"));           // Gán số lượng
+                    campsite.setCampStatus(rs.getBoolean("Status"));           // Gán trạng thái
+                    campsites.add(campsite);                               // Thêm vào danh sách
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); // In log lỗi
+            throw new Exception("Lỗi trong quá trình tìm kiếm Campsite.", e);
+        }
+        return campsites;
+    }
 
 }
