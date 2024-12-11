@@ -14,8 +14,8 @@ public class Order extends Gear {
     private int quantity;
     private int totalAmount;
     private int bookingPrice;
-    
     private String bookerName;
+    private int ownerIsRequired;
 
     public Order(int booker, int campsiteId, Timestamp startDate, Timestamp endDate, boolean approveStatus, boolean paymentStatus, int quantity, int totalAmount, int bookingPrice) {
         this.booker = booker;
@@ -140,5 +140,12 @@ public class Order extends Gear {
     public void setBookerName(String bookerName) {
         this.bookerName = bookerName;
     }
- 
+
+    public int getOwnerIsRequired() {
+        return ownerIsRequired;
+    }
+
+    public void setOwnerIsRequired(int ownerIsRequired) {
+        this.ownerIsRequired = ownerIsRequired;
+    }
 }

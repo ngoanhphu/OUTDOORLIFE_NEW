@@ -945,7 +945,7 @@
 }
 
 .fixed-rectangle {
-    width: 359px; /* Đặt chiều rộng cố định */
+    width: 419px; /* Đặt chiều rộng cố định */
     height: 200px; /* Đặt chiều cao cố định */
     object-fit: cover; /* Cắt ảnh để khớp khung mà không bị méo */
     object-position: center; /* Căn giữa ảnh trong khung */
@@ -1058,3 +1058,25 @@ textarea {
     background: #218838;
     transform: translateY(-2px);
 }
+/* Modal Style */
+#myModal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    align-items: center;
+    justify-content: center;
+}
+
+#modalContent {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    max-width: 500px;
+    min-width: 300px;
+}
+

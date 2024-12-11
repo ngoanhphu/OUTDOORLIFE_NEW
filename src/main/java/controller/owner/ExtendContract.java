@@ -44,6 +44,14 @@ public class ExtendContract extends HttpServlet {
                     String url = VnpayService.paymentUrl(request, price);
                     session.setAttribute("newEndDate", newEndDate);
                     response.sendRedirect(url);
+                } else {
+                    boolean isUpdated = ownerDAO.updateOwnerEndDate(accountId, newEndDate);
+                    if (isUpdated) {
+                        response.sendRedirect("success.jsp");
+                    } else {
+                        request.setAttribute("errorMessage", "Failed to extend the contract.");
+                        request.getRequestDispatcher("extendcontract.jsp").forward(request, response);
+                    }
                 }
             } else {
                 request.setAttribute("errorMessage", "Owner not found.");
