@@ -24,8 +24,7 @@ import model.OrderDetail;
 public class OrderDetailDAO extends DBContext {
 
     public void insertOrderDetail(OrderDetail c) {
-        String query = "INSERT INTO [ORDER_DETAIL] \n"
-                + "              VALUES (?,?,?,?)";
+        String query = "INSERT INTO [ORDER_DETAIL] (Orders_id, Quantity, Gear_id, SubAmount) VALUES (?,?,?,?)";
         try {
             Connection con = getConnection();
             PreparedStatement ps = con.prepareStatement(query);
@@ -43,9 +42,8 @@ public class OrderDetailDAO extends DBContext {
         List<OrderDetail> ods = new ArrayList<>();
         try {
             Connection con = getConnection();
-            PreparedStatement pst = con.prepareStatement("select G.*,p.Price, od.Quantity, od.SubAmount from ORDER_DETAIL od\n"
+            PreparedStatement pst = con.prepareStatement("select g.*,od.Quantity, od.SubAmount from ORDER_DETAIL od\n"
                     + "left join GEAR g on od.Gear_id = g.Gear_id\n"
-                    + "left join PRICE p on g.Price_id = p.Price_id\n"
                     + "where od.Orders_id = ?");
             pst.setInt(1, orderId);
             ResultSet rs = pst.executeQuery();

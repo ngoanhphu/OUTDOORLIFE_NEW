@@ -123,6 +123,17 @@
             <button type="submit" class="btn btn-success btn-lg px-5 py-2">Book Now</button>
         </div>
     </form>
+    <div class="text-center">
+        <button class="btn btn-success" onclick="openModal()">Load Camping Gear Info</button>
+    </div>
+    <!-- Modal -->
+    <div id="myModal">
+        <div id="modalContent"></div>
+        <div class="text-end">
+            <button onclick="closeModal()">Close</button>
+        </div>
+    </div>
+
 </div>
 
 <script src="js/main.js"></script>
@@ -138,6 +149,36 @@
         toastr.error(`${error}`, 'Error', {timeOut: 1000});
     </script>
 </c:if>
+
+<script>
+    function openModal() {
+        const modal = document.getElementById('myModal');
+        const modalContent = document.getElementById('modalContent');
+
+        modal.style.display = 'flex';
+        modalContent.innerHTML = '';
+
+        fetch('/login_war/campinggear.jsp')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Unable to load content');
+                }
+                return response.text();
+            })
+            .then(data => {
+                modalContent.innerHTML = data;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                modalContent.innerHTML = `<p>Error loading content</p>`;
+            });
+    }
+    function closeModal() {
+        const modal = document.getElementById('myModal');
+        modal.style.display = 'none';
+    }
+</script>
+
 </body>
 
 </html>
