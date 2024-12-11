@@ -1,4 +1,5 @@
 <%@ page import="java.util.Calendar" %>
+%@ page import="java.util.Calendar" %>
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
@@ -138,44 +139,47 @@
             <canvas id="myChart2" style="width:100%;max-width:700px"></canvas>
         </div>
     </div>
-
-    <div class="table-responsive" style="
+    <c:if test="${currentUser.admin}">
+        <%--        list of owner--%>
+        <div class="table-responsive" style="
                    max-height: 300px;
                    overflow-y: scroll;
                    width: 100%;
                    overflow-x: scroll;
-    ">
-        <table class="table table-striped">
-            <thead>
-            <tr>
-                <th scope="col">Owner ID</th>
-                <th scope="col">Owner Name</th>
-                <th scope="col">Email</th>
-                <th scope="col">Phone Number</th>
-                <th scope="col">Total Revenue</th>
-                <th></th>
-            </tr>
-            </thead>
-            <tbody>
-            <!-- Lặp qua danh sách ownerListWithRevenue -->
-            <c:forEach var="ownerDTO" items="${ownerListWithRevenue}">
+        ">
+            <table class="table table-striped">
+                <thead>
                 <tr>
-                    <td>${ownerDTO.owner.ownerId}</td>
-                    <td>${ownerDTO.user.firstName} ${ownerDTO.user.lastName}</td>
-                    <td>${ownerDTO.user.email}</td>
-                    <td>${ownerDTO.user.phoneNumber}</td>
-                    <td>${ownerDTO.totalRevenue}</td>
-                    <td>
-                        <!-- Button to view details with an icon -->
-                        <a href="dashboard-owner?ownerId=${ownerDTO.owner.ownerId}" class="btn btn-outline-info btn-sm">
-                            <i class="bi bi-eye"></i> View Detail
-                        </a>
-                    </td>
+                    <th scope="col">Owner ID</th>
+                    <th scope="col">Owner Name</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Phone Number</th>
+                    <th scope="col">Total Revenue</th>
+                    <th></th>
                 </tr>
-            </c:forEach>
-            </tbody>
-        </table>
-    </div>
+                </thead>
+                <tbody>
+                <!-- Lặp qua danh sách ownerListWithRevenue -->
+                <c:forEach var="ownerDTO" items="${ownerListWithRevenue}">
+                    <tr>
+                        <td>${ownerDTO.owner.ownerId}</td>
+                        <td>${ownerDTO.user.firstName} ${ownerDTO.user.lastName}</td>
+                        <td>${ownerDTO.user.email}</td>
+                        <td>${ownerDTO.user.phoneNumber}</td>
+                        <td>${ownerDTO.totalRevenue}</td>
+                        <td>
+                            <!-- Button to view details with an icon -->
+                            <a href="dashboard-owner?ownerId=${ownerDTO.owner.ownerId}"
+                               class="btn btn-outline-info btn-sm">
+                                <i class="bi bi-eye"></i> View Detail
+                            </a>
+                        </td>
+                    </tr>
+                </c:forEach>
+                </tbody>
+            </table>
+        </div>
+    </c:if>
 </div>
 
 
