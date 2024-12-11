@@ -109,4 +109,20 @@ public class Campsite {
     public void setCampsiteOwnerName(String campsiteOwnerName) {
         this.campsiteOwnerName = campsiteOwnerName;
     }
+
+        @Override
+        public String toString() {
+            return "Campsite{" +
+                    "campId=" + campId +
+                    ", campPrice=" + campPrice +
+                    ", campOwner=" + campOwner +
+                    ", campAddress='" + campAddress + '\'' +
+                    ", campName='" + campName + '\'' +
+                    ", campDescription='" + campDescription + '\'' +
+                    ", campImage='" + campImage + '\'' +
+                    ", campStatus=" + campStatus +
+                    ", limite=" + limite +
+                    ", campsiteOwnerName='" + campsiteOwnerName + '\'' +
+                    '}';
+        }
 }
