@@ -1,6 +1,6 @@
-<%@ page import="java.util.Calendar" %>
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page import="java.util.Calendar" %>
 
 <style>
     .container {
@@ -81,9 +81,28 @@
 </style>
 
 <body>
-<jsp:include page="headeradmin.jsp"></jsp:include>
+<jsp:include page="headeradmin.jsp"/>
 <div class="container" style="margin-top: 200px">
+    <div class="row">
+        <a href="dashboard" class="btn btn-outline-primary " style="width: 100px;">
+            Back
+        </a>
+    </div>
     <h1>Dashboard</h1>
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <!-- Owner Information Section -->
+            <div class="card">
+                <div class="card-header">Owner Information</div>
+                <div class="card-body">
+                    <p><strong>Name:</strong> ${ownerAccount.firstName} ${ownerAccount.lastName}</p>
+                    <p><strong>Email:</strong> ${ownerAccount.email}</p>
+                    <p><strong>Phone:</strong> ${ownerAccount.phoneNumber}</p>
+                    <!-- Add more fields as necessary -->
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="row">
         <ul class="nav nav-tabs mb-3">
             <li class="nav-item">
@@ -91,7 +110,7 @@
                     <c:if test="${queryType eq 'monthly'}">
                         active
                     </c:if>
-                    " href="dashboard?queryType=monthly"
+                    " href="dashboard-owner?queryType=monthly&ownerId=${owner.ownerId}"
                 >
                     Monthly
                 </a>
@@ -101,14 +120,14 @@
                     <c:if test="${queryType eq 'yearly'}">
                         active
                     </c:if>
-                    " href="dashboard?queryType=yearly"
+                    " href="dashboard-owner?queryType=yearly&ownerId=${owner.ownerId}"
                 >
                     Yearly
                 </a>
             </li>
         </ul>
         <c:if test="${queryType eq 'monthly'}">
-            <form action="dashboard" id="yearForm">
+            <form action="dashboard-owner" id="yearForm">
                 <input type="hidden" name="queryType" value="${queryType}">
                 <input type="hidden" name="ownerId" value="${owner.ownerId}">
                 <select name="year" id="yearDropdown" onchange="document.getElementById('yearForm').submit();">
@@ -132,52 +151,13 @@
             </form>
         </c:if>
         <div class="col-6">
-            <canvas id="myChart" style="width:100%;max-width:700px"></canvas>
+            <canvas id="myChart3" style="width:100%;max-width:700px"></canvas>
         </div>
         <div class="col-6">
-            <canvas id="myChart2" style="width:100%;max-width:700px"></canvas>
+            <canvas id="myChart4" style="width:100%;max-width:700px"></canvas>
         </div>
     </div>
-
-    <div class="table-responsive" style="
-                   max-height: 300px;
-                   overflow-y: scroll;
-                   width: 100%;
-                   overflow-x: scroll;
-    ">
-        <table class="table table-striped">
-            <thead>
-            <tr>
-                <th scope="col">Owner ID</th>
-                <th scope="col">Owner Name</th>
-                <th scope="col">Email</th>
-                <th scope="col">Phone Number</th>
-                <th scope="col">Total Revenue</th>
-                <th></th>
-            </tr>
-            </thead>
-            <tbody>
-            <!-- Lặp qua danh sách ownerListWithRevenue -->
-            <c:forEach var="ownerDTO" items="${ownerListWithRevenue}">
-                <tr>
-                    <td>${ownerDTO.owner.ownerId}</td>
-                    <td>${ownerDTO.user.firstName} ${ownerDTO.user.lastName}</td>
-                    <td>${ownerDTO.user.email}</td>
-                    <td>${ownerDTO.user.phoneNumber}</td>
-                    <td>${ownerDTO.totalRevenue}</td>
-                    <td>
-                        <!-- Button to view details with an icon -->
-                        <a href="dashboard-owner?ownerId=${ownerDTO.owner.ownerId}" class="btn btn-outline-info btn-sm">
-                            <i class="bi bi-eye"></i> View Detail
-                        </a>
-                    </td>
-                </tr>
-            </c:forEach>
-            </tbody>
-        </table>
-    </div>
 </div>
-
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
 </script>
@@ -186,7 +166,7 @@
     var numberOrderByPeriod = [];
     var totalAmountByPeriod = [];
     <c:if test="${queryType eq 'monthly'}">
-    <c:forEach var="o" items="${lstCountOrderByMonth}">
+    <c:forEach var="o" items="${orderRevenueList}">
     periodList.push(${o.month});
     numberOrderByPeriod.push(${o.numberOfOrders});
     totalAmountByPeriod.push(${o.totalAmount});
@@ -194,27 +174,26 @@
     </c:if>
 
     <c:if test="${queryType eq 'yearly'}">
-    <c:forEach var="o" items="${lstCountOrderByYear}">
+    <c:forEach var="o" items="${orderRevenueList}">
     periodList.push(${o.year});
     numberOrderByPeriod.push(${o.numberOfOrders});
     totalAmountByPeriod.push(${o.totalAmount});
     </c:forEach>
-    periodList = periodList.reverse();
-    numberOrderByPeriod = numberOrderByPeriod.reverse();
-    totalAmountByPeriod = totalAmountByPeriod.reverse();
     </c:if>
 
     const xValues = periodList;
     const yValues = numberOrderByPeriod;
     const yValues2 = totalAmountByPeriod;
+
     const barColors = ["red", "green", "blue", "orange", "brown", "yellow"];
 
-    new Chart("myChart", {
+    new Chart("myChart3", {
         type: "bar",
         data: {
             labels: xValues,
             datasets: [{
                 backgroundColor: barColors,
+                suggestedMin: 0,
                 data: yValues
             }]
         },
@@ -222,18 +201,23 @@
             legend: {display: false},
             title: {
                 display: true,
-                text:
-                    <c:if test="${queryType eq 'yearly'}">
+                text: <c:if test="${queryType eq 'yearly'}">
                     "Number of orders in 5 recent years"
                 </c:if>
                 <c:if test="${queryType eq 'monthly'}">
                 "Number of orders in ${year}"
                 </c:if>
+            },
+            scales: {
+                y: {
+                    beginAtZero: true, // This ensures the y-axis starts at 0
+                    min: 0 // This explicitly sets the minimum value of the y-axis to 0
+                }
             }
         }
     });
 
-    new Chart("myChart2", {
+    new Chart("myChart4", {
         type: "bar",
         data: {
             labels: xValues,
@@ -246,13 +230,18 @@
             legend: {display: false},
             title: {
                 display: true,
-                text:
-                    <c:if test="${queryType eq 'yearly'}">
+                text: <c:if test="${queryType eq 'yearly'}">
                     "Revenue in 5 recent years"
                 </c:if>
                 <c:if test="${queryType eq 'monthly'}">
                 "Revenue in ${year}"
                 </c:if>
+            },
+            scales: {
+                y: {
+                    beginAtZero: true, // This ensures the y-axis starts at 0
+                    min: 0 // This explicitly sets the minimum value of the y-axis to 0
+                }
             }
         }
     });

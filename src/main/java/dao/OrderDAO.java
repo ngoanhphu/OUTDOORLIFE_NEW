@@ -205,61 +205,88 @@ public class OrderDAO {
         }
     }
 
-    public List<OrderDTO> statisticOrdersByMonth() {
+    public List<OrderDTO> statisticOrdersByMonth(int year) {
         List<OrderDTO> list = new ArrayList<>();
         try {
-            PreparedStatement pst = this.con.prepareStatement("	WITH LastSixMonths AS (\n"
-                    + "    SELECT \n"
-                    + "        YEAR(GETDATE()) AS [Year],\n"
-                    + "        MONTH(GETDATE()) AS [Month]\n"
-                    + "    UNION ALL\n"
-                    + "    SELECT \n"
-                    + "        YEAR(DATEADD(MONTH, -1, GETDATE())) AS [Year],\n"
-                    + "        MONTH(DATEADD(MONTH, -1, GETDATE())) AS [Month]\n"
-                    + "    UNION ALL\n"
-                    + "    SELECT \n"
-                    + "        YEAR(DATEADD(MONTH, -2, GETDATE())) AS [Year],\n"
-                    + "        MONTH(DATEADD(MONTH, -2, GETDATE())) AS [Month]\n"
-                    + "    UNION ALL\n"
-                    + "    SELECT \n"
-                    + "        YEAR(DATEADD(MONTH, -3, GETDATE())) AS [Year],\n"
-                    + "        MONTH(DATEADD(MONTH, -3, GETDATE())) AS [Month]\n"
-                    + "    UNION ALL\n"
-                    + "    SELECT \n"
-                    + "        YEAR(DATEADD(MONTH, -4, GETDATE())) AS [Year],\n"
-                    + "        MONTH(DATEADD(MONTH, -4, GETDATE())) AS [Month]\n"
-                    + "    UNION ALL\n"
-                    + "    SELECT \n"
-                    + "        YEAR(DATEADD(MONTH, -5, GETDATE())) AS [Year],\n"
-                    + "        MONTH(DATEADD(MONTH, -5, GETDATE())) AS [Month]\n"
-                    + ")\n"
-                    + "SELECT \n"
-                    + "    LSM.[Year],\n"
-                    + "    LSM.[Month],\n"
-                    + "    ISNULL(COUNT(O.[Orders_id]), 0) AS [OrderCount],\n"
-                    + "	 ISNULL(SUM(O.[TotalAmount]), 0) AS [MonthlyRevenue]\n"
-                    + "FROM \n"
-                    + "    LastSixMonths LSM\n"
-                    + "LEFT JOIN \n"
-                    + "    [dbo].[ORDERS] O\n"
-                    + "ON \n"
-                    + "    LSM.[Year] = YEAR(O.[TimeStamp]) AND\n"
-                    + "    LSM.[Month] = MONTH(O.[TimeStamp])\n"
-                    + "GROUP BY \n"
-                    + "    LSM.[Year], \n"
-                    + "    LSM.[Month]\n"
-                    + "ORDER BY \n"
-                    + "    LSM.[Year], \n"
-                    + "    LSM.[Month];");
+            PreparedStatement pst = this.con.prepareStatement("WITH YearMonths AS (\n" +
+                    "    SELECT 1 AS MonthNum\n" +
+                    "    UNION ALL\n" +
+                    "    SELECT MonthNum + 1\n" +
+                    "    FROM YearMonths\n" +
+                    "    WHERE MonthNum < 12\n" +
+                    ")\n" +
+                    "SELECT\n" +
+                    "    ym.MonthNum AS [Month],\n" +
+                    "    ISNULL(COUNT(o.[Orders_id]), 0) AS [OrderCount],\n" +
+                    "    ISNULL(SUM(o.[TotalAmount]), 0) AS [MonthlyRevenue]\n" +
+                    "FROM\n" +
+                    "    YearMonths ym\n" +
+                    "LEFT JOIN\n" +
+                    "    [dbo].[ORDERS] o\n" +
+                    "ON\n" +
+                    "    ym.MonthNum = MONTH(o.enddate) AND YEAR(o.enddate) = ? -- Replace @Year with the year parameter\n" +
+                    "    \n" +
+                    "GROUP BY\n" +
+                    "    ym.MonthNum\n" +
+                    "ORDER BY\n" +
+                    "    ym.MonthNum ASC;\n");
+            pst.setInt(1, year);
             ResultSet rs = pst.executeQuery();
             while (rs.next()) {
                 OrderDTO order = new OrderDTO();
-                order.setYear(rs.getInt("Year"));
+//                order.setYear(rs.getInt("Year"));
                 order.setMonth(rs.getInt("Month"));
                 order.setNumberOfOrders(rs.getInt("OrderCount"));
                 order.setTotalAmount(rs.getInt("MonthlyRevenue"));
                 list.add(order);
 
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println(e.getMessage());
+        }
+        return list;
+    }
+
+    public List<OrderDTO> statisticOrdersByYear() {
+        List<OrderDTO> list = new ArrayList<>();
+        try {
+            // SQL query for getting total orders and revenue for the last 5 years
+            String query = "WITH LastFiveYears AS (\n" +
+                    "    SELECT YEAR(GETDATE()) AS [Year]\n" +
+                    "    UNION ALL\n" +
+                    "    SELECT YEAR(DATEADD(YEAR, -1, GETDATE()))\n" +
+                    "    UNION ALL\n" +
+                    "    SELECT YEAR(DATEADD(YEAR, -2, GETDATE()))\n" +
+                    "    UNION ALL\n" +
+                    "    SELECT YEAR(DATEADD(YEAR, -3, GETDATE()))\n" +
+                    "    UNION ALL\n" +
+                    "    SELECT YEAR(DATEADD(YEAR, -4, GETDATE()))\n" +
+                    ")\n" +
+                    "SELECT\n" +
+                    "    ly.[Year],\n" +
+                    "    ISNULL(COUNT(o.[Orders_id]), 0) AS [OrderCount],\n" +
+                    "    ISNULL(SUM(o.[TotalAmount]), 0) AS [TotalRevenue]\n" +
+                    "FROM\n" +
+                    "    LastFiveYears ly\n" +
+                    "LEFT JOIN\n" +
+                    "    [dbo].[ORDERS] o\n" +
+                    "ON\n" +
+                    "    ly.[Year] = YEAR(o.[EndDate])\n" +
+                    "GROUP BY\n" +
+                    "    ly.[Year]\n" +
+                    "ORDER BY\n" +
+                    "    ly.[Year] DESC;";
+
+            PreparedStatement pst = this.con.prepareStatement(query);
+            ResultSet rs = pst.executeQuery();
+
+            while (rs.next()) {
+                OrderDTO order = new OrderDTO();
+                order.setYear(rs.getInt("Year"));
+                order.setNumberOfOrders(rs.getInt("OrderCount"));
+                order.setTotalAmount(rs.getInt("TotalRevenue"));
+                list.add(order);
             }
         } catch (Exception e) {
             e.printStackTrace();
