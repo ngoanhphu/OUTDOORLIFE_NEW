@@ -14,6 +14,7 @@ import java.io.Serializable;
 public class Feedback implements Serializable{
     private int feedbackId;
     private int accountId;
+    private int campsiteId;
     private String accountName;
     private String feedbackDate;
     private String customerName;
@@ -25,9 +26,18 @@ public class Feedback implements Serializable{
     public Feedback() {
     }
 
+    public int getCampsiteId() {
+        return campsiteId;
+    }
+
+    public void setCampsiteId(int campsiteId) {
+        this.campsiteId = campsiteId;
+    }
+
+
     public Feedback(int feedbackId, int accountId, String feedbackDate, String content, String rating) {
         this.feedbackId = feedbackId;
-        
+
         this.accountId = accountId;
         this.feedbackDate = feedbackDate;
         this.content = content;
@@ -43,6 +53,7 @@ public class Feedback implements Serializable{
         this.content = content;
         this.rating = rating;
     }
+
 
     public Feedback(int feedbackId,  int accountId, String accountName, String feedbackDate, String content, String rating, String replyComment, String authorReply) {
         this.feedbackId = feedbackId;
