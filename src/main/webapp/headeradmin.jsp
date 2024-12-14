@@ -79,7 +79,7 @@
 
 
                     </c:if>
-                    <c:if test = "${not empty currentUser && currentUser.admin}">
+                    <c:if test = "${not empty currentUser && (currentUser.admin or currentUser.owner)}">
                         <a href="dashboard" class="nav-item nav-link active">Dashboard</a>
                         <%--                                <a href="admintent" class="nav-item nav-link">Manage Tents</a>--%>
                         <a href="manage-account" class="nav-item nav-link">Manage Accounts</a>
