@@ -302,7 +302,7 @@
 
     <script type="text/javascript">
         // Setup variables for pagination
-        let itemsPerPage = 8;
+        let itemsPerPage = 9;
         let totalPages = ${totalPages};
         let currentPage = ${currentPage};
 

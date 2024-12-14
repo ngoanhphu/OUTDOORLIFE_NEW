@@ -53,7 +53,7 @@
         <div class="form-header">
             <h2>Update Campsite</h2>
         </div>
-        <form action="update-campsite" method="post">
+        <form action="update-campsite" method="post" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="name">Campsite Name:</label>
                 <input type="hidden" id="id" name="id" value="${c.campId}">
@@ -72,11 +72,12 @@
                 <textarea id="description" name="description" required>${c.campDescription}</textarea>
             </div>
             <div class="form-group">
-                <label for="image">Image URL:</label>
-                <input type="text" id="image" name="image" required value="${c.campImage}">
+                <label for="image">Image:</label>
+                <input type="file" id="image" name="image" accept="image/*">
+                <p>Current Image: ${c.campImage}</p> <!-- Display current image -->
             </div>
             <div class="form-group">
-                <label for="limit">Limite:</label>
+                <label for="limit">Limit:</label>
                 <input type="number" id="limit" name="limit" required value="${c.limite}">
             </div>
             <div class="form-group">
@@ -90,6 +91,7 @@
                 <input type="submit" value="Update">
             </div>
         </form>
+
     </div>
 </div>
 </body>
