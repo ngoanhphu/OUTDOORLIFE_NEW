@@ -66,7 +66,7 @@
             <div class="form-header">
                 <h2>Add New Campsite</h2>
             </div>
-            <form action="add-campsite" method="post">
+            <form action="add-campsite" method="post" enctype="multipart/form-data">
                 <div class="form-group">
                     <label for="name">Campsite Name:</label>
                     <input type="text" id="name" name="name" required>
@@ -75,7 +75,7 @@
                     <label for="price">Campsite Price:</label>
                     <input type="number" id="price" name="price" required>
                 </div>
-                 <div class="form-group">
+                <div class="form-group">
                     <label for="address">Address:</label>
                     <textarea id="address" name="address" required></textarea>
                 </div>
@@ -84,24 +84,25 @@
                     <textarea id="description" name="description" required></textarea>
                 </div>
                 <div class="form-group">
-                    <label for="image">Image URL:</label>
-                    <input type="text" id="image" name="image" required>
+                    <label for="image">Image:</label>
+                    <input type="file" id="image" name="image" accept="image/*" required>
                 </div>
-                 <div class="form-group">
-                    <label for="limit">Limite:</label>
+                <div class="form-group">
+                    <label for="limit">Limit:</label>
                     <input type="number" id="limit" name="limit" required>
                 </div>
-                 <div class="form-group">
+                <div class="form-group">
                     <label for="status">Status:</label>
                     <select id="status" name="status">
                         <option value="1">Active</option>
-                        <option value="0">InActive</option>
+                        <option value="0">Inactive</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <input type="submit" value="Add Gear">
+                    <input type="submit" value="Add Campsite">
                 </div>
             </form>
+
         </div>
     </div>
 </body>

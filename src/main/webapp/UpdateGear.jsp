@@ -57,7 +57,7 @@
             <div class="form-header">
                 <h2>Update Gear</h2>
             </div>
-            <form action="update" method="post">
+            <form action="update" method="post" enctype="multipart/form-data">
                 <div class="form-group">
                     <label for="gearId">Gear ID:</label>
                     <input type="text" id="gearId" name="gearId" value="${st.gearId}" readonly>
@@ -75,13 +75,14 @@
                     <textarea id="gearDescription" name="gearDescription" required>${st.gearDecription}</textarea>
                 </div>
                 <div class="form-group">
-                    <label for="gearImage">Image URL:</label>
-                    <input type="text" id="gearImage" name="gearImage" value="${st.gearImage}" required>
+                    <label for="gearImage">Image:</label>
+                    <input type="file" id="gearImage" name="gearImage" accept="image/*">
                 </div>
                 <div class="form-group">
                     <input type="submit" value="Update Gear">
                 </div>
             </form>
+
         </div>
     </div>
 </body>

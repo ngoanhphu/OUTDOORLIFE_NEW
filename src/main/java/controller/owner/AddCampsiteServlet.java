@@ -6,9 +6,11 @@ package controller.owner;
 
 import dao.CampsiteDAO;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,11 +18,12 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import model.Campsite;
 import model.User;
-
+import jakarta.servlet.http.Part;
 
 @WebServlet(name = "AddCampsideServlet", urlPatterns = {"/add-campsite"})
+@MultipartConfig
 public class AddCampsiteServlet extends HttpServlet {
-
+    private static final String UPLOAD_DIRECTORY = "D:\\OJT\\new_project\\OUTDOORLIFE_NEW\\src\\main\\webapp\\img";
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
@@ -47,50 +50,76 @@ public class AddCampsiteServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
+        // Lấy thông tin từ form
+        String name = request.getParameter("name");
+        String price = request.getParameter("price");
+        String address = request.getParameter("address");
+        String description = request.getParameter("description");
+        String limit = request.getParameter("limit");
+        String status = request.getParameter("status");
 
-        // Lấy đối tượng User từ session
+        // Lấy user từ session
         HttpSession session = request.getSession();
         User currentUser = (User) session.getAttribute("currentUser");
 
-        // Kiểm tra nếu người dùng đã đăng nhập và là chủ sở hữu (owner)
         if (currentUser != null && currentUser.isOwner()) {
-            // Lấy ownerId từ đối tượng User
             int ownerId = currentUser.getId();
 
-            // Lấy các tham số từ form
-            String name = request.getParameter("name");
-            String price = request.getParameter("price");
-            String address = request.getParameter("address");
-            String description = request.getParameter("description");
-            String image = request.getParameter("image");
-            String limit = request.getParameter("limit");
-            String status = request.getParameter("status");
-
             try {
-                // Tạo đối tượng Campsite và thiết lập các thuộc tính
+                // Xử lý file upload
+                Part filePart = request.getPart("image"); // "image" là tên input file
+                String fileName = extractFileName(filePart);
+
+                // Đảm bảo thư mục upload tồn tại
+                File uploadDir = new File(UPLOAD_DIRECTORY);
+                if (!uploadDir.exists()) {
+                    uploadDir.mkdirs();
+                }
+
+                // Lưu file vào thư mục
+                String filePath = UPLOAD_DIRECTORY + File.separator + fileName;
+                filePart.write(filePath);
+
+                // Lưu đường dẫn file vào database (chỉ lưu tên file hoặc đường dẫn tương đối)
+                String imagePath = fileName;
+
+                // Tạo đối tượng Campsite
                 CampsiteDAO cdao = new CampsiteDAO();
                 Campsite campsite = new Campsite();
+                campsite.setCampName(name);
                 campsite.setCampPrice(Integer.parseInt(price));
                 campsite.setCampAddress(address);
-                campsite.setCampName(name);
                 campsite.setCampDescription(description);
-                campsite.setCampImage(image);
-                campsite.setCampStatus(status.equals("1") ? true : false);
+                campsite.setCampImage(imagePath); // Đường dẫn tương đối để hiển thị
+                campsite.setCampStatus(status.equals("1"));
                 campsite.setLimite(Integer.parseInt(limit));
 
-                // Gọi phương thức insertCampsite và truyền ownerId
+                // Thêm campsite vào cơ sở dữ liệu
                 cdao.insertCampsite(campsite, ownerId);
 
-                // Chuyển hướng tới trang quản lý campsite
+                // Chuyển hướng về trang quản lý
                 response.sendRedirect("manage-campsite");
             } catch (Exception e) {
                 e.printStackTrace();
+                // Hiển thị lỗi nếu xảy ra
+                request.setAttribute("error", "Failed to add campsite: " + e.getMessage());
+                request.getRequestDispatcher("addCampsiteForm.jsp").forward(request, response);
             }
         } else {
-            // Nếu người dùng không phải là chủ sở hữu, chuyển hướng đến trang đăng nhập
+            // Chuyển hướng đến trang đăng nhập nếu user không hợp lệ
             response.sendRedirect("login.jsp");
         }
+    }
+
+    // Hàm lấy tên file từ header
+    private String extractFileName(Part part) {
+        String contentDisp = part.getHeader("content-disposition");
+        for (String content : contentDisp.split(";")) {
+            if (content.trim().startsWith("filename")) {
+                return content.substring(content.indexOf("=") + 2, content.length() - 1);
+            }
+        }
+        return null;
     }
 
 }

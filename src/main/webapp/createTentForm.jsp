@@ -54,7 +54,7 @@
         <div class="form-header">
             <h2>Add New Gear</h2>
         </div>
-        <form action="addtent" method="post">
+        <form action="addtent" method="post" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="gearName">Tent Name:</label>
                 <input type="text" id="gearName" name="gearName" required>
@@ -69,7 +69,7 @@
             </div>
             <div class="form-group">
                 <label for="gearImage">Image URL:</label>
-                <input type="text" id="gearImage" name="gearImage" required>
+                <input type="file" id="gearImage" name="gearImage" accept="image/*" required>
             </div>
             <div class="form-group">
                 <input type="submit" value="Add Gear">

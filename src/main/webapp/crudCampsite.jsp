@@ -215,7 +215,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twbs-pagination/1.4.2/jquery.twbsPagination.min.js"></script>
 <script>
     // Pagination Setup
-    const itemsPerPage = 8;
+    const itemsPerPage = 9;
     const totalPages = ${totalPages};
     const currentPage = ${currentPage};
 
