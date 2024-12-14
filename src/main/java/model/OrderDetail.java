@@ -15,7 +15,6 @@ public class OrderDetail {
     private int quantity;
     private int gearId;
     private int subAmount;
-    
     private Gear gear;
 
     public OrderDetail() {

@@ -2,7 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
 <style>
     /* Global Styles */
     body {
@@ -148,15 +148,6 @@
     .btn-create{
         margin-top: 40px;
     }
-
-    .search-container {
-        margin-bottom: 2rem;
-        text-align: center;
-    }
-    .search-container {
-        margin-bottom: 2rem;
-        text-align: center;
-    }
 </style>
 
 <body>
@@ -167,16 +158,6 @@
     <!-- Create Campsite Button -->
     <div class="create-button-container text-center">
         <button class="btn-create" onclick="window.location.href='addCampsite.jsp'">Create Campsite</button>
-    </div>
-    <div class="search-container">
-        <form action="searchCampsite" method="post" class="form-inline">
-            <div class="input-group">
-                <button type="submit" class="btn btn-secondary">
-                    <i class="fa fa-search"></i>
-                </button>
-                <input name="txt" type="text" placeholder="Search..." class="form-control" />
-            </div>
-        </form>
     </div>
 
     <!-- Display Campsites -->
@@ -234,7 +215,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twbs-pagination/1.4.2/jquery.twbsPagination.min.js"></script>
 <script>
     // Pagination Setup
-    const itemsPerPage = 9;
+    const itemsPerPage = 8;
     const totalPages = ${totalPages};
     const currentPage = ${currentPage};
 

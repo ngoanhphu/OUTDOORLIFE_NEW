@@ -28,7 +28,7 @@
                                     <div class="card-header my-3">Campsite Information</div>
                                     <div>
                                         <div style="padding-left: 20px; padding-bottom: 20px">
-                                            Name: ${campsite.campsiteName}<br>
+                                        Name: ${campsite.campsiteName}<br>
                                         Start Date : ${campsite.startDate}<br>
                                         End Date : ${campsite.endDate}<br>
                                         Quantity: ${campsite.quantity}<br>
@@ -51,8 +51,7 @@
                                     <tbody>
                                         <c:forEach items="${ods}" var="o">
                                             <tr>
-                                                <td>
-                                                    <img src="img/${o.gear.gearImage}" alt="Card image cap" style="width: 100px"/></td>
+                                                <td><img src="img/${o.gear.gearImage}" alt="Card image cap" style="width: 100px"/></td>
                                                 <td>${o.gear.gearName}</td>
                                                 <td>${o.gear.gearDecription}</td>
                                                 <td>${o.quantity}</td>

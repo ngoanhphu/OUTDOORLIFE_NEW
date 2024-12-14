@@ -240,43 +240,6 @@
         margin-bottom: 20px; /* Thêm khoảng cách giữa các hàng */
         box-sizing: border-box;
     }
-    .row {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: flex-start; /* Căn các cột từ trái sang phải */
-            gap: 7rem; /* Khoảng cách giữa các sản phẩm */
-    }
-    .row {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center; /* Căn giữa các cột trong hàng */
-        gap: 7rem; /* Khoảng cách giữa các sản phẩm */
-    }
-
-    .col-md-3 {
-        width: calc(33.33% - 1.5rem); /* Hiển thị 3 sản phẩm mỗi hàng */
-        margin-bottom: 20px; /* Khoảng cách giữa các hàng */
-        box-sizing: border-box;
-    }
-    /* Điều chỉnh chiều cao header */
-    header {
-        height: 50px; /* Giảm chiều cao */
-        padding: 10px 0; /* Điều chỉnh padding nếu cần */
-    }
-
-    /* Điều chỉnh khoảng cách bên trong và giữa các phần tử */
-    header .container {
-        padding: 0;
-        margin: 0;
-    }
-
-    
-
-    /* Thu nhỏ khoảng cách giữa các icon hoặc menu */
-    header .nav-item {
-        margin: 0 10px;
-    }
-
 </style>
 
 <body>
@@ -350,7 +313,7 @@
 
 <script type="text/javascript">
     // Setup variables for pagination
-    let itemsPerPage = 9;
+    let itemsPerPage = 8;
     let totalPages = ${totalPages};
     let currentPage = ${currentPage};
 

@@ -71,56 +71,30 @@
 <body>
     <jsp:include page="headeradmin.jsp"></jsp:include>
         <div class="container" style="margin-top: 200px">
-            <!-- Create Gear Button -->
-            <!--            <div class="create-button-container">
-                            <button class="btn-create" onclick="window.location.href = 'addStaff.jsp'">Create Staff</button>
-                        </div>-->
-
-            <!--            <div class="search-container" style="margin-bottom: 16px">
-                            <form action="search" method="post" class="form-inline my-2 my-lg-0">
-                                <div class="input-group input-group-sm">
-                                    <input name="txt" type="text" placeholder="Search...">
-                                    <div class="input-group-append">
-                                        <button type="submit" class="btn btn-secondary btn-number">
-                                            <i class="fa fa-search"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>-->
-
             <div class="row">
                 <table class="table table-light">
                     <thead>
                         <tr>
                             <th scope="col">Time Order</th>
+                            <th scope="col">Booker</th>
                             <th scope="col">Time Start</th>
                             <th scope="col">Time End</th>
-                            <th scope="col">Days Book</th>
-                            <th scope="col">Name</th>
-                            <th scope="col">Description</th>
                             <th scope="col">Quantity</th>
                             <th scope="col">Total Price</th>
+                            <th scope="col">Approved Status</th>
+                            <th scope="col">Detail Booking</th>
                             <th scope="col">Approved</th>
                             <th scope="col">Payment</th>
                             <th scope="col">Action</th>
-                            <th scope="col"></th>
-                            <th scope="col"></th>
                         </tr>
                     </thead>
                     <tbody>
                     <c:forEach var="a" items="${orders}">
                         <tr>
                             <td>${a.timeStamp}</td>
+                            <td>${a.bookerName}</td>
                             <td>${a.startDate}</td>
                             <td>${a.endDate}</td>
-                            <td>${a.bookingDays}</td>
-                            <td>
-                                ${a.campName}
-                            </td>
-                            <td>
-                                ${a.campDescription}
-                            </td>
                             <td>
                                 ${a.quantity}
                             </td>
@@ -139,14 +113,14 @@
                                 <c:if test="${a.paymentStatus == false}">Not Yet
                                 </c:if>
                             </td>
-                            <td><a a href="order-detail?id=${a.orderId}&action=admin" class="btn btn-sm btn-success">View Detail</a></td>
+                            <td><a a href="order-detail?id=${a.ordersId}&action=admin" class="btn btn-sm btn-success">View Detail</a></td>
                             <td>
-                                <c:if test="${a.approveStatus == false && not empty currentUser && currentUser.staff}">
-                                    <a a href="approve-order?id=${a.orderId}&action=status" class="btn btn-sm btn-primary">Approve Order</a>
+                                <c:if test="${a.approveStatus == false && not empty currentUser && currentUser.owner}">
+                                    <a a href="approve-order?id=${a.ordersId}&action=status" class="btn btn-sm btn-primary">Approve Order</a>
                                 </c:if>
                             </td>
-                            <td><c:if test="${a.paymentStatus == false && not empty currentUser && currentUser.staff}">
-                                    <a a href="approve-order?id=${a.orderId}&action=payment" class="btn btn-sm btn-warning">Approve Payment</a></c:if></td>
+                            <td><c:if test="${a.paymentStatus == false && not empty currentUser && currentUser.owner}">
+                                    <a a href="approve-order?id=${a.ordersId}&action=payment" class="btn btn-sm btn-warning">Approve Payment</a></c:if></td>
 
                             </tr>
                     </c:forEach>

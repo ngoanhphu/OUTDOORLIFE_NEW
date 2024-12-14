@@ -33,6 +33,11 @@ if(campsiteOrder != null && campsiteOrder.getVoucherId() != null){
     billTotal = campsiteOrder.getTotalAmountBooking() * (100 - discount) /100;
     }
 %>
+<head>
+    <meta charset="utf-8"></meta>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+</head>
 <body>
     <jsp:include page="header.jsp"></jsp:include>
         <div class="container">
@@ -44,19 +49,30 @@ if(campsiteOrder != null && campsiteOrder.getVoucherId() != null){
                                 <h3>Campsite booking information:</h3>
                             <c:if test="${sessionScope.CampsiteOrder != null}">
                                 <div style="padding-left: 20px; padding-bottom: 20px">
-                                    Id: ${sessionScope.CampsiteOrder.campsiteId}<br>
-                                    Start Date : ${sessionScope.CampsiteOrder.startDate}<br>
+                                    <div class="owner-image-container">
+                                        <img src="img/<%= campsiteOrder.getImage() %>" alt="Camp Image" class="owner-image rounded-circle shadow">
+                                    </div>
+                                    <br>
+                                    <br>
+                                    Date Book : ${sessionScope.CampsiteOrder.startDate}<br>
                                     End Date : ${sessionScope.CampsiteOrder.endDate}<br>
                                     Quantity: ${sessionScope.CampsiteOrder.quantity}<br>
                                     <span style="color: red">Campsite Total: ${sessionScope.CampsiteOrder.totalAmountBooking}</span>
                                 </div>
                             </c:if><c:if test="${sessionScope.CampsiteOrder == null}">
-                                <div style="padding-left: 20px; padding-bottom: 20px">Please booking <a href="campsite.jsp">campsite</a></div>
+                                <button class="btn btn-sm btn-primary btn-add-shortlist btn-outline"
+                                        style="background-color: #b6effb; border: 0px; margin-top: 13px;"
+                                        type="button"
+                                        onclick="window.location.href='campsite.jsp'">
+                                    Book Campsite Now!!!
+                                </button>
                             </c:if>
+
                         </div>
+                            <br>
+                            <br>
                         <h3>Gear order information:</h3>
                         <div class="total-price-container">
-                        </div>
                         <form id="cart-form" action="partialCheckout" method="post">
                             <table class="table table-light">
                                 <thead>
@@ -94,7 +110,19 @@ if(campsiteOrder != null && campsiteOrder.getVoucherId() != null){
                                     </tr>
                                     <%
                                         }
-                                    }
+                                    } else {
+                                    %>
+                                    <div style="text-align: center; margin-top: 20px;">
+                                        <button class="btn btn-sm btn-primary btn-add-shortlist btn-outline"
+                                                style="background-color: #b6effb; border: 0px; margin-top: 13px;"
+                                                type="button"
+                                                onclick="window.location.href='campinggear.jsp'">
+                                            Book Gear Now!!!
+                                        </button>
+                                    </div>
+                                    <%
+                                        }
+
                                     %>
                                 </tbody>
                             </table>
@@ -138,7 +166,7 @@ if(campsiteOrder != null && campsiteOrder.getVoucherId() != null){
             <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
             <c:if test="${message != null}">
                 <script type="text/javascript">
-                                            toastr.success(`${message}`, 'Success', {timeOut: 1000});
+                   toastr.success(`${message}`, 'Success', {timeOut: 1000});
                 </script>
             </c:if>
             <c:if test="${error != null}">
