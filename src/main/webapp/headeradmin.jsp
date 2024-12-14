@@ -77,6 +77,7 @@
                         <a href="manage-order" class="nav-item nav-link">Manage Orders</a>
                         <a href="manage-voucher" class="nav-item nav-link">Manage Vouchers</a>
 
+
                     </c:if>
                     <c:if test = "${not empty currentUser && (currentUser.admin or currentUser.owner)}">
                         <a href="dashboard" class="nav-item nav-link active">Dashboard</a>
@@ -84,6 +85,7 @@
                         <a href="manage-account" class="nav-item nav-link">Manage Accounts</a>
                         <%--                                <a href="manage-campsite" class="nav-item nav-link">Manage Campsites</a>--%>
                         <a href="show-feedback" class="nav-item nav-link">Manage Feedbacks</a>
+                        <a href="admin/ownerRegistration" class="nav-item nav-link">Pending Owner</a>
                     </c:if>
 
                     <%--                            <c:if test = "${not empty currentUser && currentUser.owner}">--%>

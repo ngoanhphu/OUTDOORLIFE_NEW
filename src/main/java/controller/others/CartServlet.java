@@ -51,7 +51,6 @@ public class CartServlet extends HttpServlet {
             Cart c = new Cart();
             c.setQuantity(1);
             c.setGearId(id);
-            
             c.setGearPrice(c.getQuantity() * g.getGearPrice());
             
             HttpSession session = request.getSession();

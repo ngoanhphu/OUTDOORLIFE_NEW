@@ -1,7 +1,7 @@
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 <style>
     body {
         font-family: Arial, sans-serif;
@@ -13,6 +13,7 @@
     }
 
     .create-button-container {
+        margin-top: -250px;
         display: flex;
         justify-content: center;
         margin-bottom: 2rem;
@@ -181,26 +182,82 @@
         max-width: calc(25% - 1.5rem);
         box-sizing: border-box;
     }
+    .search-container {
+        margin-bottom: 2rem;
+        text-align: left; /* Canh trái */
+    }
+
+    .input-group {
+        display: flex;
+        align-items: center;
+        max-width: 500px;
+        margin: 0 auto;
+    }
+
+    .input-group input {
+        flex: 1;
+        padding: 0.5rem;
+        font-size: 1rem;
+        border: 1px solid #ccc;
+        border-radius: 0 5px 5px 0; /* Bo góc bên phải */
+        outline: none;
+        transition: box-shadow 0.3s ease, border-color 0.3s ease;
+    }
+
+    .input-group input:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    }
+
+    .input-group button {
+        background-color: #007bff;
+        color: white;
+        border: 1px solid #007bff;
+        border-radius: 5px 0 0 5px; /* Bo góc bên trái */
+        padding: 0.5rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background-color 0.3s ease;
+    }
+
+    .input-group button:hover {
+        background-color: #0056b3;
+    }
+
+    .input-group button i {
+        font-size: 1rem; /* Kích thước icon */
+    }
+    .row {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between; /* Đảm bảo không gian được phân bổ đều */
+    }
+
+    .col-md-3 {
+        width: 23%; /* Cho phép không gian cho 4 sản phẩm mỗi hàng */
+        margin-bottom: 20px; /* Thêm khoảng cách giữa các hàng */
+        box-sizing: border-box;
+    }
 </style>
 
-
 <body>
-<%--<jsp:include page="headeradmin.jsp"></jsp:include>--%>
+<jsp:include page="headeradmin.jsp"></jsp:include>
 <div class="container" style="margin-top: 200px">
     <!-- Create Gear Button -->
     <div class="create-button-container">
         <button class="btn-create" onclick="window.location.href='createGearForm.jsp'">Create Gear</button>
     </div>
 
+    <!-- Search Form -->
     <div class="search-container">
-        <form action="search" method="post" class="form-inline my-2 my-lg-0">
-            <div class="input-group input-group-sm">
-                <input name="txt" type="text" placeholder="Search..." value="${param.txt}">
-                <div class="input-group-append">
-                    <button type="submit" class="btn btn-secondary btn-number">
-                        <i class="fa fa-search"></i>
-                    </button>
-                </div>
+        <form action="search" method="post" class="form-inline">
+            <div class="input-group">
+                <button type="submit" class="btn btn-secondary">
+                    <i class="fa fa-search"></i>
+                </button>
+                <input name="txt" type="text" placeholder="Search..." class="form-control" />
             </div>
         </form>
     </div>
@@ -211,14 +268,32 @@
                 <div class="card border-e shadow rounded-3 w-100">
                     <img class="card-img-top" src="img/${g.gearImage}" alt="Gear image" />
                     <div class="card-body">
-                        <h5 class="card-title">${g.gearName}</h5>
+                        <!-- Thêm icon vào tên gear -->
+                        <h5 class="card-title">
+                            <i class="fas fa-campground me-2"></i>${g.gearName}
+                        </h5>
+
+                        <!-- Thêm icon vào giá -->
                         <h6 class="price">
+                            <i class="fas fa-dollar-sign me-2"></i>
                             <fmt:formatNumber value="${g.gearPrice}" type="currency"/>
                         </h6>
-                        <h6 class="category">${g.gearDecription}</h6>
+
+                        <!-- Thêm icon vào mô tả -->
+                        <h6 class="category">
+                            <i class="fas fa-info-circle me-2"></i>${g.gearDecription}
+                        </h6>
+
                         <div class="mt-3 d-flex justify-content-between">
-                            <a href="update?id=${g.gearId}" class="btn btn-primary">Update</a>
-                            <a href="#" onclick="showMess(${g.gearId})" class="btn btn-danger">Delete</a>
+                            <!-- Thêm icon vào nút Update -->
+                            <a href="update?id=${g.gearId}" class="btn btn-primary">
+                                <i class="fas fa-edit me-2"></i>Update
+                            </a>
+
+                            <!-- Thêm icon vào nút Delete -->
+                            <a href="#" onclick="showMess(${g.gearId})" class="btn btn-danger">
+                                <i class="fas fa-trash-alt me-2"></i>Delete
+                            </a>
                         </div>
                         <!-- Additional information -->
                     </div>
@@ -226,6 +301,7 @@
             </div>
         </c:forEach>
     </div>
+
 
     <!-- Pagination -->
     <div class="d-flex justify-content-center mt-2">
@@ -248,7 +324,7 @@
         visiblePages: 10,
         initiateStartPageClick: false,
         onPageClick: function (event, page) {
-            window.location.href = 'admin?page=' + page;
+            window.location.href = 'viewOwner?page=' + page;
         }
     });
 </script>

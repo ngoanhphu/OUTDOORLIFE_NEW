@@ -33,6 +33,11 @@ if(campsiteOrder != null && campsiteOrder.getVoucherId() != null){
     billTotal = campsiteOrder.getTotalAmountBooking() * (100 - discount) /100;
     }
 %>
+<head>
+    <meta charset="utf-8"></meta>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+</head>
 <body>
     <jsp:include page="header.jsp"></jsp:include>
         <div class="container">
@@ -44,19 +49,30 @@ if(campsiteOrder != null && campsiteOrder.getVoucherId() != null){
                                 <h3>Campsite booking information:</h3>
                             <c:if test="${sessionScope.CampsiteOrder != null}">
                                 <div style="padding-left: 20px; padding-bottom: 20px">
-                                    Id: ${sessionScope.CampsiteOrder.campsiteId}<br>
-                                    Start Date : ${sessionScope.CampsiteOrder.startDate}<br>
+                                    <div class="owner-image-container">
+                                        <img src="img/<%= campsiteOrder.getImage() %>" alt="Camp Image" class="owner-image rounded-circle shadow">
+                                    </div>
+                                    <br>
+                                    <br>
+                                    Date Book : ${sessionScope.CampsiteOrder.startDate}<br>
                                     End Date : ${sessionScope.CampsiteOrder.endDate}<br>
                                     Quantity: ${sessionScope.CampsiteOrder.quantity}<br>
                                     <span style="color: red">Campsite Total: ${sessionScope.CampsiteOrder.totalAmountBooking}</span>
                                 </div>
                             </c:if><c:if test="${sessionScope.CampsiteOrder == null}">
-                                <div style="padding-left: 20px; padding-bottom: 20px">Please booking <a href="campsite.jsp">campsite</a></div>
+                                <button class="btn btn-sm btn-primary btn-add-shortlist btn-outline"
+                                        style="background-color: #b6effb; border: 0px; margin-top: 13px;"
+                                        type="button"
+                                        onclick="window.location.href='campsite.jsp'">
+                                    Book Campsite Now!!!
+                                </button>
                             </c:if>
+
                         </div>
+                            <br>
+                            <br>
                         <h3>Gear order information:</h3>
                         <div class="total-price-container">
-                        </div>
                         <form id="cart-form" action="partialCheckout" method="post">
                             <table class="table table-light">
                                 <thead>
@@ -65,7 +81,6 @@ if(campsiteOrder != null && campsiteOrder.getVoucherId() != null){
                                         <th scope="col">Name</th>
                                         <th scope="col">Category</th>
                                         <th scope="col">Price</th>
-                                        <th scope="col">Order now</th>
                                         <th scope="col">Quantity</th>
                                         <th scope="col">Cancel</th>
                                     </tr>
@@ -81,9 +96,6 @@ if(campsiteOrder != null && campsiteOrder.getVoucherId() != null){
                                         <td><%=c.getGearDecription()%></td>
                                         <td class="gear-price"><%= dcf.format(c.getGearPrice()) %></td>
                                         <td>
-                                            <button type="button" class="btn btn-primary btn-sm" onclick="orderNow('<%= c.getGearId()%>')">Order</button>
-                                        </td>
-                                        <td>
                                             <div class="form-group d-flex justify-content-between">
                                                 <a class="btn btn-sm btn-incre" href="quantityset?action=inc&id=<%=c.getGearId()%>">
                                                     <i class="fas fa-plus-square"></i>
@@ -98,7 +110,19 @@ if(campsiteOrder != null && campsiteOrder.getVoucherId() != null){
                                     </tr>
                                     <%
                                         }
-                                    }
+                                    } else {
+                                    %>
+                                    <div style="text-align: center; margin-top: 20px;">
+                                        <button class="btn btn-sm btn-primary btn-add-shortlist btn-outline"
+                                                style="background-color: #b6effb; border: 0px; margin-top: 13px;"
+                                                type="button"
+                                                onclick="window.location.href='campinggear.jsp'">
+                                            Book Gear Now!!!
+                                        </button>
+                                    </div>
+                                    <%
+                                        }
+
                                     %>
                                 </tbody>
                             </table>
@@ -109,7 +133,7 @@ if(campsiteOrder != null && campsiteOrder.getVoucherId() != null){
                                  <h3 style="color: red">Total: <span id="bill-total"><%=billTotal%></span> ₫</h3>
                                 <input type="radio" name="paymentMethod" value="VNPay" checked=""/>VNpay<br>
                                 <input type="radio" name="paymentMethod" value="PayLater"/>Pay later<br>
-                                <button type="submit" class="mx-3 btn btn-primary" onclick="submitSelectedItems()">Order Selected</button>
+                                <button type="submit" class="mx-3 btn btn-primary" >Order Selected</button>
                             </div>
                         </form>
                     </div>
@@ -137,39 +161,12 @@ if(campsiteOrder != null && campsiteOrder.getVoucherId() != null){
             document.getElementById('sub-total').innerText = total + totalCampsite;
             document.getElementById('bill-total').innerText = (total + totalCampsite) * (100 - <%=discount%>)/100;
         }
-
-        function orderNow(gearId) {
-            let quantityElement = document.querySelector('input[name="quantity"]');
-            let quantity = parseInt(quantityElement.value); // Lấy số lượng từ input
-
-            // Cài đặt logic để gửi yêu cầu đặt hàng tới servlet
-            let form = document.createElement('form');
-            form.setAttribute('method', 'post');
-            form.setAttribute('action', 'ordernow');
-
-            let idInput = document.createElement('input');
-            idInput.setAttribute('type', 'hidden');
-            idInput.setAttribute('name', 'id');
-            idInput.setAttribute('value', gearId);
-            form.appendChild(idInput);
-
-            let quantityInput = document.createElement('input');
-            quantityInput.setAttribute('type', 'hidden');
-            quantityInput.setAttribute('name', 'quantity');
-            quantityInput.setAttribute('value', quantity);
-            form.appendChild(quantityInput);
-
-            document.body.appendChild(form);
-            form.submit();
-        }
-
-
     </script>
     <link href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet" />
             <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
             <c:if test="${message != null}">
                 <script type="text/javascript">
-                                            toastr.success(`${message}`, 'Success', {timeOut: 1000});
+                   toastr.success(`${message}`, 'Success', {timeOut: 1000});
                 </script>
             </c:if>
             <c:if test="${error != null}">

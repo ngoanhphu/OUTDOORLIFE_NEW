@@ -204,12 +204,12 @@ public class GearDAO {
             ps.setString(1, id);
             rs = ps.executeQuery();
             if (rs.next()) {
-                return new Gear(rs.getInt(1),
-                        rs.getInt(2),
+                return new Gear(rs.getInt("Gear_id"),
                         rs.getInt("Price"),
-                        rs.getString(4),
-                        rs.getString(5),
-                        rs.getString(6));
+                        rs.getInt("Campsite_owner"),
+                        rs.getString("Name"),
+                        rs.getString("Description"),
+                        rs.getString("Image"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -397,4 +397,69 @@ public class GearDAO {
             ps.executeUpdate();
         }
     }
+    public List<Gear> searchByNameAndOwner(String txtSearch, int ownerId) throws Exception {
+        List<Gear> gears = new ArrayList<>();
+        String query = "SELECT Gear_id, Name, Description, Image, Price " +
+                "FROM GEAR " +
+                "WHERE Name LIKE ? AND Campsite_owner = ? AND Name NOT LIKE ?";  // Thêm điều kiện NOT LIKE để loại trừ từ "Lều"
+
+        try (Connection con = new DBContext().getConnection();
+             PreparedStatement ps = con.prepareStatement(query)) {
+
+            // Gán tham số tìm kiếm
+            ps.setString(1, "%" + txtSearch + "%");
+            ps.setInt(2, ownerId); // Gán ID của owner đang đăng nhập
+            ps.setString(3, "%Lều%"); // Loại trừ các gear có từ "Lều"
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Gear gear = new Gear();
+                    gear.setGearId(rs.getInt("Gear_id")); // Gán Gear_id
+                    gear.setGearName(rs.getString("Name")); // Gán Name
+                    gear.setGearDecription(rs.getString("Description")); // Gán Description
+                    gear.setGearImage(rs.getString("Image")); // Gán Image
+                    gear.setGearPrice(rs.getInt("Price")); // Gán Price
+                    gears.add(gear);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); // In lỗi ra log
+            throw new Exception("Lỗi trong quá trình tìm kiếm Gear.", e); // Ném lỗi lên tầng cao hơn
+        }
+        return gears;
+    }
+    public List<Gear> searchByNameAndOwnerTent(String txtSearch, int ownerId) throws Exception {
+        List<Gear> gears = new ArrayList<>();
+        String query = "SELECT Gear_id, Name, Description, Image, Price " +
+                "FROM GEAR " +
+                "WHERE Name LIKE ? AND Campsite_owner = ? AND Name LIKE ?"; // Thêm điều kiện LIKE cho từ "Lều"
+
+        try (Connection con = new DBContext().getConnection();
+             PreparedStatement ps = con.prepareStatement(query)) {
+
+            // Gán tham số tìm kiếm
+            ps.setString(1, "%" + txtSearch + "%");  // Gán từ khóa tìm kiếm vào câu truy vấn
+            ps.setInt(2, ownerId);  // Gán ID của owner đang đăng nhập
+            ps.setString(3, "%Lều%");  // Thêm điều kiện tìm các gear có chứa từ "Lều"
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Gear gear = new Gear();
+                    gear.setGearId(rs.getInt("Gear_id")); // Gán Gear_id
+                    gear.setGearName(rs.getString("Name")); // Gán Name
+                    gear.setGearDecription(rs.getString("Description")); // Gán Description
+                    gear.setGearImage(rs.getString("Image")); // Gán Image
+                    gear.setGearPrice(rs.getInt("Price")); // Gán Price
+                    gears.add(gear);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); // In lỗi ra log
+            throw new Exception("Lỗi trong quá trình tìm kiếm Gear.", e); // Ném lỗi lên tầng cao hơn
+        }
+        return gears;
+    }
+
+
+
 }

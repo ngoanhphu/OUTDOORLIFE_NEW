@@ -180,7 +180,7 @@
             <h1>Đánh giá và phản hồi</h1>
 
             <form action="feedback" method="POST" id="feedback-form">
-
+                <input type="hidden" name="campsiteId" value="${campsiteId}">
                 <div class="mb-3">
                     <label for="rating" class="form-label">Đánh giá:</label>
                     <div class="rating">
@@ -222,8 +222,8 @@
                 </c:forEach>
             </div>
 
-        </div>               
-        
+        </div>
+
 
 
 

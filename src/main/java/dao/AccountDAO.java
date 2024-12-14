@@ -68,6 +68,7 @@ public class AccountDAO {
         return accounts;
     }
 
+
     public boolean updateAccount(User user) {
         String sql = "UPDATE [ACCOUNT] SET first_name = ?, last_name = ?, Gmail = ?, phone_number = ?, passwordHash = ?, isAdmin = ?, isOwner = ? WHERE Account_id = ?";
         try (PreparedStatement ps = con.prepareStatement(sql)) {
@@ -147,5 +148,19 @@ public class AccountDAO {
             e.printStackTrace();
         }
         return accounts;
+    }
+
+    public int getOwnerIdByAccountId(int accountId) throws SQLException {
+        String query = "SELECT owner_id FROM [dbo].[OWNER] WHERE Account_id = ?";
+        try (PreparedStatement stmt = this.con.prepareStatement(query)) {
+            stmt.setInt(1, accountId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("owner_id");
+                }
+            }
+        }
+        return -1; // Trả về -1 nếu không tìm thấy
+
     }
 }
