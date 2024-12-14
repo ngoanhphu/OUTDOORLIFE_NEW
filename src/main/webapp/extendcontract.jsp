@@ -74,11 +74,11 @@
         <div class="total-price-container">
             <h3>Total <span id="total-price"></span> vnd</h3>
             <input type="hidden" id="total-price-input" name="total-price" value="0">
-            <input type="radio" name="paymentMethod" value="VNPay" checked=""/>VNpay<br>
+            <input type="radio" name="paymentMethod" value="VNPay" hidden="hidden" checked=""/>VNpay<br>
             <input type="submit" value="Pay with VNPay">
         </div>
     </form>
-    <a href="../index.jsp" class="btn-home">Return to Homepage</a>
+    <a href="index.jsp" class="btn-home">Return to Homepage</a>
 </div>
 
 <script>

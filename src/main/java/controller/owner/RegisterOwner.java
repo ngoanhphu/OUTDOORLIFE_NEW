@@ -116,10 +116,10 @@ public class RegisterOwner extends HttpServlet {
 
             boolean isAdded = ownerDAO.addOwner(owner, session);
             if (isAdded) {
-                response.sendRedirect("success.jsp");
+                response.sendRedirect("index.jsp");
             } else {
                 request.setAttribute("errorMessage", "Failed to register owner.");
-                request.getRequestDispatcher("owner/registerOwner.jsp").forward(request, response);
+                request.getRequestDispatcher("registerOwner.jsp").forward(request, response);
             }
         } catch (ParseException e) {
             throw new ServletException("Date parsing error", e);

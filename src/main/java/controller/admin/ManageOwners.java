@@ -12,7 +12,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
 
-@WebServlet("/admin/manageOwners")
+@WebServlet("/manageOwners")
 public class ManageOwners extends HttpServlet {
     private OwnerDAO ownerDAO;
 

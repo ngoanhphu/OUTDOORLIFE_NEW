@@ -50,7 +50,7 @@ public class CampsiteApproving extends HttpServlet {
                 request.setAttribute("campsites", paginatedCampsites);
                 request.setAttribute("currentPage", page);
                 request.setAttribute("totalPages", totalPages);
-                request.getRequestDispatcher("/admin/campsiteApproving.jsp").forward(request, response);
+                request.getRequestDispatcher("/campsiteApproving.jsp").forward(request, response);
             } catch (Exception e) {
                 throw new ServletException("Error retrieving campsites", e);
             }
