@@ -204,12 +204,12 @@ public class GearDAO {
             ps.setString(1, id);
             rs = ps.executeQuery();
             if (rs.next()) {
-                return new Gear(rs.getInt(1),
-                        rs.getInt(2),
+                return new Gear(rs.getInt("Gear_id"),
                         rs.getInt("Price"),
-                        rs.getString(4),
-                        rs.getString(5),
-                        rs.getString(6));
+                        rs.getInt("Campsite_owner"),
+                        rs.getString("Name"),
+                        rs.getString("Description"),
+                        rs.getString("Image"));
             }
         } catch (SQLException e) {
             e.printStackTrace();

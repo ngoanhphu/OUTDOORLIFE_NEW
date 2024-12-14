@@ -1,3 +1,5 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -6,7 +8,7 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #e8f5e9;
+            background-color: #f4f4f4;
             margin: 0;
             padding: 0;
             display: flex;
@@ -23,7 +25,7 @@
         }
         h2 {
             text-align: center;
-            color: #2e7d32;
+            color: #333;
         }
         .form-group {
             margin-bottom: 15px;
@@ -43,22 +45,18 @@
             border-radius: 4px;
             box-sizing: border-box;
         }
-        input[type="submit"], .btn-download, .btn-upload {
+        input[type="submit"] {
             width: 100%;
             padding: 10px;
-            background-color: #4caf50;
+            background-color: #007bff;
             border: none;
             border-radius: 4px;
             color: #fff;
             font-size: 16px;
             cursor: pointer;
-            margin-top: 10px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
         }
-        input[type="submit"]:hover, .btn-download:hover, .btn-upload:hover {
-            background-color: #388e3c;
+        input[type="submit"]:hover {
+            background-color: #0056b3;
         }
         .form-grid {
             display: grid;
@@ -68,23 +66,6 @@
         .form-group.full-width {
             grid-column: span 3;
         }
-        .form-group.inline {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .file-input-wrapper {
-            position: relative;
-            overflow: hidden;
-            display: inline-block;
-        }
-        .file-input-wrapper input[type="file"] {
-            font-size: 100px;
-            position: absolute;
-            left: 0;
-            top: 0;
-            opacity: 0;
-        }
     </style>
 </head>
 <body>
@@ -92,12 +73,9 @@
     <h2>Owner Registration</h2>
     <form action="registerOwner" method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
         <div class="form-grid">
-            <div class="form-group inline full-width">
-                <a href="<c:url value='E:\Downloads\doc\up\contract.doc'/>" class="btn-download" download>Download Contract</a>
-                <div class="file-input-wrapper">
-                    <button class="btn-upload">Upload Signed Contract Document</button>
-                    <input type="file" id="fileInput" name="fileInput" accept=".doc" required>
-                </div>
+            <div class="form-group full-width">
+                <label for="downloadDoc">Download Contract Document:</label>
+                <a href="<c:url value='/resources/contract.doc'/>" download>Contract</a>
             </div>
             <div class="form-group">
                 <label for="occupation">Occupation:</label>
@@ -130,6 +108,10 @@
                     <option value="female">Female</option>
                     <option value="none">None of above</option>
                 </select>
+            </div>
+            <div class="form-group full-width">
+                <label for="fileInput">Upload Signed Contract Document:</label>
+                <input type="file" id="fileInput" name="fileInput" accept=".doc" required>
             </div>
             <div class="form-group">
                 <label for="startDate">Start Date:</label>
@@ -184,18 +166,6 @@
         endDateInput.name = 'endDate';
         endDateInput.value = endDate.toISOString().split('T')[0];
         document.querySelector('form').appendChild(endDateInput);
-
-        const identification = document.getElementById('identification').value;
-        if (!/^\d{9}$/.test(identification) && !/^\d{12}$/.test(identification)) {
-            alert('Identification number must be 9 or 12 digits.');
-            return false;
-        }
-
-        const taxCode = document.getElementById('taxCode').value;
-        if (!/^\d{10}$/.test(taxCode) && !/^\d{13}$/.test(taxCode)) {
-            alert('Tax code must be 10 or 13 digits.');
-            return false;
-        }
 
         return true;
     }
