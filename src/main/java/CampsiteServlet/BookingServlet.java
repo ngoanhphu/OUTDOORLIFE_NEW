@@ -55,7 +55,6 @@ public class BookingServlet extends HttpServlet {
         String checkOutStr = request.getParameter("CheckOut");
         String quantityStr = request.getParameter("quantity");
         String CampPriceStr = request.getParameter("CampPrice");
-//        String discountCode = request.getParameter("DiscountCode");
         String voucherId = request.getParameter("voucher");
 
         if (campIdStr != null && checkInStr != null && checkOutStr != null) {
@@ -75,6 +74,7 @@ public class BookingServlet extends HttpServlet {
                 }
 
                 Campsite campsite = campsiteDAO.getSingleCampsite(campId);
+                request.setAttribute("campsite_order", campsite);
                 if (campsite.getLimite() < quantity) {
                     request.setAttribute("error", "This campsite can only be booked for a maximum of " + campsite.getLimite());
                     request.getRequestDispatcher("booking").forward(request, response);
@@ -101,12 +101,11 @@ public class BookingServlet extends HttpServlet {
                 order.setPaymentStatus(false);
                 order.setTimeStamp(new Timestamp(System.currentTimeMillis()));
                 order.setQuantity(quantity);
-
+                order.setImage(campsite.getCampImage());
                 Timestamp startDate = order.getStartDate();
                 Timestamp endDate = order.getEndDate();
                 long milliseconds = endDate.getTime() - startDate.getTime();
                 int bookingDays = (int) (milliseconds / (1000 * 60 * 60 * 24));
-
                 order.setTotalAmountBooking(quantity * Integer.parseInt(CampPriceStr) * bookingDays);
 
                 if (voucherId != null && !voucherId.isEmpty()) {

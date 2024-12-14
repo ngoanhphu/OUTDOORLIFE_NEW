@@ -66,10 +66,12 @@ public class ScheduleRentServlet extends HttpServlet {
             OrderDAO orderDao = new OrderDAO(db.getConnection());
             List<Order> orders = orderDao.getOrderByDateAndCampsite(date.toString(), datePlus7Days.toString(),campsiteId);
             request.setAttribute("orders", orders);
+            System.out.println("order"+orders);
             
             //get list campsite
             CampsiteDAO campsiteDAO = new CampsiteDAO();
             List<Campsite> campsites = campsiteDAO.getAllCampside();
+            System.out.println("camsite"+campsites);
             request.setAttribute("campsites", campsites);
             request.setAttribute("campsite", campsiteIdSelected);
             
