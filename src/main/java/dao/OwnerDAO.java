@@ -3,6 +3,7 @@ package dao;
 import dto.OrderRevenueDTO;
 import dto.OwnerDTO;
 import jakarta.servlet.http.HttpSession;
+import model.Campsite;
 import model.Owner;
 import model.OwnerContract;
 import model.User;
@@ -21,6 +22,12 @@ public class OwnerDAO {
     public OwnerDAO(DBContext db) {
         this.db = db;
     }
+
+    public Connection getConnection() throws Exception {
+        return db.getConnection();
+    }
+
+
 
 
     public boolean insertOwner(OwnerContract contract, HttpSession session) throws SQLException {
@@ -450,6 +457,57 @@ public class OwnerDAO {
             throw new RuntimeException(ex);
         }
         return orderRevenueDTOs;
+    }
+
+    public List<Campsite> getCampsitesWithStatusFalse() throws Exception {
+        List<Campsite> campsites = new ArrayList<>();
+        String query = "SELECT * FROM CAMPSITE WHERE Status = 0 AND (adminApproved = 0 OR adminApproved IS NULL)";
+        try (Connection con = getConnection(); PreparedStatement ps = con.prepareStatement(query); ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                Campsite campsite = new Campsite();
+                campsite.setCampId(rs.getInt("Campsite_id"));
+                campsite.setCampPrice(rs.getInt("Price"));
+                campsite.setCampOwner(rs.getInt("Campsite_owner"));
+                campsite.setCampAddress(rs.getString("Address"));
+                campsite.setCampName(rs.getString("Name"));
+                campsite.setCampDescription(rs.getString("Description"));
+                campsite.setCampImage(rs.getString("Image"));
+                campsite.setCampStatus(rs.getBoolean("Status"));
+                campsite.setLimite(rs.getInt("Quantity"));
+                campsites.add(campsite);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return campsites;
+    }
+
+    public boolean approveCampsite(int campsiteId) throws SQLException {
+        String query = "UPDATE CAMPSITE SET Status = 1, adminApproved = 1 WHERE Campsite_id = ?";
+        try (Connection con = getConnection(); PreparedStatement ps = con.prepareStatement(query)) {
+            ps.setInt(1, campsiteId);
+            int rowsAffected = ps.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public boolean disapproveCampsite(int campsiteId) throws SQLException {
+        String query = "UPDATE CAMPSITE SET Status = 0, adminApproved = 1 WHERE Campsite_id = ?";
+        try (Connection con = getConnection(); PreparedStatement ps = con.prepareStatement(query)) {
+            ps.setInt(1, campsiteId);
+            int rowsAffected = ps.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }
