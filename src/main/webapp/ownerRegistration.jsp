@@ -1,4 +1,5 @@
-
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -11,6 +12,9 @@
             color: #333;
             margin: 0;
             padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
         .container {
             width: 80%;
@@ -19,6 +23,7 @@
             background-color: #fff;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             border-radius: 8px;
+            flex: 1;
         }
         h2 {
             text-align: center;
@@ -54,10 +59,40 @@
         .actions {
             text-align: center;
         }
+        .footer {
+            background-color: #f0f8ff;
+            text-align: center;
+            padding: 10px 0;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+        }
+        .pagination {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .pagination a {
+            margin: 0 5px;
+            padding: 8px 16px;
+            text-decoration: none;
+            color: #4CAF50;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .pagination a.active {
+            background-color: #4CAF50;
+            color: white;
+            border: 1px solid #4CAF50;
+        }
+        .pagination a:hover {
+            background-color: #ddd;
+        }
     </style>
 </head>
 <body>
-<%@ include file="../headeradmin.jsp" %>
+<div style="margin-bottom: 150px">
+    <%@ include file="headeradmin.jsp" %>
+</div>
 <div class="container">
     <h2>Pending Owners</h2>
     <c:if test="${not empty pendingOwners}">
@@ -106,12 +141,17 @@
             </c:forEach>
             </tbody>
         </table>
+        <div class="pagination">
+            <c:forEach var="i" begin="1" end="${totalPages}">
+                <a href="ownerRegistration?page=${i}" class="${i == currentPage ? 'active' : ''}">${i}</a>
+            </c:forEach>
+        </div>
     </c:if>
     <c:if test="${empty pendingOwners}">
         <p>No pending owners found.</p>
     </c:if>
 </div>
-
+<%@ include file="footer.jsp" %>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         document.querySelectorAll('.date-format').forEach(function(element) {

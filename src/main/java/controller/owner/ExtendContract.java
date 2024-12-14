@@ -16,7 +16,7 @@ import java.sql.SQLException;
 import java.util.Calendar;
 import java.sql.Date;
 
-@WebServlet("/owner/extendContract")
+@WebServlet("/extendContract")
 public class ExtendContract extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
