@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.*;
 import model.*;
 
+
 public class OrderDAO {
 
     private Connection con;
@@ -352,12 +353,12 @@ public class OrderDAO {
     public List<Order> getOrdersByOwnerId(int ownerId) {
         List<Order> ordersList = new ArrayList<>();
         try {
-             PreparedStatement pst = this.con.prepareStatement("SELECT o.Orders_id, o.TimeStamp, o.Booker, o.Campsite_id, o.Quantity, " +
-                     "o.StartDate, o.EndDate, o.ApproveStatus, o.PaymentStatus, " +
-                     "o.TotalAmount, o.BookingPrice " +
-                     "FROM [dbo].[ORDERS] o " +
-                     "INNER JOIN [dbo].[CAMPSITE] c ON o.Campsite_id = c.Campsite_id " +
-                     "WHERE c.Campsite_owner = ?");
+            PreparedStatement pst = this.con.prepareStatement("SELECT o.Orders_id, o.TimeStamp, o.Booker, o.Campsite_id, o.Quantity, " +
+                    "o.StartDate, o.EndDate, o.ApproveStatus, o.PaymentStatus, " +
+                    "o.TotalAmount, o.BookingPrice " +
+                    "FROM [dbo].[ORDERS] o " +
+                    "INNER JOIN [dbo].[CAMPSITE] c ON o.Campsite_id = c.Campsite_id " +
+                    "WHERE c.Campsite_owner = ?");
             pst.setInt(1, ownerId);
             try (ResultSet resultSet = pst.executeQuery()) {
                 while (resultSet.next()) {
@@ -385,12 +386,13 @@ public class OrderDAO {
 
         return ordersList;
     }
+
     public String getFullNameById(int accountId) {
         String fullName = null;
         String sql = "SELECT first_name, last_name FROM ACCOUNT WHERE Account_id = ?";
 
         try (
-             PreparedStatement preparedStatement = this.con.prepareStatement(sql)) {
+                PreparedStatement preparedStatement = this.con.prepareStatement(sql)) {
             preparedStatement.setInt(1, accountId);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
@@ -405,6 +407,54 @@ public class OrderDAO {
         }
         return fullName;
     }
+    public List<Order> getOrderByDateCampsiteAndOwner(String startDate, String endDate, int campsiteId, int ownerId) {
+        List<Order> list = new ArrayList<>();
+        try {
+            // Prepare the SQL query with the new ownerId and campsiteId filters
+            String query = "SELECT O.*, " +
+                    "       A.first_name + ' ' + A.last_name AS BookerName, " +
+                    "       C.Campsite_owner AS OwnerId " +
+                    "FROM ORDERS O " +
+                    "LEFT JOIN ACCOUNT A ON O.Booker = A.Account_id " +
+                    "LEFT JOIN CAMPSITE C ON O.Campsite_id = C.Campsite_id " +
+                    "WHERE O.StartDate <= ? AND O.EndDate >= ? " +
+                    "  AND (? = 0 OR O.Campsite_id = ?) " +
+                    "  AND (? = 0 OR C.Campsite_owner = ?);";
+
+            PreparedStatement pst = this.con.prepareStatement(query);
+
+            // Set parameters for the query
+            pst.setString(1, endDate);
+            pst.setString(2, startDate);
+            pst.setInt(3, campsiteId);
+            pst.setInt(4, campsiteId);
+            pst.setInt(5, ownerId);
+            pst.setInt(6, ownerId);
+
+            // Execute the query
+            ResultSet rs = pst.executeQuery();
+            while (rs.next()) {
+                Order order = new Order();
+
+                // Populate the Order object with data from the result set
+                order.setOrdersId(rs.getInt("Orders_id"));
+                order.setBookerName(rs.getString("BookerName"));
+                order.setStartDate(rs.getTimestamp("StartDate"));
+                order.setEndDate(rs.getTimestamp("EndDate"));
+
+                // Add the Order object to the list
+                list.add(order);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println(e.getMessage());
+        }
+
+        // Return the list of orders
+        return list;
+    }
 
 
 }
+
+

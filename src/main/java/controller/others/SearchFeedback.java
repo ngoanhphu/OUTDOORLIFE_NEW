@@ -42,9 +42,12 @@ public class SearchFeedback extends HttpServlet {
         try {
             HttpSession session = request.getSession();
             List<Feedback> list = dao.searchFeedbackByUser(txtSeaech);
+            System.out.println("Lisst"+list);
             if (list.size() > 0) {
                 session.setAttribute("LIST_ADMIN_FFEDBACK", list);
                 url = "showFeedback.jsp";
+            } else {
+                url="login.jsp";
             }
         } catch (Exception e) {
             e.printStackTrace();

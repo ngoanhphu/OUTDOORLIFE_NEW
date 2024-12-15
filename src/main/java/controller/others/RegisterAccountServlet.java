@@ -45,8 +45,10 @@ public class RegisterAccountServlet extends HttpServlet {
                     guest.setCode(code);
 
                     // Kiểm tra trạng thái của isOwner và gán giá trị đúng
-                    if (isOwner != null && isOwner.equals("on")) {
+                    if (isOwner != null && isOwner.equals("true")) {
                         guest.setOwner(true);
+                        System.out.println("isOwner: " + isOwner);
+
                     } else {
                         guest.setOwner(false);
                     }
