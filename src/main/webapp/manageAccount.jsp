@@ -1,168 +1,211 @@
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<style>
-    .container {
-        padding: 2rem 0;
-    }
-    .card {
-        background-color: #fff;
-        border: none;
-        border-radius: 0.5rem;
-        margin-bottom: 1.5rem;
-        display: flex;
-        flex-direction: column;
-        height: 100%;
-    }
-    .card-header {
-        padding: 1rem 1.5rem;
-        margin-bottom: 1rem;
-        background-color: #f8f9fa;
-        border-radius: 0.5rem 0.5rem 0 0;
-        text-align: center;
-        font-size: 1.25rem;
-        font-weight: bold;
-    }
-    .card-body {
-        padding: 1.5rem;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-    }
-    .card-img-top {
-        height: 200px;
-        object-fit: cover;
-        border-radius: 0.5rem 0.5rem 0 0;
-    }
-    .card-title {
-        font-size: 1.25rem;
-        margin: 0.5rem 0;
-    }
-    .price, .category {
-        font-size: 1rem;
-        margin: 0.25rem 0;
-    }
-    .btn {
-        width: 80%;
-    }
-    .row {
-        margin-bottom: 1.5rem; /* Adjust this value to increase/decrease spacing between rows */
-    }
-    .create-button-container {
-        display: flex;
-        justify-content: center;
-        margin-bottom: 2rem;
-    }
-    .btn-create {
-        background-color: #007bff;
-        color: white;
-        padding: 0.75rem 1.5rem;
-        font-size: 1rem;
-        border: none;
-        border-radius: 0.5rem;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-    }
-    .btn-create:hover {
-        background-color: #0056b3;
-    }
-</style>
-
-<body>
-    <jsp:include page="headeradmin.jsp"></jsp:include>
-        <div class="container" style="margin-top: 200px">
-            <!-- Create Gear Button -->
-
-            <!--        <div class="search-container">
-                        <form action="search" method="post" class="form-inline my-2 my-lg-0">
-                            <div class="input-group input-group-sm">
-                                <input name="txt" type="text" placeholder="Search...">
-                                <div class="input-group-append">
-                                    <button type="submit" class="btn btn-secondary btn-number">
-                                        <i class="fa fa-search"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>-->
-
-            <div class="row">
-                <table class="table table-light">
-                    <thead>
-                        <tr>
-                            <th scope="col">Id</th>
-                            <th scope="col">First Name</th>
-                            <th scope="col">Last Name</th>
-                            <th scope="col">Email</th>
-                            <th scope="col">Phone</th>
-                            <th scope="col">Role</th>
-                            <th scope="col">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    <c:forEach var="a" items="${accounts}">
-                        <tr>
-                            <td>${a.id}</td>
-                            <td>${a.firstName}</td>
-                            <td>${a.lastName}</td>
-                            <td>${a.email}</td>
-                            <td>
-                                ${a.phoneNumber}
-                            </td>
-                            <c:if test="${a.admin}">
-                                <td>
-                                    Admin
-                                </td>
-                            </c:if>
-                            <c:if test="${a.user}">
-                                <td>
-                                    User
-                                </td>
-                            </c:if>
-                            <c:if test="${a.staff}">
-                                <td>
-                                    Staff
-                                </td>
-                            </c:if>
-                            <td><c:if test="${a.staff}"><a a href="#" onclick="showMess(${a.id})"  class="btn btn-sm btn-danger">Remove</a> </c:if></td>
-                            </tr>
-                    </c:forEach>
-                </tbody>
-            </table>
-
-        </div>
-
-        <div class="d-flex justify-content-center mt-2">
-            <div id="pagination"></div>
-        </div>
-    </div>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/twbs-pagination/1.4.2/jquery.twbsPagination.min.js"></script>
-
-    <script type="text/javascript">
-                // Setup variables for pagination
-                let itemsPerPage = 8;
-                let totalPages = ${totalPages};
-                let currentPage = ${currentPage};
-
-                // Initialize pagination plugin
-                $('#pagination').twbsPagination({
-                    startPage: currentPage,
-                    totalPages: totalPages,
-                    visiblePages: 10,
-                    initiateStartPageClick: false,
-                    onPageClick: function (event, page) {
-                        window.location.href = 'manage-account?page=' + page;
-                    }
-                });
-    </script>
-
-    <script>
-        function showMess(gearId) {
-            var option = confirm('Are you sure to delete');
-            if (option === true) {
-                window.location.href = 'delete-staff?id=' + gearId;
-            }
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Accounts</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f8ff;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
-    </script>
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            flex: 1;
+        }
+        h2 {
+            text-align: center;
+            color: #4CAF50;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        tr:hover {
+            background-color: #ddd;
+        }
+        .pagination {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .pagination a {
+            margin: 0 5px;
+            padding: 8px 16px;
+            text-decoration: none;
+            color: #4CAF50;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .pagination a.active {
+            background-color: #4CAF50;
+            color: white;
+            border: 1px solid #4CAF50;
+        }
+        .pagination a:hover {
+            background-color: #ddd;
+        }
+        .btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-align: center;
+        }
+        .btn:hover {
+            background-color: #45a049;
+        }
+        .form-container {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        .form-container input, .form-container select {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .alert {
+            color: red;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+<%@ include file="headeradmin.jsp" %>
+<div class="container" style="margin-top: 200px">
+    <h2>Manage Accounts</h2>
+    <form method="get" action="manage-account">
+        <input type="text" name="search" placeholder="Search by ID, Email, or Phone" value="${searchQuery}" />
+        <button type="submit" class="btn">Search</button>
+    </form>
+    <c:if test="${not empty message}">
+        <div class="alert">${message}</div>
+    </c:if>
+    <table>
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Role</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <c:forEach var="a" items="${accounts}">
+            <tr>
+                <td>${a.id}</td>
+                <td>${a.firstName}</td>
+                <td>${a.lastName}</td>
+                <td>${a.email}</td>
+                <td>${a.phoneNumber}</td>
+                <td>
+                    <c:choose>
+                        <c:when test="${a.admin}">Admin</c:when>
+                        <c:when test="${a.owner}">Owner</c:when>
+                        <c:otherwise>User</c:otherwise>
+                    </c:choose>
+                </td>
+                <td>
+                    <button class="btn" onclick="editAccount(${a.id}, '${a.firstName}', '${a.lastName}', '${a.email}', '${a.phoneNumber}', ${a.admin}, ${a.owner})">Edit</button>
+                </td>
+            </tr>
+        </c:forEach>
+        </tbody>
+    </table>
+    <div class="pagination">
+        <c:forEach var="i" begin="1" end="${totalPages}">
+            <a href="manage-account?page=${i}&search=${searchQuery}" class="${i == currentPage ? 'active' : ''}">${i}</a>
+        </c:forEach>
+    </div>
+</div>
+
+<div class="form-container" id="editForm">
+    <h2>Edit Account</h2>
+    <form method="post" action="manage-account">
+        <input type="hidden" name="action" value="update">
+        <input type="hidden" name="id" id="accountId">
+        <label for="firstName">First Name:</label>
+        <input type="text" name="firstName" id="firstName" required>
+        <label for="lastName">Last Name:</label>
+        <input type="text" name="lastName" id="lastName" required>
+        <label for="email">Email:</label>
+        <input type="email" name="email" id="email" required>
+        <label for="phoneNumber">Phone Number:</label>
+        <input type="text" name="phoneNumber" id="phoneNumber" required>
+        <label for="isAdmin">Admin:</label>
+        <select name="isAdmin" id="isAdmin">
+            <option value="true">Yes</option>
+            <option value="false">No</option>
+        </select>
+        <label for="isOwner">Owner:</label>
+        <select name="isOwner" id="isOwner">
+            <option value="true">Yes</option>
+            <option value="false">No</option>
+        </select>
+        <button type="submit" class="btn">Update</button>
+        <button type="button" class="btn" onclick="closeForm()">Cancel</button>
+    </form>
+</div>
+<%@ include file="footer.jsp" %>
+
+<script>
+    function editAccount(id, firstName, lastName, email, phoneNumber, isAdmin, isOwner) {
+        document.getElementById('accountId').value = id;
+        document.getElementById('firstName').value = firstName;
+        document.getElementById('lastName').value = lastName;
+        document.getElementById('email').value = email;
+        document.getElementById('phoneNumber').value = phoneNumber;
+        document.getElementById('isAdmin').value = isAdmin;
+        document.getElementById('isOwner').value = isOwner;
+        document.getElementById('editForm').style.display = 'block';
+    }
+
+    function closeForm() {
+        document.getElementById('editForm').style.display = 'none';
+    }
+</script>
 </body>
+</html>
