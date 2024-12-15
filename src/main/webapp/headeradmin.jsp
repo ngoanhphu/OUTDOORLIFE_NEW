@@ -1,4 +1,20 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page import="model.Notification" %>
+<%@ page import="java.util.List" %>
+<%@ page import="java.util.ArrayList" %>
+<%
+    int unreadCount = 0; // Mặc định là 0 nếu không có giá trị
+    List<Notification> notifications = new ArrayList<>();
+
+    if (request.getAttribute("unreadCount") != null) {
+        unreadCount = (int) request.getAttribute("unreadCount");
+    }
+
+    if (request.getAttribute("notifications") != null) {
+        notifications = (List<Notification>) request.getAttribute("notifications");
+    }
+%>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -77,6 +93,37 @@
                         <a href="manage-campsite" class="nav-item nav-link">Manage Campsites</a>
                         <a href="manage-order" class="nav-item nav-link">Manage Orders</a>
                         <a href="manage-voucher" class="nav-item nav-link">Manage Vouchers</a>
+
+                        <div class="dropdown nav-item">
+                            <button class="btn btn-outline-primary dropdown-toggle d-flex align-items-center" type="button" id="notificationDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-bell me-2"></i> Notifications <span class="badge bg-danger ms-2"><%= unreadCount %></span>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end shadow-lg p-2" aria-labelledby="notificationDropdown" style="min-width: 350px;">
+                                <%
+                                    if (notifications != null && !notifications.isEmpty()) {
+                                        for (Notification notification : notifications) {
+                                %>
+                                <li class="dropdown-item notification-item border-bottom py-2">
+                                    <div class="d-flex align-items-center">
+                                        <div class="notification-icon me-3">
+                                            <i class="fas fa-exclamation-circle fa-lg text-warning"></i>
+                                        </div>
+                                        <div class="notification-content flex-grow-1">
+                                            <p class="mb-0 text-truncate" style="max-width: 220px;"><%= notification.getDescription() %></p>
+                                            <small class="text-muted" style="font-size: 0.75em;"><%= notification.getNotificationDate() %></small>
+                                        </div>
+                                    </div>
+                                </li>
+                                <%
+                                    }
+                                } else {
+                                %>
+                                <li class="dropdown-item text-center text-muted py-3">No Notifications</li>
+                                <%
+                                    }
+                                %>
+                            </ul>
+                        </div>
                         <a href="extendContract" class="nav-item nav-link">Contract</a>
 
 
@@ -172,7 +219,7 @@
 
 <!-- Template Javascript -->
 <script src="js/main.js"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 <script>
     function openOrderPopup() {

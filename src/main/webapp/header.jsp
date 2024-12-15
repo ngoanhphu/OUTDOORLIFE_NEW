@@ -70,15 +70,11 @@
                     <div class="collapse navbar-collapse bg-light" id="navbarCollapse">
                         <div class="navbar-nav ms-auto">
                             <a href="index.jsp" class="nav-item nav-link active">Home</a>
-<!--                            <a href="about.jsp" class="nav-item nav-link">About</a>
-                            <a href="service.jsp" class="nav-item nav-link">Services</a>-->
                             <a href="campsite.jsp" class="nav-item nav-link">Campsite</a>
                             <a href="campinggear.jsp" class="nav-item nav-link">Camping gear</a>
                               <c:if test = "${not empty currentUser }">
                              <a href="orderscamp.jsp" class="nav-item nav-link">Order History</a>
-
                              </c:if>
-                            <!--<a href="contact.jsp" class="nav-item nav-link">Contact</a>-->
                              <li class="nav-item"><a class="nav-link" href="Cart.jsp">Cart <span class="badge-custom">${cart_list.size()}</span> </a></li>
                             <a href="map.jsp" class="nav-item nav-link"><Map></Map></a>
                         </div>
@@ -94,6 +90,7 @@
                                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                             <li><a class="dropdown-item" href="UserProfile.jsp">Profile</a></li>
                                             <li><a class="dropdown-item" href="logout">Logout</a></li>
+                                            <li><a class="dropdown-item" href="reportForward">Report</a></li>
                                         </ul>
                                     </div>
                                 </div>
