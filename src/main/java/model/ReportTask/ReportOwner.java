@@ -1,29 +1,32 @@
 package model.ReportTask;
 
-import java.util.Date;
+import java.sql.Timestamp;
+import java.util.List;
 
-public class ReportOwner {
-    private int reportId;
+
+public class ReportOwner implements Report {
+    private int id;
     private int reporter;
     private int ownerId;
-    private Date reportDate;
+    private Timestamp reportDate;
     private String description;
     private int reportDetailId;
     private String status;
+    private List<String> detailAttributes;
 
     public ReportOwner() {
     }
 
-    public ReportOwner(String description, int ownerId, Date reportDate, int reportDetailId, int reporter, int reportId, String status) {
-        this.description = description;
-        this.ownerId = ownerId;
-        this.reportDate = reportDate;
-        this.reportDetailId = reportDetailId;
-        this.reporter = reporter;
-        this.reportId = reportId;
-        this.status = status;
+    @Override
+    public int getId() {
+        return id;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    @Override
     public String getDescription() {
         return description;
     }
@@ -39,15 +42,15 @@ public class ReportOwner {
     public void setOwnerId(int ownerId) {
         this.ownerId = ownerId;
     }
-
-    public Date getReportDate() {
+    @Override
+    public Timestamp getReportDate() {
         return reportDate;
     }
 
-    public void setReportDate(Date reportDate) {
+    public void setReportDate(Timestamp reportDate) {
         this.reportDate = reportDate;
     }
-
+    @Override
     public int getReportDetailId() {
         return reportDetailId;
     }
@@ -55,7 +58,7 @@ public class ReportOwner {
     public void setReportDetailId(int reportDetailId) {
         this.reportDetailId = reportDetailId;
     }
-
+    @Override
     public int getReporter() {
         return reporter;
     }
@@ -63,20 +66,21 @@ public class ReportOwner {
     public void setReporter(int reporter) {
         this.reporter = reporter;
     }
-
-    public int getReportId() {
-        return reportId;
-    }
-
-    public void setReportId(int reportId) {
-        this.reportId = reportId;
-    }
-
+    @Override
     public String getStatus() {
         return status;
     }
 
     public void setStatus(String status) {
         this.status = status;
+    }
+    @Override
+    public void setDetailAttributes(List<String> detailAttributes) {
+        this.detailAttributes = detailAttributes;
+    }
+
+    @Override
+    public List<String> getDetailAttributes() {
+        return this.detailAttributes;
     }
 }

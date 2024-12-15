@@ -45,17 +45,17 @@
                     <div class="row align-items-center justify-content-center">
                         <div class="col-md-8">
                             <div class="topbar-info d-flex flex-wrap">
-                                <a href="#" class="text-light me-4"><i class="fas fa-envelope text-white me-2"></i>@@@@@fpt.edu.vn</a>
-                                <a href="#" class="text-light"><i class="fas fa-phone-alt text-white me-2"></i>@@@@@</a>
+                                <a href="#" class="text-light me-4"><i class="fas fa-envelope text-white me-2"></i>phunade170713@fpt.edu.vn</a>
+                                <a href="#" class="text-light"><i class="fas fa-phone-alt text-white me-2"></i>0338080524</a>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="topbar-icon d-flex align-items-center justify-content-end">
-                                <a href="@@@@" class="btn-square text-white me-2"><i class="fab fa-facebook-f"></i></a>
-                                <a href="@@@@" class="btn-square text-white me-2"><i class="fab fa-twitter"></i></a>
-                                <a href="@@@@" class="btn-square text-white me-2"><i class="fab fa-instagram"></i></a>
-                                <a href="@@@@" class="btn-square text-white me-2"><i class="fab fa-pinterest"></i></a>
-                                <a href="@@@@" class="btn-square text-white me-0"><i class="fab fa-linkedin-in"></i></a>
+                                <a href="https://www.facebook.com/profile.php?id=100034778690070" class="btn-square text-white me-2"><i class="fab fa-facebook-f"></i></a>
+                                <a href="https://www.facebook.com/profile.php?id=100034778690070" class="btn-square text-white me-2"><i class="fab fa-twitter"></i></a>
+                                <a href="https://www.facebook.com/profile.php?id=100034778690070" class="btn-square text-white me-2"><i class="fab fa-instagram"></i></a>
+                                <a href="https://www.facebook.com/profile.php?id=100034778690070" class="btn-square text-white me-2"><i class="fab fa-pinterest"></i></a>
+                                <a href="https://www.facebook.com/profile.php?id=100034778690070" class="btn-square text-white me-0"><i class="fab fa-linkedin-in"></i></a>
                             </div>
                         </div>
                     </div>
@@ -70,17 +70,13 @@
                     <div class="collapse navbar-collapse bg-light" id="navbarCollapse">
                         <div class="navbar-nav ms-auto">
                             <a href="index.jsp" class="nav-item nav-link active">Home</a>
-<!--                            <a href="about.jsp" class="nav-item nav-link">About</a>
-                            <a href="service.jsp" class="nav-item nav-link">Services</a>-->
                             <a href="campsite.jsp" class="nav-item nav-link">Campsite</a>
                             <a href="campinggear.jsp" class="nav-item nav-link">Camping gear</a>
                               <c:if test = "${not empty currentUser }">
                              <a href="orderscamp.jsp" class="nav-item nav-link">Order History</a>
-
                              </c:if>
-                            <!--<a href="contact.jsp" class="nav-item nav-link">Contact</a>-->
                              <li class="nav-item"><a class="nav-link" href="Cart.jsp">Cart <span class="badge-custom">${cart_list.size()}</span> </a></li>
-                            <a href="map.jsp" class="nav-item nav-link"><Map></Map></a>
+                            <a href="map.jsp" class="nav-item nav-link">Map</a>
                         </div>
 
                         <c:choose>
@@ -100,6 +96,7 @@
                                                 <li><a class="dropdown-item" href="schedule-rent">Owner Dashboard</a></li>
                                             </c:if>
                                             <li><a class="dropdown-item" href="logout">Logout</a></li>
+                                            <li><a class="dropdown-item" href="reportForward">Report</a></li>
                                         </ul>
                                     </div>
                                 </div>

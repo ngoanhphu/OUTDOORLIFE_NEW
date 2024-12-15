@@ -177,4 +177,17 @@ public class AccountDAO {
         }
         return false;
     }
+    public int getCustomerIdByAccountId(int accountId) throws SQLException {
+        String query = "SELECT customer_id FROM [dbo].[CUSTOMER] WHERE Account_id = ?";
+        try (PreparedStatement stmt = this.con.prepareStatement(query)) {
+            stmt.setInt(1, accountId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("customer_id");
+                }
+            }
+        }
+        return -1; // Trả về -1 nếu không tìm thấy
+    }
+
 }

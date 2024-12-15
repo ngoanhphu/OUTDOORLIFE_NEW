@@ -1,4 +1,20 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page import="model.Notification" %>
+<%@ page import="java.util.List" %>
+<%@ page import="java.util.ArrayList" %>
+
+<%
+    int unreadCount = 0; // Mặc định là 0 nếu không có giá trị
+    List<Notification> notifications = new ArrayList<>();
+
+    if (request.getAttribute("unreadCount") != null) {
+        unreadCount = (int) request.getAttribute("unreadCount");
+    }
+
+    if (request.getAttribute("notifications") != null) {
+        notifications = (List<Notification>) request.getAttribute("notifications");
+    }
+%>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -41,102 +57,136 @@
 <!-- Spinner End -->
 <!-- Navbar start -->
 <%--<div class="container-fluid fixed-top px-0">--%>
-    <div class="container px-0">
-        <div class="topbar">
-            <div class="row align-items-center justify-content-center">
-                <div class="col-md-8">
-                    <div class="topbar-info d-flex flex-wrap">
-                        <a href="#" class="text-light me-4"><i class="fas fa-envelope text-white me-2"></i>phuna170713@fpt.edu.vn</a>
-                        <a href="#" class="text-light"><i class="fas fa-phone-alt text-white me-2"></i>0338080524</a>
-                    </div>
+<div class="container px-0">
+    <div class="topbar">
+        <div class="row align-items-center justify-content-center">
+            <div class="col-md-8">
+                <div class="topbar-info d-flex flex-wrap">
+                    <a href="#" class="text-light me-4"><i class="fas fa-envelope text-white me-2"></i>phuna170713@fpt.edu.vn</a>
+                    <a href="#" class="text-light"><i class="fas fa-phone-alt text-white me-2"></i>0338080524</a>
                 </div>
-                <div class="col-md-4">
-                    <div class="topbar-icon d-flex align-items-center justify-content-end">
-                        <a href="https://www.facebook.com/profile.php?id=100034778690070" class="btn-square text-white me-2"><i class="fab fa-facebook-f"></i></a>
-                        <a href="https://www.facebook.com/profile.php?id=100034778690070" class="btn-square text-white me-2"><i class="fab fa-twitter"></i></a>
-                        <a href="https://www.facebook.com/profile.php?id=100034778690070" class="btn-square text-white me-2"><i class="fab fa-instagram"></i></a>
-                        <a href="https://www.facebook.com/profile.php?id=100034778690070 " class="btn-square text-white me-2"><i class="fab fa-pinterest"></i></a>
-                        <a href="https://www.facebook.com/profile.php?id=100034778690070" class="btn-square text-white me-0"><i class="fab fa-linkedin-in"></i></a>
-                    </div>
+            </div>
+            <div class="col-md-4">
+                <div class="topbar-icon d-flex align-items-center justify-content-end">
+                    <a href="https://www.facebook.com/profile.php?id=100034778690070" class="btn-square text-white me-2"><i class="fab fa-facebook-f"></i></a>
+                    <a href="https://www.facebook.com/profile.php?id=100034778690070" class="btn-square text-white me-2"><i class="fab fa-twitter"></i></a>
+                    <a href="https://www.facebook.com/profile.php?id=100034778690070" class="btn-square text-white me-2"><i class="fab fa-instagram"></i></a>
+                    <a href="https://www.facebook.com/profile.php?id=100034778690070 " class="btn-square text-white me-2"><i class="fab fa-pinterest"></i></a>
+                    <a href="https://www.facebook.com/profile.php?id=100034778690070" class="btn-square text-white me-0"><i class="fab fa-linkedin-in"></i></a>
                 </div>
             </div>
         </div>
-        <nav class="navbar navbar-light bg-light navbar-expand-xl">
-            <a href="index.jsp" class="navbar-brand ms-3">
-                <h1 class="text-primary display-5">Outdoor-Life</h1>
-            </a>
-            <button class="navbar-toggler py-2 px-3 me-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
-                <span class="fa fa-bars text-primary"></span>
-            </button>
-            <div class="collapse navbar-collapse bg-light" id="navbarCollapse">
-                <div class="navbar-nav ms-auto">
-                    <c:if test = "${not empty currentUser && currentUser.owner}">
-                        <a href="schedule-rent" class="nav-item nav-link">Schedule Rent</a>
-                        <a href="dashboard" class="nav-item nav-link active">Dashboard</a>
-                        <a href="viewTent" class="nav-item nav-link">Manage Tents</a>
-                        <a href="manage-campsite" class="nav-item nav-link">Manage Campsites</a>
-                        <a href="manage-order" class="nav-item nav-link">Manage Orders</a>
-                        <a href="manage-voucher" class="nav-item nav-link">Manage Vouchers</a>
-                        <a href="extendContract" class="nav-item nav-link">Extend Contract</a>
+    </div>
+    <nav class="navbar navbar-light bg-light navbar-expand-xl">
+        <a href="index.jsp" class="navbar-brand ms-3">
+            <h1 class="text-primary display-5">Outdoor-Life</h1>
+        </a>
+        <button class="navbar-toggler py-2 px-3 me-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+            <span class="fa fa-bars text-primary"></span>
+        </button>
+        <div class="collapse navbar-collapse bg-light" id="navbarCollapse">
+            <div class="navbar-nav ms-auto">
+                <c:if test = "${not empty currentUser && currentUser.owner}">
+                    <a href="schedule-rent" class="nav-item nav-link">Schedule Rent</a>
+                    <a href="dashboard" class="nav-item nav-link active">Dashboard</a>
+                    <a href="viewTent" class="nav-item nav-link">Manage Tents</a>
+                    <a href="viewOwner" class="nav-item nav-link">Manage Gear</a>
+                    <a href="manage-campsite" class="nav-item nav-link">Manage Campsites</a>
+                    <a href="manage-order" class="nav-item nav-link">Manage Orders</a>
+                    <a href="manage-voucher" class="nav-item nav-link">Manage Vouchers</a>
+                    <a href="extendContract" class="nav-item nav-link">Extend Contract</a>
+                    <div class="dropdown nav-item">
+                        <button class="btn btn-outline-primary dropdown-toggle d-flex align-items-center" type="button" id="notificationDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-bell me-2"></i> Notifications <span class="badge bg-danger ms-2"><%= unreadCount %></span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end shadow-lg p-2" aria-labelledby="notificationDropdown" style="min-width: 350px;">
+                            <%
+                                if (notifications != null && !notifications.isEmpty()) {
+                                    for (Notification notification : notifications) {
+                            %>
+                            <li class="dropdown-item notification-item border-bottom py-2">
+                                <div class="d-flex align-items-center">
+                                    <div class="notification-icon me-3">
+                                        <i class="fas fa-exclamation-circle fa-lg text-warning"></i>
+                                    </div>
+                                    <div class="notification-content flex-grow-1">
+                                        <p class="mb-0 text-truncate" style="max-width: 220px;"><%= notification.getDescription() %></p>
+                                        <small class="text-muted" style="font-size: 0.75em;"><%= notification.getNotificationDate() %></small>
+                                    </div>
+                                </div>
+                            </li>
+                            <%
+                                }
+                            } else {
+                            %>
+                            <li class="dropdown-item text-center text-muted py-3">No Notifications</li>
+                            <%
+                                }
+                            %>
+                        </ul>
+                    </div>
 
 
-                    </c:if>
-                    <c:if test = "${not empty currentUser && currentUser.admin }">
-                        <a href="dashboard" class="nav-item nav-link active">Dashboard</a>
-                        <%--                                <a href="admintent" class="nav-item nav-link">Manage Tents</a>--%>
-                        <a href="manage-account" class="nav-item nav-link">Manage Accounts</a>
-                        <%--                                <a href="manage-campsite" class="nav-item nav-link">Manage Campsites</a>--%>
-                        <a href="show-feedback" class="nav-item nav-link">Manage Feedbacks</a>
-                        <a href="ownerRegistration" class="nav-item nav-link">Pending Owner</a>
-                    </c:if>
+                </c:if>
+                <c:if test = "${not empty currentUser && currentUser.admin }">
+                    <a href="dashboard" class="nav-item nav-link active">Dashboard</a>
 
-                    <%--                            <c:if test = "${not empty currentUser && currentUser.owner}">--%>
-                    <%--                                <a href="manage-voucher" class="nav-item nav-link">Manage Vouchers</a>--%>
-                    <%--                            </c:if>--%>
+                    <%--                                <a href="admintent" class="nav-item nav-link">Manage Tents</a>--%>
+                    <a href="manage-account" class="nav-item nav-link">Manage Accounts</a>
+                    <a href="all-campsites" class="nav-item nav-link">Manage Campsite</a>
+                    <%--                                <a href="manage-campsite" class="nav-item nav-link">Manage Campsites</a>--%>
+                    <a href="show-feedback" class="nav-item nav-link">Manage Feedbacks</a>
+                    <a href="/login_war/report/viewReportByAdmin.jsp" class="nav-item nav-link active">View Report</a>
 
-                    <!--                            <a href="service.jsp" class="nav-item nav-link">Services</a>
-                                                        <a href="campinggear.jsp" class="nav-item nav-link">Camping gear</a>
+                    <a href="ownerRegistration" class="nav-item nav-link">Pending Owner</a>
+                </c:if>
+
+                <%--                            <c:if test = "${not empty currentUser && currentUser.owner}">--%>
+                <%--                                <a href="manage-voucher" class="nav-item nav-link">Manage Vouchers</a>--%>
+                <%--                            </c:if>--%>
+
+                <!--                            <a href="service.jsp" class="nav-item nav-link">Services</a>
+<a href="campinggear.jsp" class="nav-item nav-link">Camping gear</a>
                             <%--<c:if test = "${not empty currentUser }">--%>
                            <a href="#" class="nav-item nav-link" onclick="openOrderPopup()">Order History</a>
                             <%--</c:if>--%>
                            <a href="contact.jsp" class="nav-item nav-link">Contact</a>
                             <li class="nav-item"><a class="nav-link" href="Cart.jsp">Cart <span class="badge-custom">${cart_list.size()}</span> </a></li>-->
-                </div>
-
-                <c:choose>
-                    <c:when test = "${not empty currentUser }">
-                        <div class="d-flex align-items-center flex-nowrap pt-xl-0" style="margin-left: 15px;">
-                            <!-- Add dropdown menu for profile and logout -->
-                            <div class="dropdown">
-                                <button class="btn btn-light text-primary me-3 dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="fas fa-user-circle fa-2x"></i>
-                                </button>
-                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                    <li><a class="dropdown-item" href="UserProfile.jsp">Profile</a></li>
-                                    <c:if test="${currentUser.admin}">
-                                        <li><a class="dropdown-item" href="dashboard">Admin Dashboard</a></li>
-                                    </c:if>
-                                    <c:if test="${currentUser.owner}">
-                                        <li><a class="dropdown-item" href="schedule-rent">Owner Dashboard</a></li>
-                                    </c:if>
-                                    <li><a class="dropdown-item" href="logout">Logout</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </c:when>
-
-
-                    <c:otherwise>
-
-                        <div class="d-flex align-items-center flex-nowrap pt-xl-0" style="margin-left: 15px;">
-                            <a href="login.jsp" class="btn-hover-bg btn btn-primary text-white py-2 px-4 me-3">Login</a>
-                        </div>
-                    </c:otherwise>
-
-                </c:choose>
             </div>
-        </nav>
-    </div>
+            <c:choose>
+                <c:when test = "${not empty currentUser }">
+                    <div class="d-flex align-items-center flex-nowrap pt-xl-0" style="margin-left: 15px;">
+                        <!-- Add dropdown menu for profile and logout -->
+                        <div class="dropdown">
+                            <button class="btn btn-light text-primary me-3 dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-user-circle fa-2x"></i>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <li><a class="dropdown-item" href="UserProfile.jsp">Profile</a></li>
+                                <c:if test="${currentUser.admin}">
+                                    <li><a class="dropdown-item" href="dashboard">Admin Dashboard</a></li>
+                                </c:if>
+                                <c:if test="${currentUser.owner}">
+                                    <li><a class="dropdown-item" href="schedule-rent">Owner Dashboard</a></li>
+                                </c:if>
+                                <li><a class="dropdown-item" href="logout">Logout</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </c:when>
+
+
+                <c:otherwise>
+
+                    <div class="d-flex align-items-center flex-nowrap pt-xl-0" style="margin-left: 15px;">
+                        <a href="login.jsp" class="btn-hover-bg btn btn-primary text-white py-2 px-4 me-3">Login</a>
+                    </div>
+                </c:otherwise>
+
+            </c:choose>
+        </div>
+    </nav>
+</div>
 </div>
 <!-- Navbar End -->
 

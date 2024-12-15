@@ -72,7 +72,7 @@ public class ScheduleRentServlet extends HttpServlet {
 
             // Get list campsite
             CampsiteDAO campsiteDAO = new CampsiteDAO();
-            List<Campsite> campsites = campsiteDAO.getAllCampside();
+            List<Campsite> campsites = campsiteDAO.getCampsitesByOwnerId(ownerId);
             request.setAttribute("campsites", campsites);
             request.setAttribute("campsite", campsiteIdSelected);
             System.out.println("list camp"+campsites);
@@ -81,6 +81,7 @@ public class ScheduleRentServlet extends HttpServlet {
         } catch (Exception e) {
             e.printStackTrace();
         }
+//        response.sendRedirect("notifyToOwner");
     }
 
     @Override

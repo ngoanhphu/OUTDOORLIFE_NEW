@@ -181,7 +181,7 @@
         <!--================Breadcrumb Area =================-->
 
         <div class="containersfb">
-            <form action="searchFeedback" method="GET">
+            <form action="searchFeedback" >
                 <label>Search Feedback: </label><input type="text" name="txtSearch" value="${param.txtSearch}"/>
                 <button class="btn btn-primary">Search</button>
             </form>
