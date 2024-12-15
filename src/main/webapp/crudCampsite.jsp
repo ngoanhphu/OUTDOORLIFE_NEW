@@ -159,7 +159,17 @@
     <div class="create-button-container text-center">
         <button class="btn-create" onclick="window.location.href='addCampsite.jsp'">Create Campsite</button>
     </div>
-
+    <!-- Search Form -->
+    <div class="search-container">
+        <form action="searchCampsite" method="post" class="form-inline">
+            <div class="input-group">
+                <button type="submit" class="btn btn-secondary">
+                    <i class="fa fa-search"></i>
+                </button>
+                <input name="txt" type="text" placeholder="Search..." class="form-control" />
+            </div>
+        </form>
+    </div>
     <!-- Display Campsites -->
     <div class="row">
         <c:forEach var="g" items="${campsites}">
