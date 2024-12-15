@@ -4,6 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Extend Contract</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
     body {
       background-color: #e8f5e9;
@@ -12,21 +13,27 @@
       display: flex;
       flex-direction: column;
       min-height: 100vh;
+      font-family: Arial, sans-serif;
     }
     .content {
       flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
     .container {
       background-color: #fff;
       padding: 20px;
       border-radius: 8px;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      width: 800px;
-      margin: 20px auto;
+      width: 90%;
+      max-width: 800px;
+      margin: 20px;
     }
     h2 {
       text-align: center;
       color: #2e7d32;
+      margin-bottom: 20px;
     }
     .form-group {
       margin-bottom: 15px;
@@ -62,24 +69,43 @@
     .total-price-container h3 {
       color: #2e7d32;
     }
+    .end-date {
+      font-size: 1.5em;
+      color: #d32f2f;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 20px;
+    }
     footer {
       background-color: #f1f1f1;
       padding: 10px 0;
       text-align: center;
       width: 100%;
     }
+    @media (max-width: 600px) {
+      .container {
+        padding: 10px;
+      }
+      h2 {
+        font-size: 1.5em;
+      }
+      .end-date {
+        font-size: 1.2em;
+      }
+    }
   </style>
 </head>
 <body>
 <div class="content">
   <div class="container">
-    <h2>Extend Contract</h2>
+    <h2><i class="fas fa-file-contract"></i> Extend Contract</h2>
+    <p class="end-date"><i class="fas fa-calendar-alt"></i> Your contract ends on <span id="end-date"><%= request.getAttribute("endDate") %></span></p>
     <form action="extendContract" method="post" onsubmit="return validateForm()">
       <div class="form-group">
-        <label for="duration">Select Extension Duration:</label>
-        <input type="radio" id="duration6" name="duration" value="6" data-price="160000" required> 6 Months
-        <input type="radio" id="duration12" name="duration" value="12" data-price="32000" required> 12 Months
-        <input type="radio" id="duration24" name="duration" value="24" data-price="64000" required> 24 Months
+        <label for="duration"><i class="fas fa-clock"></i> Select Extension Duration:</label>
+        <input type="radio" id="duration6" name="duration" value="6" data-price="640000" required> 6 Months
+        <input type="radio" id="duration12" name="duration" value="12" data-price="1100000" required> 12 Months
+        <input type="radio" id="duration24" name="duration" value="24" data-price="2000000" required> 24 Months
       </div>
       <div class="total-price-container">
         <h3>Total: <span id="total-price">0</span> vnd</h3>
@@ -87,11 +113,18 @@
         <input type="submit" value="Proceed">
       </div>
     </form>
-    <a href="index.jsp" class="btn-home">Return to Homepage</a>
+    <a href="index.jsp" class="btn-home"><i class="fas fa-home"></i> Return to Homepage</a>
   </div>
 </div>
 <%@ include file="footer.jsp" %>
 <script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const endDateElement = document.getElementById('end-date');
+    const endDate = new Date(endDateElement.textContent);
+    const options = { day: 'numeric', month: 'long', year: 'numeric' };
+    endDateElement.textContent = endDate.toLocaleDateString('en-US', options);
+  });
+
   document.querySelectorAll('input[name="duration"]').forEach(function (radio) {
     radio.addEventListener('change', function () {
       let price = this.getAttribute('data-price');

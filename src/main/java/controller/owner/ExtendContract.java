@@ -83,26 +83,15 @@ public class ExtendContract extends HttpServlet {
                         session.setAttribute("message", "You are not an approved owner!");
                         response.sendRedirect(request.getContextPath() + "/index.jsp");
                     } else {
-                        String responseCode = request.getParameter("vnp_ResponseCode");
-                        int accountId = (Integer) session.getAttribute("accountId");
-                        Date newEndDate = (Date) session.getAttribute("newEndDate");
-
-                        if ("00".equals(responseCode)) {
-                            try {
-                                boolean isUpdated = ownerDAO.updateOwnerEndDate(accountId, newEndDate);
-                                if (isUpdated) {
-                                    response.sendRedirect("success.jsp");
-                                } else {
-                                    request.setAttribute("errorMessage", "Failed to extend the contract.");
-                                    request.getRequestDispatcher("extendcontract.jsp").forward(request, response);
-                                }
-                            } catch (SQLException e) {
-                                throw new ServletException("Database error", e);
-                            }
+                        Date endDate = ownerDAO.getOwnerEndDate(session);
+                        if (endDate != null) {
+                            request.setAttribute("endDate", endDate);
                         } else {
-                            request.setAttribute("errorMessage", "Payment failed.");
-                            request.getRequestDispatcher("extendcontract.jsp").forward(request, response);
+                            request.setAttribute("endDate", "N/A");
                         }
+                        request.getRequestDispatcher("extendcontract.jsp").forward(request, response);
+                        request.setAttribute("endDate", endDate);
+                        request.getRequestDispatcher("extendcontract.jsp").forward(request, response);
                     }
                 } catch (SQLException e) {
                     throw new ServletException("Database error", e);

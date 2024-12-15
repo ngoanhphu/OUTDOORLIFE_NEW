@@ -589,4 +589,26 @@ public class OwnerDAO {
             throw new RuntimeException(e);
         }
     }
+
+    public Date getOwnerEndDate(HttpSession session) throws SQLException {
+        Integer accountId = (Integer) session.getAttribute("accountId");
+
+        if (accountId == null) {
+            throw new IllegalArgumentException("Account_id is not present in the session");
+        }
+
+        String sql = "SELECT end_date FROM OWNER WHERE Account_id = ?";
+        try (Connection conn = db.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, accountId);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getDate("end_date");
+                }
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return null;
+    }
 }

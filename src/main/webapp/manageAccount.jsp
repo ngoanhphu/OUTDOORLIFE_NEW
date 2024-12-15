@@ -6,6 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Manage Accounts</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -18,8 +19,9 @@
             min-height: 100vh;
         }
         .container {
-            width: 80%;
-            margin: 0 auto;
+            width: 90%;
+            max-width: 1200px;
+            margin: 20px auto;
             padding: 20px;
             background-color: #fff;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -29,6 +31,7 @@
         h2 {
             text-align: center;
             color: #4CAF50;
+            margin-bottom: 20px;
         }
         table {
             width: 100%;
@@ -102,22 +105,32 @@
             border: 1px solid #ddd;
             border-radius: 4px;
         }
-
         .alert {
             color: red;
             text-align: center;
             margin-bottom: 20px;
         }
+        @media (max-width: 600px) {
+            .container {
+                padding: 10px;
+            }
+            h2 {
+                font-size: 1.5em;
+            }
+            th, td {
+                padding: 8px;
+            }
+        }
     </style>
 </head>
 <body>
 
-<%@ include file="header.jsp" %>
-<div class="container" style="margin-top: 300px">
-    <h2>Manage Accounts</h2>
+<%@ include file="headeradmin.jsp" %>
+<div class="container">
+    <h2><i class="fas fa-users-cog"></i> Manage Accounts</h2>
     <form method="get" action="manage-account">
         <input type="text" name="search" placeholder="Search by ID, Email, or Phone" value="${searchQuery}" />
-        <button type="submit" class="btn">Search</button>
+        <button type="submit" class="btn"><i class="fas fa-search"></i> Search</button>
     </form>
     <c:if test="${not empty message}">
         <div class="alert">${message}</div>
@@ -150,11 +163,11 @@
                     </c:choose>
                 </td>
                 <td>
-                    <button class="btn" onclick="editAccount(${a.id}, '${a.firstName}', '${a.lastName}', '${a.email}', '${a.phoneNumber}', ${a.admin}, ${a.owner})">Edit</button>
+                    <button class="btn" onclick="editAccount(${a.id}, '${a.firstName}', '${a.lastName}', '${a.email}', '${a.phoneNumber}', ${a.admin}, ${a.owner})"><i class="fas fa-edit"></i> Edit</button>
                     <form method="post" action="manage-account" style="display:inline;">
                         <input type="hidden" name="action" value="deactivate">
                         <input type="hidden" name="id" value="${a.id}">
-                        <button type="submit" class="btn">Deactivate</button>
+                        <button type="submit" class="btn"><i class="fas fa-user-slash"></i> Deactivate</button>
                     </form>
                 </td>
             </tr>
@@ -168,9 +181,8 @@
     </div>
 </div>
 
-<!-- New Deactivated Accounts Section -->
 <div class="container">
-    <h2>Deactivated Accounts</h2>
+    <h2><i class="fas fa-user-slash"></i> Deactivated Accounts</h2>
     <table>
         <thead>
         <tr>
@@ -202,7 +214,7 @@
                     <form method="post" action="manage-account" style="display:inline;">
                         <input type="hidden" name="action" value="reactivate">
                         <input type="hidden" name="id" value="${a.id}">
-                        <button type="submit" class="btn">Reactivate</button>
+                        <button type="submit" class="btn"><i class="fas fa-user-check"></i> Reactivate</button>
                     </form>
                 </td>
             </tr>
@@ -212,7 +224,7 @@
 </div>
 
 <div class="form-container" id="editForm">
-    <h2>Edit Account</h2>
+    <h2><i class="fas fa-user-edit"></i> Edit Account</h2>
     <form method="post" action="manage-account">
         <input type="hidden" name="action" value="update">
         <input type="hidden" name="id" id="accountId">
@@ -226,8 +238,8 @@
         <input type="text" name="phoneNumber" id="phoneNumber" required>
         <input type="hidden" name="isAdmin" id="isAdmin">
         <input type="hidden" name="isOwner" id="isOwner">
-        <button type="submit" class="btn">Update</button>
-        <button type="button" class="btn" onclick="closeForm()">Cancel</button>
+        <button type="submit" class="btn"><i class="fas fa-save"></i> Update</button>
+        <button type="button" class="btn" onclick="closeForm()"><i class="fas fa-times"></i> Cancel</button>
     </form>
 </div>
 

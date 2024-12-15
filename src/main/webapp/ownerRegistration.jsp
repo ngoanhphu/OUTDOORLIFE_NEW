@@ -5,6 +5,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Pending Owners</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -17,8 +18,9 @@
       min-height: 100vh;
     }
     .container {
-      width: 80%;
-      margin: 0 auto;
+      width: 90%;
+      max-width: 1200px;
+      margin: 20px auto;
       padding: 20px;
       background-color: #fff;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -28,6 +30,7 @@
     h2 {
       text-align: center;
       color: #4CAF50;
+      margin-bottom: 20px;
     }
     table {
       width: 100%;
@@ -87,6 +90,20 @@
     .pagination a:hover {
       background-color: #ddd;
     }
+    @media (max-width: 600px) {
+      .container {
+        padding: 10px;
+      }
+      h2 {
+        font-size: 1.5em;
+      }
+      th, td {
+        padding: 8px;
+      }
+      .action-icons {
+        font-size: 16px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -94,7 +111,7 @@
   <%@ include file="headeradmin.jsp" %>
 </div>
 <div class="container">
-  <h2>Pending Owners</h2>
+  <h2><i class="fas fa-user-clock"></i> Pending Owners</h2>
   <c:if test="${not empty pendingOwners}">
     <table>
       <thead>
@@ -122,19 +139,19 @@
           <td>${owner.gender}</td>
           <td>${owner.identification}</td>
           <td>${owner.taxCode}</td>
-          <td><a href="${owner.image}" download>Download Contract</a></td>
+          <td><a href="${owner.image}" download><i class="fas fa-download"></i> Download</a></td>
           <td class="date-format">${owner.startDate}</td>
           <td class="date-format">${owner.endDate}</td>
           <td class="actions">
             <form action="manageOwners" method="post" style="display:inline;">
               <input type="hidden" name="ownerId" value="${owner.accountId}">
               <input type="hidden" name="action" value="approve">
-              <span class="action-icons" onclick="this.closest('form').submit();">&#10004;</span>
+              <span class="action-icons" onclick="this.closest('form').submit();"><i class="fas fa-check"></i></span>
             </form>
             <form action="manageOwners" method="post" style="display:inline;">
               <input type="hidden" name="ownerId" value="${owner.accountId}">
               <input type="hidden" name="action" value="disapprove">
-              <span class="action-icons" onclick="this.closest('form').submit();">&#10008;</span>
+              <span class="action-icons" onclick="this.closest('form').submit();"><i class="fas fa-times"></i></span>
             </form>
           </td>
         </tr>
