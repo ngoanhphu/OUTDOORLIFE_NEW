@@ -82,7 +82,7 @@ public class ScheduleRentServlet extends HttpServlet {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        response.sendRedirect("notifyToOwner");
+//        response.sendRedirect("notifyToOwner");
     }
 
     @Override
