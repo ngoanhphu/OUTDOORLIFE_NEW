@@ -15,6 +15,7 @@ public class Feedback implements Serializable{
     private int feedbackId;
     private int accountId;
     private int campsiteId;
+    private String campsiteName;
     private String accountName;
     private String feedbackDate;
     private String customerName;
@@ -23,7 +24,25 @@ public class Feedback implements Serializable{
     private String replyComment;
     private String authorReply;
 
-    public Feedback() {
+    public Feedback(int feedbackId, int accountId, String accountName, String feedbackDate, String content, String rating, int campsiteId, String campsiteName) {
+        this.feedbackId = feedbackId;
+        this.accountId = accountId;
+        this.accountName=accountName;
+        this.feedbackDate=feedbackDate;
+        this.content=content;
+        this.rating=rating;
+        this.campsiteId=campsiteId;
+        this.campsiteName=campsiteName;
+
+
+    }
+
+    public String getCampsiteName() {
+        return campsiteName;
+    }
+
+    public void setCampsiteName(String campsiteName) {
+        this.campsiteName = campsiteName;
     }
 
     public int getCampsiteId() {
@@ -43,6 +62,15 @@ public class Feedback implements Serializable{
         this.content = content;
         this.rating = rating;
     }
+    public Feedback(int feedbackId,  int accountId, String customerName, String feedbackDate, String content, String rating,int campsiteId) {
+        this.feedbackId = feedbackId;
+        this.campsiteId=campsiteId;
+        this.accountId = accountId;
+        this.customerName = customerName;
+        this.feedbackDate = feedbackDate;
+        this.content = content;
+        this.rating = rating;
+    }
 
     public Feedback(int feedbackId,  int accountId, String customerName, String feedbackDate, String content, String rating) {
         this.feedbackId = feedbackId;
@@ -58,6 +86,17 @@ public class Feedback implements Serializable{
     public Feedback(int feedbackId,  int accountId, String accountName, String feedbackDate, String content, String rating, String replyComment, String authorReply) {
         this.feedbackId = feedbackId;
        
+        this.accountId = accountId;
+        this.accountName = accountName;
+        this.feedbackDate = feedbackDate;
+        this.content = content;
+        this.rating = rating;
+        this.replyComment = replyComment;
+        this.authorReply = authorReply;
+    }
+    public Feedback(int feedbackId,  int accountId, String accountName, String feedbackDate, String content, String rating, String replyComment, String campsiteName,String authorReply) {
+        this.feedbackId = feedbackId;
+        this.campsiteName=campsiteName;
         this.accountId = accountId;
         this.accountName = accountName;
         this.feedbackDate = feedbackDate;
@@ -138,10 +177,7 @@ public class Feedback implements Serializable{
         this.rating = rating;
     }
 
-    @Override
-    public String toString() {
-        return "Feedback{" + "feedbackId=" + feedbackId + ", accountId=" + accountId + ", feedbackDate=" + feedbackDate + ", customerName=" + customerName + ", content=" + content + ", rating=" + rating + '}'+"\n";
-    }
+
 
     public String getCustomerName() {
         return customerName;
@@ -150,7 +186,20 @@ public class Feedback implements Serializable{
     public void setCustomerName(String customerName) {
         this.customerName = customerName;
     }
-    
-    
-    
+
+    @Override
+    public String toString() {
+        return "Feedback{" +
+                "feedbackId=" + feedbackId +
+                ", accountId=" + accountId +
+                ", accountName='" + accountName + '\'' +
+                ", feedbackDate='" + feedbackDate + '\'' +
+                ", content='" + content + '\'' +
+                ", rating='" + rating + '\'' +
+                ", campsiteId=" + campsiteId +
+                ", campsiteName='" + campsiteName + '\'' +
+                '}'+"\n";
+    }
+
+
 }

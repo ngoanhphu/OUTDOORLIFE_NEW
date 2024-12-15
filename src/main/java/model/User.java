@@ -4,8 +4,8 @@ package model;
 @lombok.Getter
 @lombok.Setter
 @lombok.AllArgsConstructor
-@lombok.NoArgsConstructor 
-@lombok.Data 
+@lombok.NoArgsConstructor
+@lombok.Data
 public class User {
     private int id;
     private String firstName;

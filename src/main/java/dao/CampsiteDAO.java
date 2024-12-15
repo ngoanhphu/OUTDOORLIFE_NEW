@@ -181,24 +181,31 @@ public class CampsiteDAO extends DBContext {
         }
         return campsites;
     }
-
-    public List<Campsite> getAllCampside() {
+    public List<Campsite> getCampsitesByOwnerId(int ownerId) {
         List<Campsite> campsites = new ArrayList<>();
-        String query = "SELECT G.*, P.Price FROM [CAMPSITE] G"
-                + " INNER JOIN PRICE P ON G.Price_id = P.Price_id ORDER BY G.[Campsite_id] desc ";
+        String query = "SELECT G.*, G.Campsite_owner, G.Price FROM [CAMPSITE] G " +
+                "WHERE G.Campsite_owner = ? " +
+                "ORDER BY G.[Campsite_id] DESC";
 
         try (Connection con = getConnection(); PreparedStatement pst = con.prepareStatement(query)) {
+            pst.setInt(1, ownerId); // Set the owner ID parameter
+
             try (ResultSet rs = pst.executeQuery()) {
                 while (rs.next()) {
                     Campsite campsite = new Campsite();
+
+                    // Populate the Campsite object with data from the result set
                     campsite.setCampId(rs.getInt("Campsite_id"));
+                    campsite.setCampOwner(rs.getInt("Campsite_owner")); // Lấy thêm trường Campsite_owner
                     campsite.setCampPrice(rs.getInt("Price"));
                     campsite.setCampAddress(rs.getString("Address"));
                     campsite.setCampName(rs.getString("Name"));
                     campsite.setCampDescription(rs.getString("Description"));
-                    campsite.setCampImage(rs.getString("Image"));
                     campsite.setCampStatus(rs.getBoolean("Status"));
-                    campsite.setLimite(rs.getInt("Limite"));
+                    campsite.setCampImage(rs.getString("Image"));
+                    campsite.setLimite(rs.getInt("Quantity")); // Sử dụng Quantity thay cho Limite (dựa trên bảng của bạn)
+
+                    // Add the Campsite object to the list
                     campsites.add(campsite);
                 }
             }
@@ -207,6 +214,43 @@ public class CampsiteDAO extends DBContext {
         } catch (Exception ex) {
             Logger.getLogger(UserDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
+
+        // Return the list of campsites
+        return campsites;
+    }
+
+
+    public List<Campsite> getAllCampside() {
+        List<Campsite> campsites = new ArrayList<>();
+        String query = "SELECT G.*, G.Campsite_owner, G.Price FROM [CAMPSITE] G " +
+                "ORDER BY G.[Campsite_id] DESC";
+
+        try (Connection con = getConnection(); PreparedStatement pst = con.prepareStatement(query); ResultSet rs = pst.executeQuery()) {
+            while (rs.next()) {
+                Campsite campsite = new Campsite();
+
+                // Populate the Campsite object with data from the result set
+                campsite.setCampId(rs.getInt("Campsite_id"));
+                campsite.setCampOwner(rs.getInt("Campsite_owner")); // Lấy thêm trường Campsite_owner
+                campsite.setCampPrice(rs.getInt("Price"));
+                campsite.setCampAddress(rs.getString("Address"));
+                campsite.setCampName(rs.getString("Name"));
+                campsite.setCampDescription(rs.getString("Description"));
+
+                campsite.setCampStatus(rs.getBoolean("Status"));
+                campsite.setCampImage(rs.getString("Image"));
+                campsite.setLimite(rs.getInt("Quantity")); // Sử dụng Quantity thay cho Limite (dựa trên bảng của bạn)
+
+                // Add the Campsite object to the list
+                campsites.add(campsite);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (Exception ex) {
+            Logger.getLogger(UserDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        // Return the list of campsites
         return campsites;
     }
 
@@ -544,6 +588,7 @@ public class CampsiteDAO extends DBContext {
                 throw new RuntimeException(e);
             }
         }
+
 
 
     }

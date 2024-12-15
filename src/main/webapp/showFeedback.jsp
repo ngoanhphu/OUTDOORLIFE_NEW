@@ -194,21 +194,27 @@
             <table>
                 <tr>                                       
                     <th>Account Name</th>
-                    <th>Feedback Date</th>                      
+                    <th>Feedback Date</th>
+
                     <th>Content</th>  
-                    <th>Rating</th>    
+                    <th>Rating</th>
+
+
+                    <th>Campsite Name</th>
                     <th style="text-align: center">Actions</th>
                 </tr>
                 <c:forEach items="${sessionScope.LIST_ADMIN_FFEDBACK}" var="feedback">
-                    <tr>                       
-                        <td>${feedback.customerName}</td>
+                    <tr>
+                        <td>${feedback.accountName}</td>
                         <td>${feedback.feedbackDate}</td>
                         <td>${feedback.content}</td>
-                        <td>${feedback.rating}</td>      
+                        <td>${feedback.rating}</td>
+
+                        <td>${feedback.campsiteName}</td>
 
                         <td class="actions" style="text-align: center">
-                            <!--<button class="button btn-secondary" onclick="openPopupReply()">Reply</button>-->      
-                            <a href="delete-feedback?id=${feedback.feedbackId}" class=" btn btn-sm btn-danger">Delete</a> 
+                            <!--<button class="button btn-secondary" onclick="openPopupReply()">Reply</button>-->
+                            <a href="delete-feedback?id=${feedback.feedbackId}" class=" btn btn-sm btn-danger">Delete</a>
                         </td>
                     </tr>
                 </c:forEach>

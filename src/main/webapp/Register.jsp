@@ -7,7 +7,7 @@
             <div class="card border-e shadow rounded-3" style="margin-top: 200px">
                 <div class="card-body p-4 p-sm-5">
                     <h5 class="card-title text-center mb-5 fw-light fs-5">Register Account</h5>
-                    <form id="form">
+                    <form id="form" action="registeracc">
                         <c:if test="${not empty successMessage}">
                             <div class="alert alert-success">
                                     ${successMessage}

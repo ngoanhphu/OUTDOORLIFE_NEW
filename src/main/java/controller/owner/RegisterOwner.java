@@ -23,7 +23,7 @@ import java.text.SimpleDateFormat;
 import java.util.UUID;
 
 @MultipartConfig
-@WebServlet("/owner/registerOwner")
+@WebServlet("/registerOwner")
 public class RegisterOwner extends HttpServlet {
     private static final String UPLOAD_DIR = "src/main/webapp/docs/";
 
