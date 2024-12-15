@@ -17,6 +17,17 @@ public class User {
     private boolean isOwner;
     String code;
 
+    public User(int id, String firstName, String lastName, String email, String phoneNumber, String passwordHash, boolean isAdmin, boolean isOwner) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.passwordHash = passwordHash;
+        this.isAdmin = isAdmin;
+        this.isOwner = isOwner;
+    }
+
     public int getId() {
         return id;
     }
