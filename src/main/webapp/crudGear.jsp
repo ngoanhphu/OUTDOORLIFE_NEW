@@ -252,7 +252,7 @@
 
     <!-- Search Form -->
     <div class="search-container">
-        <form action="search" method="post" class="form-inline">
+        <form action="searchGear" method="post" class="form-inline">
             <div class="input-group">
                 <button type="submit" class="btn btn-secondary">
                     <i class="fa fa-search"></i>
@@ -313,7 +313,7 @@
 
 <script type="text/javascript">
     // Setup variables for pagination
-    let itemsPerPage = 8;
+    let itemsPerPage = 9;
     let totalPages = ${totalPages};
     let currentPage = ${currentPage};
 

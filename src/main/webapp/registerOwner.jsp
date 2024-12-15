@@ -8,7 +8,8 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+            background-color: #f0f8ff;
+            color: #333;
             margin: 0;
             padding: 0;
             display: flex;
@@ -25,7 +26,7 @@
         }
         h2 {
             text-align: center;
-            color: #333;
+            color: #4CAF50;
         }
         .form-group {
             margin-bottom: 15px;
@@ -38,7 +39,8 @@
         input[type="text"],
         input[type="date"],
         input[type="number"],
-        textarea {
+        textarea,
+        select {
             width: 100%;
             padding: 10px;
             border: 1px solid #ccc;
@@ -48,7 +50,7 @@
         input[type="submit"] {
             width: 100%;
             padding: 10px;
-            background-color: #007bff;
+            background-color: #4CAF50;
             border: none;
             border-radius: 4px;
             color: #fff;
@@ -56,7 +58,7 @@
             cursor: pointer;
         }
         input[type="submit"]:hover {
-            background-color: #0056b3;
+            background-color: #45a049;
         }
         .form-grid {
             display: grid;

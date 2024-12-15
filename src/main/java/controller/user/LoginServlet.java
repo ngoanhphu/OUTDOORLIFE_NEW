@@ -62,7 +62,7 @@ public class LoginServlet extends HttpServlet {
                     response.sendRedirect("schedule-rent");
 
                 } else {
-                    response.sendRedirect("owner/registerOwner.jsp");
+                    response.sendRedirect("registerOwner.jsp");
                 }
             } catch (SQLException e) {
                 e.printStackTrace();

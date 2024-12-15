@@ -56,23 +56,23 @@
 </div>
 <!-- Spinner End -->
 <!-- Navbar start -->
-<div class="container-fluid fixed-top px-0">
+<%--<div class="container-fluid fixed-top px-0">--%>
     <div class="container px-0">
         <div class="topbar">
             <div class="row align-items-center justify-content-center">
                 <div class="col-md-8">
                     <div class="topbar-info d-flex flex-wrap">
-                        <a href="#" class="text-light me-4"><i class="fas fa-envelope text-white me-2"></i>phucnhde170706@fpt.edu.vn</a>
-                        <a href="#" class="text-light"><i class="fas fa-phone-alt text-white me-2"></i>0941887045</a>
+                        <a href="#" class="text-light me-4"><i class="fas fa-envelope text-white me-2"></i>phuna170713@fpt.edu.vn</a>
+                        <a href="#" class="text-light"><i class="fas fa-phone-alt text-white me-2"></i>0338080524</a>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="topbar-icon d-flex align-items-center justify-content-end">
-                        <a href="https://www.facebook.com/Phuc250703/" class="btn-square text-white me-2"><i class="fab fa-facebook-f"></i></a>
-                        <a href="https://www.facebook.com/Phuc250703/" class="btn-square text-white me-2"><i class="fab fa-twitter"></i></a>
-                        <a href="https://www.facebook.com/Phuc250703/" class="btn-square text-white me-2"><i class="fab fa-instagram"></i></a>
-                        <a href="https://www.facebook.com/Phuc250703/" class="btn-square text-white me-2"><i class="fab fa-pinterest"></i></a>
-                        <a href="https://www.facebook.com/Phuc250703/" class="btn-square text-white me-0"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="https://www.facebook.com/profile.php?id=100034778690070" class="btn-square text-white me-2"><i class="fab fa-facebook-f"></i></a>
+                        <a href="https://www.facebook.com/profile.php?id=100034778690070" class="btn-square text-white me-2"><i class="fab fa-twitter"></i></a>
+                        <a href="https://www.facebook.com/profile.php?id=100034778690070" class="btn-square text-white me-2"><i class="fab fa-instagram"></i></a>
+                        <a href="https://www.facebook.com/profile.php?id=100034778690070 " class="btn-square text-white me-2"><i class="fab fa-pinterest"></i></a>
+                        <a href="https://www.facebook.com/profile.php?id=100034778690070" class="btn-square text-white me-0"><i class="fab fa-linkedin-in"></i></a>
                     </div>
                 </div>
             </div>
@@ -88,10 +88,12 @@
                 <div class="navbar-nav ms-auto">
                     <c:if test = "${not empty currentUser && currentUser.owner}">
                         <a href="schedule-rent" class="nav-item nav-link">Schedule Rent</a>
+                        <a href="dashboard" class="nav-item nav-link active">Dashboard</a>
                         <a href="viewTent" class="nav-item nav-link">Manage Tents</a>
                         <a href="manage-campsite" class="nav-item nav-link">Manage Campsites</a>
                         <a href="manage-order" class="nav-item nav-link">Manage Orders</a>
                         <a href="manage-voucher" class="nav-item nav-link">Manage Vouchers</a>
+
                         <div class="dropdown nav-item">
                             <button class="btn btn-outline-primary dropdown-toggle d-flex align-items-center" type="button" id="notificationDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="fas fa-bell me-2"></i> Notifications <span class="badge bg-danger ms-2"><%= unreadCount %></span>
@@ -122,13 +124,17 @@
                                 %>
                             </ul>
                         </div>
+                        <a href="extendContract" class="nav-item nav-link">Contract</a>
+
+
                     </c:if>
-                    <c:if test = "${not empty currentUser && currentUser.admin}">
+                    <c:if test = "${not empty currentUser && currentUser.admin }">
                         <a href="dashboard" class="nav-item nav-link active">Dashboard</a>
                         <%--                                <a href="admintent" class="nav-item nav-link">Manage Tents</a>--%>
                         <a href="manage-account" class="nav-item nav-link">Manage Accounts</a>
                         <%--                                <a href="manage-campsite" class="nav-item nav-link">Manage Campsites</a>--%>
                         <a href="show-feedback" class="nav-item nav-link">Manage Feedbacks</a>
+                        <a href="ownerRegistration" class="nav-item nav-link">Pending Owner</a>
                     </c:if>
 
                     <%--                            <c:if test = "${not empty currentUser && currentUser.owner}">--%>

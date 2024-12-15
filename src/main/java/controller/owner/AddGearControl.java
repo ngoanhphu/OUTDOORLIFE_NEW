@@ -1,27 +1,25 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
- */
 package controller.owner;
 
 import dao.DBContext;
 import dao.GearDAO;
+import java.io.File;
 import java.io.IOException;
 
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.Part;
 import model.User;
 
-/**
- *
- * @author ADMIN
- */
 @WebServlet(name = "AddControl", urlPatterns = {"/addGear"})
+@MultipartConfig // Cho phép servlet xử lý multipart/form-data
 public class AddGearControl extends HttpServlet {
+
+    private static final String UPLOAD_DIRECTORY = "D:\\OJT\\new_project\\OUTDOORLIFE_NEW\\src\\main\\webapp\\img";
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -30,7 +28,6 @@ public class AddGearControl extends HttpServlet {
         String name = request.getParameter("gearName");
         String price = request.getParameter("gearPrice");
         String description = request.getParameter("gearDescription");
-        String image = request.getParameter("gearImage");
 
         // Lấy thông tin user từ session
         HttpSession session = request.getSession();
@@ -38,16 +35,32 @@ public class AddGearControl extends HttpServlet {
 
         // Kiểm tra nếu người dùng đã đăng nhập và là chủ cắm trại
         if (currentUser != null && currentUser.isOwner()) {
-            // Lấy ownerId từ đối tượng User
             int ownerId = currentUser.getId();
 
             try {
+                // Xử lý file upload
+                Part filePart = request.getPart("gearImage");
+                String fileName = extractFileName(filePart);
+
+                // Đảm bảo thư mục upload tồn tại
+                File uploadDir = new File(UPLOAD_DIRECTORY);
+                if (!uploadDir.exists()) {
+                    uploadDir.mkdirs(); // Tạo thư mục nếu chưa tồn tại
+                }
+
+                // Lưu file vào thư mục
+                String filePath = UPLOAD_DIRECTORY + File.separator + fileName;
+                filePart.write(filePath);
+
+                // Đường dẫn file lưu vào database
+                String imagePath = fileName; // Đường dẫn tương đối
+
                 // Kết nối đến cơ sở dữ liệu
                 DBContext con = new DBContext();
                 GearDAO gearDAO = new GearDAO(con.getConnection());
 
-                // Thêm gear vào cơ sở dữ liệu, bao gồm ownerId
-                gearDAO.insertGear(name, price, description, image, ownerId);
+                // Thêm gear vào cơ sở dữ liệu
+                gearDAO.insertGear(name, price, description, imagePath, ownerId);
 
                 // Chuyển hướng về trang admin sau khi thêm gear thành công
                 response.sendRedirect("viewOwner");
@@ -62,7 +75,16 @@ public class AddGearControl extends HttpServlet {
             response.sendRedirect("login.jsp");
         }
     }
+
+    // Lấy tên file từ phần header
+    private String extractFileName(Part part) {
+        String contentDisp = part.getHeader("content-disposition");
+        for (String content : contentDisp.split(";")) {
+            if (content.trim().startsWith("filename")) {
+                return content.substring(content.indexOf("=") + 2, content.length() - 1);
+            }
+        }
+        return null;
+    }
 }
-
-
 

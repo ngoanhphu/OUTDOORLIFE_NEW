@@ -1,98 +1,105 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
- */
 package controller.owner;
 
 import dao.CampsiteDAO;
-
+import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
-
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Part;
 import model.Campsite;
 
-/**
- *
- * @author Admin
- */
 @WebServlet(name = "UpdateCampsiteServlet", urlPatterns = {"/update-campsite"})
+@MultipartConfig
 public class UpdateCampsiteServlet extends HttpServlet {
 
-
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet UpdateCampsiteServlet</title>");
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet UpdateCampsiteServlet at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
-        }
-    }
-
+    private static final String UPLOAD_DIRECTORY = "D:\\OJT\\new_project\\OUTDOORLIFE_NEW\\src\\main\\webapp\\img";
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         int campsiteId = Integer.parseInt(request.getParameter("id"));
         CampsiteDAO campsiteDAO = new CampsiteDAO();
-        Campsite campsite = campsiteDAO.getCampsiteById(campsiteId);  // Lấy thông tin campsite theo id
+        Campsite campsite = campsiteDAO.getCampsiteById(campsiteId);  // Get campsite info by ID
 
         if (campsite != null) {
-            request.setAttribute("c", campsite);  // Đưa dữ liệu campsite vào request
-            request.getRequestDispatcher("/updateCampsite.jsp").forward(request, response);  // Chuyển tiếp đến trang form edit
+            request.setAttribute("c", campsite);  // Set campsite data in request
+            request.getRequestDispatcher("/updateCampsite.jsp").forward(request, response);  // Forward to update form
         } else {
-            response.sendRedirect("manage-campsite");  // Nếu không tìm thấy campsite, điều hướng về trang quản lý campsite
+            response.sendRedirect("manage-campsite");  // If no campsite found, redirect to management page
         }
     }
-
-
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
+
+        // Get the form data
         String id = request.getParameter("id");
         String name = request.getParameter("name");
         String price = request.getParameter("price");
         String address = request.getParameter("address");
         String description = request.getParameter("description");
-        String image = request.getParameter("image");
+        String image = request.getParameter("image");  // Image is optional in case user doesn't upload new image
         String limit = request.getParameter("limit");
         String status = request.getParameter("status");
+
+        // Handle file upload
+        Part filePart = request.getPart("image"); // Get the file part from the form
+        if (filePart != null && filePart.getSize() > 0) {
+            String fileName = extractFileName(filePart);
+            File uploadDir = new File(UPLOAD_DIRECTORY);
+            if (!uploadDir.exists()) {
+                uploadDir.mkdirs();  // Create the directory if it doesn't exist
+            }
+
+            // Save the file to the specified directory
+            String filePath = UPLOAD_DIRECTORY + File.separator + fileName;
+            filePart.write(filePath);
+            image = fileName;  // Update image path to the new file name
+        }
+
         try {
+            // Create a new Campsite object with updated values
             CampsiteDAO cdao = new CampsiteDAO();
             Campsite campsite = new Campsite();
             campsite.setCampId(Integer.parseInt(id));
+            campsite.setCampName(name);
             campsite.setCampPrice(Integer.parseInt(price));
             campsite.setCampAddress(address);
-            campsite.setCampName(name);
             campsite.setCampDescription(description);
-            campsite.setCampImage(image);
-            campsite.setCampStatus(status.equals("1") ? true : false);
+            campsite.setCampImage(image);  // Set the image path (it may be new or unchanged)
+            campsite.setCampStatus(status.equals("1"));  // Convert string status to boolean
             campsite.setLimite(Integer.parseInt(limit));
-            cdao.updateCampsite(campsite);
-        } catch (Exception ex) {
 
+            // Update the campsite in the database
+            cdao.updateCampsite(campsite);
+
+        } catch (Exception e) {
+            e.printStackTrace();  // Log any exceptions for debugging
         }
+
+        // Redirect to the manage-campsite page
         response.sendRedirect("manage-campsite");
     }
+
+    // Helper method to extract file name from the uploaded Part
+    private String extractFileName(Part part) {
+        String contentDisp = part.getHeader("content-disposition");
+        for (String content : contentDisp.split(";")) {
+            if (content.trim().startsWith("filename")) {
+                return content.substring(content.indexOf("=") + 2, content.length() - 1);
+            }
+        }
+        return null;
+    }
+
     @Override
     public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
-
+        return "Servlet for updating campsite details including image upload.";
+    }
 }
-
-

@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.*;
 import model.*;
 
+
 public class OrderDAO {
 
     private Connection con;
@@ -205,61 +206,88 @@ public class OrderDAO {
         }
     }
 
-    public List<OrderDTO> statisticOrdersByMonth() {
+    public List<OrderDTO> statisticOrdersByMonth(int year) {
         List<OrderDTO> list = new ArrayList<>();
         try {
-            PreparedStatement pst = this.con.prepareStatement("	WITH LastSixMonths AS (\n"
-                    + "    SELECT \n"
-                    + "        YEAR(GETDATE()) AS [Year],\n"
-                    + "        MONTH(GETDATE()) AS [Month]\n"
-                    + "    UNION ALL\n"
-                    + "    SELECT \n"
-                    + "        YEAR(DATEADD(MONTH, -1, GETDATE())) AS [Year],\n"
-                    + "        MONTH(DATEADD(MONTH, -1, GETDATE())) AS [Month]\n"
-                    + "    UNION ALL\n"
-                    + "    SELECT \n"
-                    + "        YEAR(DATEADD(MONTH, -2, GETDATE())) AS [Year],\n"
-                    + "        MONTH(DATEADD(MONTH, -2, GETDATE())) AS [Month]\n"
-                    + "    UNION ALL\n"
-                    + "    SELECT \n"
-                    + "        YEAR(DATEADD(MONTH, -3, GETDATE())) AS [Year],\n"
-                    + "        MONTH(DATEADD(MONTH, -3, GETDATE())) AS [Month]\n"
-                    + "    UNION ALL\n"
-                    + "    SELECT \n"
-                    + "        YEAR(DATEADD(MONTH, -4, GETDATE())) AS [Year],\n"
-                    + "        MONTH(DATEADD(MONTH, -4, GETDATE())) AS [Month]\n"
-                    + "    UNION ALL\n"
-                    + "    SELECT \n"
-                    + "        YEAR(DATEADD(MONTH, -5, GETDATE())) AS [Year],\n"
-                    + "        MONTH(DATEADD(MONTH, -5, GETDATE())) AS [Month]\n"
-                    + ")\n"
-                    + "SELECT \n"
-                    + "    LSM.[Year],\n"
-                    + "    LSM.[Month],\n"
-                    + "    ISNULL(COUNT(O.[Orders_id]), 0) AS [OrderCount],\n"
-                    + "	 ISNULL(SUM(O.[TotalAmount]), 0) AS [MonthlyRevenue]\n"
-                    + "FROM \n"
-                    + "    LastSixMonths LSM\n"
-                    + "LEFT JOIN \n"
-                    + "    [dbo].[ORDERS] O\n"
-                    + "ON \n"
-                    + "    LSM.[Year] = YEAR(O.[TimeStamp]) AND\n"
-                    + "    LSM.[Month] = MONTH(O.[TimeStamp])\n"
-                    + "GROUP BY \n"
-                    + "    LSM.[Year], \n"
-                    + "    LSM.[Month]\n"
-                    + "ORDER BY \n"
-                    + "    LSM.[Year], \n"
-                    + "    LSM.[Month];");
+            PreparedStatement pst = this.con.prepareStatement("WITH YearMonths AS (\n" +
+                    "    SELECT 1 AS MonthNum\n" +
+                    "    UNION ALL\n" +
+                    "    SELECT MonthNum + 1\n" +
+                    "    FROM YearMonths\n" +
+                    "    WHERE MonthNum < 12\n" +
+                    ")\n" +
+                    "SELECT\n" +
+                    "    ym.MonthNum AS [Month],\n" +
+                    "    ISNULL(COUNT(o.[Orders_id]), 0) AS [OrderCount],\n" +
+                    "    ISNULL(SUM(o.[TotalAmount]), 0) AS [MonthlyRevenue]\n" +
+                    "FROM\n" +
+                    "    YearMonths ym\n" +
+                    "LEFT JOIN\n" +
+                    "    [dbo].[ORDERS] o\n" +
+                    "ON\n" +
+                    "    ym.MonthNum = MONTH(o.enddate) AND YEAR(o.enddate) = ? -- Replace @Year with the year parameter\n" +
+                    "    \n" +
+                    "GROUP BY\n" +
+                    "    ym.MonthNum\n" +
+                    "ORDER BY\n" +
+                    "    ym.MonthNum ASC;\n");
+            pst.setInt(1, year);
             ResultSet rs = pst.executeQuery();
             while (rs.next()) {
                 OrderDTO order = new OrderDTO();
-                order.setYear(rs.getInt("Year"));
+//                order.setYear(rs.getInt("Year"));
                 order.setMonth(rs.getInt("Month"));
                 order.setNumberOfOrders(rs.getInt("OrderCount"));
                 order.setTotalAmount(rs.getInt("MonthlyRevenue"));
                 list.add(order);
 
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println(e.getMessage());
+        }
+        return list;
+    }
+
+    public List<OrderDTO> statisticOrdersByYear() {
+        List<OrderDTO> list = new ArrayList<>();
+        try {
+            // SQL query for getting total orders and revenue for the last 5 years
+            String query = "WITH LastFiveYears AS (\n" +
+                    "    SELECT YEAR(GETDATE()) AS [Year]\n" +
+                    "    UNION ALL\n" +
+                    "    SELECT YEAR(DATEADD(YEAR, -1, GETDATE()))\n" +
+                    "    UNION ALL\n" +
+                    "    SELECT YEAR(DATEADD(YEAR, -2, GETDATE()))\n" +
+                    "    UNION ALL\n" +
+                    "    SELECT YEAR(DATEADD(YEAR, -3, GETDATE()))\n" +
+                    "    UNION ALL\n" +
+                    "    SELECT YEAR(DATEADD(YEAR, -4, GETDATE()))\n" +
+                    ")\n" +
+                    "SELECT\n" +
+                    "    ly.[Year],\n" +
+                    "    ISNULL(COUNT(o.[Orders_id]), 0) AS [OrderCount],\n" +
+                    "    ISNULL(SUM(o.[TotalAmount]), 0) AS [TotalRevenue]\n" +
+                    "FROM\n" +
+                    "    LastFiveYears ly\n" +
+                    "LEFT JOIN\n" +
+                    "    [dbo].[ORDERS] o\n" +
+                    "ON\n" +
+                    "    ly.[Year] = YEAR(o.[EndDate])\n" +
+                    "GROUP BY\n" +
+                    "    ly.[Year]\n" +
+                    "ORDER BY\n" +
+                    "    ly.[Year] DESC;";
+
+            PreparedStatement pst = this.con.prepareStatement(query);
+            ResultSet rs = pst.executeQuery();
+
+            while (rs.next()) {
+                OrderDTO order = new OrderDTO();
+                order.setYear(rs.getInt("Year"));
+                order.setNumberOfOrders(rs.getInt("OrderCount"));
+                order.setTotalAmount(rs.getInt("TotalRevenue"));
+                list.add(order);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -325,12 +353,12 @@ public class OrderDAO {
     public List<Order> getOrdersByOwnerId(int ownerId) {
         List<Order> ordersList = new ArrayList<>();
         try {
-             PreparedStatement pst = this.con.prepareStatement("SELECT o.Orders_id, o.TimeStamp, o.Booker, o.Campsite_id, o.Quantity, " +
-                     "o.StartDate, o.EndDate, o.ApproveStatus, o.PaymentStatus, " +
-                     "o.TotalAmount, o.BookingPrice " +
-                     "FROM [dbo].[ORDERS] o " +
-                     "INNER JOIN [dbo].[CAMPSITE] c ON o.Campsite_id = c.Campsite_id " +
-                     "WHERE c.Campsite_owner = ?");
+            PreparedStatement pst = this.con.prepareStatement("SELECT o.Orders_id, o.TimeStamp, o.Booker, o.Campsite_id, o.Quantity, " +
+                    "o.StartDate, o.EndDate, o.ApproveStatus, o.PaymentStatus, " +
+                    "o.TotalAmount, o.BookingPrice " +
+                    "FROM [dbo].[ORDERS] o " +
+                    "INNER JOIN [dbo].[CAMPSITE] c ON o.Campsite_id = c.Campsite_id " +
+                    "WHERE c.Campsite_owner = ?");
             pst.setInt(1, ownerId);
             try (ResultSet resultSet = pst.executeQuery()) {
                 while (resultSet.next()) {
@@ -358,12 +386,13 @@ public class OrderDAO {
 
         return ordersList;
     }
+
     public String getFullNameById(int accountId) {
         String fullName = null;
         String sql = "SELECT first_name, last_name FROM ACCOUNT WHERE Account_id = ?";
 
         try (
-             PreparedStatement preparedStatement = this.con.prepareStatement(sql)) {
+                PreparedStatement preparedStatement = this.con.prepareStatement(sql)) {
             preparedStatement.setInt(1, accountId);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
@@ -377,6 +406,52 @@ public class OrderDAO {
             e.printStackTrace();
         }
         return fullName;
+    }
+    public List<Order> getOrderByDateCampsiteAndOwner(String startDate, String endDate, int campsiteId, int ownerId) {
+        List<Order> list = new ArrayList<>();
+        try {
+            // Prepare the SQL query with the new ownerId and campsiteId filters
+            String query = "SELECT O.*, " +
+                    "       A.first_name + ' ' + A.last_name AS BookerName, " +
+                    "       C.Campsite_owner AS OwnerId " +
+                    "FROM ORDERS O " +
+                    "LEFT JOIN ACCOUNT A ON O.Booker = A.Account_id " +
+                    "LEFT JOIN CAMPSITE C ON O.Campsite_id = C.Campsite_id " +
+                    "WHERE O.StartDate <= ? AND O.EndDate >= ? " +
+                    "  AND (? = 0 OR O.Campsite_id = ?) " +
+                    "  AND (? = 0 OR C.Campsite_owner = ?);";
+
+            PreparedStatement pst = this.con.prepareStatement(query);
+
+            // Set parameters for the query
+            pst.setString(1, endDate);
+            pst.setString(2, startDate);
+            pst.setInt(3, campsiteId);
+            pst.setInt(4, campsiteId);
+            pst.setInt(5, ownerId);
+            pst.setInt(6, ownerId);
+
+            // Execute the query
+            ResultSet rs = pst.executeQuery();
+            while (rs.next()) {
+                Order order = new Order();
+
+                // Populate the Order object with data from the result set
+                order.setOrdersId(rs.getInt("Orders_id"));
+                order.setBookerName(rs.getString("BookerName"));
+                order.setStartDate(rs.getTimestamp("StartDate"));
+                order.setEndDate(rs.getTimestamp("EndDate"));
+
+                // Add the Order object to the list
+                list.add(order);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println(e.getMessage());
+        }
+
+        // Return the list of orders
+        return list;
     }
 
     public List<Order> getOrdersByAccountId(int accountId) {
@@ -420,3 +495,5 @@ public class OrderDAO {
 
 
 }
+
+

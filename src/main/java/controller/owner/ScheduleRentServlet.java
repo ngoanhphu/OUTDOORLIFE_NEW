@@ -48,7 +48,7 @@ public class ScheduleRentServlet extends HttpServlet {
             int campsiteId = campsiteIdSelected == null || campsiteIdSelected.isEmpty() ? 0 : Integer.parseInt(campsiteIdSelected);
             String dateStr = request.getParameter("txt");
 
-// Parse the date if it's not null and in a valid format
+            // Parse the date if it's not null and in a valid format
             LocalDate date;
             if (dateStr != null && !dateStr.isEmpty()) {
                 date = LocalDate.parse(dateStr);
@@ -56,38 +56,35 @@ public class ScheduleRentServlet extends HttpServlet {
                 date = LocalDate.now();  // Default to today's date if parameter is null or empty
             }
 
-// Add 6 days to the parsed or current date
+            // Add 6 days to the parsed or current date
             LocalDate datePlus7Days = date.plusDays(6);
-
             request.setAttribute("date", date.toString());
 
             DBContext db = new DBContext();
 
+            // Get ownerId from session
+            HttpSession session = request.getSession();
+            int ownerId = (int) session.getAttribute("accountId"); // Lấy ownerId từ session
+
             OrderDAO orderDao = new OrderDAO(db.getConnection());
-            List<Order> orders = orderDao.getOrderByDateAndCampsite(date.toString(), datePlus7Days.toString(),campsiteId);
+            List<Order> orders = orderDao.getOrderByDateCampsiteAndOwner(date.toString(),datePlus7Days.toString(),campsiteId,ownerId);
             request.setAttribute("orders", orders);
-            
-            //get list campsite
+            System.out.println("list order" +orders );
+
+            // Get list campsite
             CampsiteDAO campsiteDAO = new CampsiteDAO();
             List<Campsite> campsites = campsiteDAO.getAllCampside();
             request.setAttribute("campsites", campsites);
             request.setAttribute("campsite", campsiteIdSelected);
-            
+            System.out.println("list camp"+campsites);
+
             request.getRequestDispatcher("scheduleRent.jsp").forward(request, response);
         } catch (Exception e) {
+            e.printStackTrace();
         }
         response.sendRedirect("notifyToOwner");
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {

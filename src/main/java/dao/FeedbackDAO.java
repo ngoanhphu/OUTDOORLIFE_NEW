@@ -61,7 +61,7 @@ public class FeedbackDAO extends DBContext {
             // Sử dụng JOIN để kết hợp dữ liệu từ hai bảng
             String query = "SELECT top 5 f.Feedback_id, a.Account_id, a.first_name, a.last_name, f.TimeStamp, f.Content, f.StarNumber "
                     + "FROM FEEDBACK f "
-                    + "JOIN ACCOUNT a ON f.Account_id = a.Account_id";
+                    + "JOIN ACCOUNT a ON f.commenter = a.Account_id";
             ps = conn.prepareStatement(query);
             rs = ps.executeQuery();
             while (rs.next()) {
@@ -80,90 +80,127 @@ public class FeedbackDAO extends DBContext {
         return list;
     }
 
-    public boolean insertFeedback(Feedback feedback) {
+    public boolean insertFeedback(int rating, String feedbackDate, int accountId, int campsiteId, String content) {
         try {
-            conn = getConnection();//mo ket noi
+            conn = getConnection(); // Mở kết nối
 
-            String query = "insert FEEDBACK(Account_id,StarNumber,TimeStamp,Content)\n"
-                    + "values (?,?,?,?)";
+            // Sửa lại câu lệnh SQL để đúng với bảng và các cột
+            String query = "INSERT INTO FEEDBACK (StarNumber, TimeStamp, commenter, Campsite_id, Content) VALUES (?, ?, ?, ?, ?)";
 
             ps = conn.prepareStatement(query);
-            ps.setInt(1, feedback.getAccountId());
-            ps.setString(2, feedback.getRating());
-            ps.setString(3, feedback.getFeedbackDate());
-            ps.setString(4, feedback.getContent());
 
+            // Gán giá trị vào các tham số trong câu lệnh SQL
+            ps.setInt(1 , rating); // StarNumber
+            ps.setString(2, feedbackDate); // TimeStamp
+            ps.setInt(3, accountId); // commenter
+            ps.setInt(4, campsiteId); // Campsite_id
+            ps.setString(5, content); // Content
+
+            // Thực hiện cập nhật vào cơ sở dữ liệu
             int rs = ps.executeUpdate();
             if (rs > 0) {
-                return true;
-
+                return true; // Nếu thành công
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            e.printStackTrace(); // Xử lý ngoại lệ
         }
-        return false;
+        return false; // Nếu có lỗi hoặc không thành công
     }
 
     public List<Feedback> searchFeedbackByUser(String txtSearch) {
-
         List<Feedback> list = new ArrayList<>();
         try {
-            conn = getConnection();//mo ket noi
+            conn = getConnection(); // Mở kết nối
 
-            String query = "SELECT f.*, a.first_name + ' ' + a.last_name as FullName FROM FEEDBACK f JOIN ACCOUNT a ON f.Account_id = a.Account_id";
+            // Lệnh SQL
+            String query = "SELECT f.Feedback_id, f.commenter, f.TimeStamp, f.Content, f.StarNumber, f.Campsite_id," +
+                    "CONCAT(a.first_name, ' ', a.last_name) AS FullName, " +
+                    "c.Name AS CampsiteName " +
+                    "FROM FEEDBACK f " +
+                    "JOIN ACCOUNT a ON f.commenter = a.Account_id " +
+                    "LEFT JOIN CAMPSITE c ON f.Campsite_id = c.Campsite_id";
+
             if (!txtSearch.isEmpty()) {
-                query += " where FullName like ?";
+                query += " WHERE CONCAT(a.first_name, ' ', a.last_name) LIKE ?"; // Điều kiện tìm kiếm
             }
+
             ps = conn.prepareStatement(query);
+
+            // Gán tham số nếu có
             if (!txtSearch.isEmpty()) {
                 ps.setString(1, "%" + txtSearch + "%");
             }
+
             rs = ps.executeQuery();
+
+            // Xử lý dữ liệu trả về
             while (rs.next()) {
                 int feedbackId = rs.getInt("Feedback_id");
-                int accountId = rs.getInt("Account_id");
-
+                int accountId = rs.getInt("commenter");
                 String feedbackDate = rs.getString("TimeStamp");
                 String content = rs.getString("Content");
                 String rating = rs.getString("StarNumber");
                 String accountName = rs.getString("FullName");
+                int campsiteId=rs.getInt("Campsite_id");
+                String campsiteName = rs.getString("CampsiteName") ;
 
-                list.add(new Feedback(feedbackId, accountId, accountName, feedbackDate, content, rating));
+                list.add(new Feedback(feedbackId, accountId, accountName, feedbackDate, content, rating, campsiteId, campsiteName));
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            e.printStackTrace(); // In lỗi
         }
         return list;
     }
+
+
+
 
     public List<Feedback> filterFeedbackByRating(String rating) {
 
         List<Feedback> list = new ArrayList<>();
         try {
-            conn = getConnection();//mo ket noi
+            conn = getConnection(); // Mở kết nối
 
-            String query = "select f.*, a.first_name + ' ' + a.last_name as FullName \n"
-                    + "from Feedback  f JOIN ACCOUNT a ON f.Account_id = a.Account_id\n"
-                    + "where StarNumber = ?";
+            // Truy vấn SQL kết hợp bảng Feedback và Account
+            String query = "SELECT f.*, a.first_name + ' ' + a.last_name AS FullName " +
+                    "FROM Feedback f " +
+                    "JOIN ACCOUNT a ON f.commenter = a.Account_id " +
+                    "WHERE StarNumber = ?";
 
             ps = conn.prepareStatement(query);
-            ps.setString(1, rating);
+            ps.setString(1, rating); // Gán giá trị rating vào câu truy vấn
             rs = ps.executeQuery();
+
+            // Lặp qua kết quả truy vấn
             while (rs.next()) {
                 int feedbackId = rs.getInt("Feedback_id");
-                int accountId = rs.getInt("Account_id");
-
+                int accountId = rs.getInt("commenter"); // Sửa thành commenter
                 String feedbackDate = rs.getString("TimeStamp");
-                String content = rs.getString("Content");
+                String content = rs.getString("Content") != null ? rs.getString("Content") : ""; // Xử lý NULL
                 String ratingStr = rs.getString("StarNumber");
                 String accountName = rs.getString("FullName");
-                list.add(new Feedback(feedbackId, accountId, accountName, feedbackDate, content, ratingStr));
+
+                // Xử lý giá trị NULL cho Campsite_id nếu cần
+                Integer campsiteId = rs.getObject("Campsite_id") != null ? rs.getInt("Campsite_id") : null;
+
+                // Thêm đối tượng Feedback vào danh sách
+                list.add(new Feedback(feedbackId, accountId, accountName, feedbackDate, content, ratingStr, campsiteId));
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            e.printStackTrace(); // Xử lý ngoại lệ
+        } finally {
+            // Đóng các tài nguyên (kết nối, preparedStatement, resultSet) nếu cần
+            try {
+                if (rs != null) rs.close();
+                if (ps != null) ps.close();
+                if (conn != null) conn.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         }
-        return list;
+        return list; // Trả về danh sách kết quả
     }
+
 
     public boolean deleteFeedback(int feedbackId) {
         try {
@@ -187,8 +224,9 @@ public class FeedbackDAO extends DBContext {
     }
 
     public static void main(String[] args) {
-        FeedbackDAO f = new FeedbackDAO();
-        System.out.println(f.getAllFeedback());
-
+        FeedbackDAO f=new FeedbackDAO();
+        System.out.println(f.getLastFiveFeedback());
     }
+
+
 }
