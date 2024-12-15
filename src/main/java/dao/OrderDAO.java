@@ -379,5 +379,44 @@ public class OrderDAO {
         return fullName;
     }
 
+    public List<Order> getOrdersByAccountId(int accountId) {
+        List<Order> orders = new ArrayList<>();
+
+        String sql = " SELECT o.*, c.Campsite_id, c.Campsite_owner, ow.Owner_id, cust.customer_id " +
+                "FROM ORDERS o " +
+                "JOIN CUSTOMER cust ON o.Booker = cust.customer_id " +
+                "JOIN CAMPSITE c ON o.Campsite_id = c.Campsite_id " +
+                "JOIN OWNER ow ON c.Campsite_owner = ow.Owner_id " +
+                "WHERE cust.Account_id = ? " +
+                "ORDER BY o.TimeStamp DESC";
+
+        try (PreparedStatement preparedStatement = this.con.prepareStatement(sql))  {
+
+            preparedStatement.setInt(1, accountId);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    Order order = new Order();
+                    order.setOrdersId(resultSet.getInt("Orders_id"));
+                    order.setTimeStamp(resultSet.getTimestamp("TimeStamp"));
+                    order.setBooker(resultSet.getInt("Booker"));
+                    order.setCampsiteId(resultSet.getInt("Campsite_id"));
+                    order.setQuantity(resultSet.getInt("Quantity"));
+                    order.setStartDate(resultSet.getTimestamp("StartDate"));
+                    order.setEndDate(resultSet.getTimestamp("EndDate"));
+                    order.setApproveStatus(resultSet.getBoolean("ApproveStatus"));
+                    order.setPaymentStatus(resultSet.getBoolean("PaymentStatus"));
+                    order.setTotalAmount(resultSet.getInt("TotalAmount"));
+                    order.setBookingPrice(resultSet.getInt("BookingPrice"));
+                    order.setOwnerIsRequired(resultSet.getInt("Campsite_owner"));
+                    orders.add(order);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return orders;
+    }
+
+
 
 }

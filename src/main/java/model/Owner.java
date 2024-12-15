@@ -19,6 +19,7 @@ public class Owner {
     private Date startDate;
     private Date endDate;
     private String notes;
+    private String ownerName;
 
     public int getOwnerId() {
         return ownerId;
@@ -138,5 +139,13 @@ public class Owner {
 
     public void setNotes(String notes) {
         this.notes = notes;
+    }
+
+    public String getOwnerName() {
+        return ownerName;
+    }
+
+    public void setOwnerName(String ownerName) {
+        this.ownerName = ownerName;
     }
 }

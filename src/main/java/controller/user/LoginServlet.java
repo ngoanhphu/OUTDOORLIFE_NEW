@@ -59,7 +59,6 @@ public class LoginServlet extends HttpServlet {
             try {
                 boolean ownerExists = ownerDAO.isOwnerExist(user.getId());
                 if (ownerExists) {
-
                     response.sendRedirect("schedule-rent");
 
                 } else {

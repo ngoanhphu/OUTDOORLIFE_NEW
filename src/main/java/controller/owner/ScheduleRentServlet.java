@@ -76,6 +76,7 @@ public class ScheduleRentServlet extends HttpServlet {
             request.getRequestDispatcher("scheduleRent.jsp").forward(request, response);
         } catch (Exception e) {
         }
+        response.sendRedirect("notifyToOwner");
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

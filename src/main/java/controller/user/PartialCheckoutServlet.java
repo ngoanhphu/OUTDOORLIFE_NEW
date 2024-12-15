@@ -114,9 +114,6 @@ public class PartialCheckoutServlet extends HttpServlet {
             OrderDAO oDao = new OrderDAO(db.getConnection());
             OrderDetailDAO orderDetailDAO = new OrderDetailDAO();
             CampsiteDAO campsiteDAO = new CampsiteDAO();
-
-//            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
-//            Timestamp now = new Timestamp(System.currentTimeMillis());
             String[] selectedItems = request.getParameterValues("selectedItems");
             ArrayList<Cart> cart_list = (ArrayList<Cart>) request.getSession().getAttribute("cart-list");
             ArrayList<Cart> cart_list_selected = new ArrayList<>();
@@ -130,18 +127,6 @@ public class PartialCheckoutServlet extends HttpServlet {
                         for (Cart c : cart_list) {
                             if (c.getGearId() == gearId) {
                                 cart_list_selected.add(c);
-//                            Order order = new Order();
-//                            order.setGearId(c.getGearId());
-//                            order.setBooker(auth.getId());
-//                            order.setTimeStamp(now);
-//                            order.setQuantity(c.getQuantity());
-//
-//                            DBContext db = new DBContext();
-//                            OrderDAO oDao = new OrderDAO(db.getConnection());
-//                            boolean result = oDao.insertOrder(order);
-//                            if (!result) {
-//                                break;
-//                            }
                             }
                         }
                         for (Cart cart : cart_list_selected) {
@@ -149,8 +134,6 @@ public class PartialCheckoutServlet extends HttpServlet {
                         }
                     }
                 }
-//                cart_list.clear();
-//                response.sendRedirect("orders.jsp");
 
                 session.setAttribute("cart_list_selected", cart_list_selected);
                 DBContext dbContext = new DBContext();
