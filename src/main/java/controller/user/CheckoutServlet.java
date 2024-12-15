@@ -4,6 +4,9 @@ import dao.DBContext;
 import dao.OrderDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
+
+import dao.OwnerDAO;
+import dao.UserDaoImpl;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -15,6 +18,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import jakarta.servlet.http.HttpSession;
 import model.Cart;
 import model.Order;
 import model.User;
@@ -42,42 +47,56 @@ public class CheckoutServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        try (PrintWriter out = response.getWriter()) {
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
-            Timestamp now = new Timestamp(System.currentTimeMillis());
+        HttpSession session = request.getSession();
+        OwnerDAO ownerDAO = new OwnerDAO(new DBContext());
+        User auth = (User) request.getSession().getAttribute("currentUser");
 
-            ArrayList<Cart> cart_list = (ArrayList<Cart>) request.getSession().getAttribute("cart-list");
-            User auth = (User) request.getSession().getAttribute("currentUser");
+        if (auth == null) {
+            session.setAttribute("message", "You are not logged in!");
+            response.sendRedirect("login.jsp");
+        } else {
+            UserDaoImpl userDAO = new UserDaoImpl();
+            boolean isDeactivated = userDAO.isAccountDeactivated(auth.getId());
+            if (isDeactivated) {
+                session.setAttribute("message", "Your account has been deactivated!");
+                response.sendRedirect("loginMessage");
+            }
 
-            if (cart_list != null && auth != null) {
-                for (Cart c : cart_list) {
-                    Order order = new Order();
-                    order.setGearId(c.getGearId());
-                    order.setBooker(auth.getId());
-                    order.setTimeStamp(now);
-                    order.setQuantity(c.getQuantity());
-                    
-                    DBContext db = new DBContext();
-                    OrderDAO oDao = new OrderDAO(db.getConnection());
-                    boolean result = oDao.insertOrder(order);
-                    if (!result) {
-                        break;
+            try (PrintWriter out = response.getWriter()) {
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
+                Timestamp now = new Timestamp(System.currentTimeMillis());
+
+                ArrayList<Cart> cart_list = (ArrayList<Cart>) request.getSession().getAttribute("cart-list");
+
+                if (cart_list != null && auth != null) {
+                    for (Cart c : cart_list) {
+                        Order order = new Order();
+                        order.setGearId(c.getGearId());
+                        order.setBooker(auth.getId());
+                        order.setTimeStamp(now);
+                        order.setQuantity(c.getQuantity());
+
+                        DBContext db = new DBContext();
+                        OrderDAO oDao = new OrderDAO(db.getConnection());
+                        boolean result = oDao.insertOrder(order);
+                        if (!result) {
+                            break;
+                        }
+                    }
+                    cart_list.clear();
+                    response.sendRedirect("orders.jsp");
+                } else {
+                    if (auth == null) {
+                        response.sendRedirect("login1.jsp");
+                    } else {
+                        response.sendRedirect("Cart.jsp");
                     }
                 }
-                cart_list.clear();
-                response.sendRedirect("orders.jsp");
-            } else {
-                if (auth == null) {
-                    response.sendRedirect("login1.jsp");
-                } else {
-                    response.sendRedirect("Cart.jsp");
-                }
+            } catch (Exception ex) {
+                Logger.getLogger(CheckoutServlet.class.getName()).log(Level.SEVERE, null, ex);
             }
-        } catch (Exception ex) {
-            Logger.getLogger(CheckoutServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {

@@ -86,6 +86,12 @@
                                         </button>
                                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                             <li><a class="dropdown-item" href="UserProfile.jsp">Profile</a></li>
+                                            <c:if test="${currentUser.admin}">
+                                                <li><a class="dropdown-item" href="dashboard">Admin Dashboard</a></li>
+                                            </c:if>
+                                            <c:if test="${currentUser.owner}">
+                                                <li><a class="dropdown-item" href="schedule-rent">Owner Dashboard</a></li>
+                                            </c:if>
                                             <li><a class="dropdown-item" href="logout">Logout</a></li>
                                         </ul>
                                     </div>

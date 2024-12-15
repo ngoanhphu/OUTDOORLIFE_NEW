@@ -2,6 +2,7 @@ package controller.admin;
 
 import dao.OwnerDAO;
 import dao.DBContext;
+import jakarta.servlet.http.HttpSession;
 import model.Owner;
 
 import jakarta.servlet.ServletException;
@@ -27,32 +28,38 @@ public class OwnerRegistration extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        int page = 1;
-        int recordsPerPage = 10;
-        if (request.getParameter("page") != null) {
-            page = Integer.parseInt(request.getParameter("page"));
-        }
-
+        HttpSession session = request.getSession();
         User auth = (User) request.getSession().getAttribute("currentUser");
-        if (auth != null && auth.isAdmin()) {
-            try {
-                List<Owner> pendingOwners = ownerDAO.getPendingOwners();
-                int totalRecords = pendingOwners.size();
-                int totalPages = (int) Math.ceil((double) totalRecords / recordsPerPage);
 
-                int start = (page - 1) * recordsPerPage;
-                int end = Math.min(start + recordsPerPage, totalRecords);
-                List<Owner> paginatedOwners = pendingOwners.subList(start, end);
-
-                request.setAttribute("pendingOwners", paginatedOwners);
-                request.setAttribute("currentPage", page);
-                request.setAttribute("totalPages", totalPages);
-                request.getRequestDispatcher("/ownerRegistration.jsp").forward(request, response);
-            } catch (SQLException e) {
-                throw new ServletException("Database error", e);
-            }
-        } else {
+        if (auth == null) {
+            session.setAttribute("message", "You are not logged in!");
             response.sendRedirect("login.jsp");
+        } else {
+            int page = 1;
+            int recordsPerPage = 10;
+            if (request.getParameter("page") != null) {
+                page = Integer.parseInt(request.getParameter("page"));
+            }
+            if (auth != null && auth.isAdmin()) {
+                try {
+                    List<Owner> pendingOwners = ownerDAO.getPendingOwners();
+                    int totalRecords = pendingOwners.size();
+                    int totalPages = (int) Math.ceil((double) totalRecords / recordsPerPage);
+
+                    int start = (page - 1) * recordsPerPage;
+                    int end = Math.min(start + recordsPerPage, totalRecords);
+                    List<Owner> paginatedOwners = pendingOwners.subList(start, end);
+
+                    request.setAttribute("pendingOwners", paginatedOwners);
+                    request.setAttribute("currentPage", page);
+                    request.setAttribute("totalPages", totalPages);
+                    request.getRequestDispatcher("/ownerRegistration.jsp").forward(request, response);
+                } catch (SQLException e) {
+                    throw new ServletException("Database error", e);
+                }
+            } else {
+                response.sendRedirect("login.jsp");
+            }
         }
     }
 }

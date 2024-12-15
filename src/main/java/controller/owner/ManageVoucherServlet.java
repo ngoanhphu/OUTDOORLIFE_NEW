@@ -4,6 +4,9 @@
  */
 package controller.owner;
 
+import dao.DBContext;
+import dao.OwnerDAO;
+import dao.UserDaoImpl;
 import dao.VoucherDAO;
 import java.io.IOException;
 
@@ -14,6 +17,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 
+import jakarta.servlet.http.HttpSession;
+import model.User;
 import model.Voucher;
 
 /**
@@ -34,26 +39,41 @@ public class ManageVoucherServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        try {
-            response.setContentType("text/html;charset=UTF-8");
+        HttpSession session = request.getSession();
+        OwnerDAO ownerDAO = new OwnerDAO(new DBContext());
+        User auth = (User) request.getSession().getAttribute("currentUser");
 
-            VoucherDAO vdao = new VoucherDAO();
-            int page = request.getParameter("page") == null ? 1 : Integer.parseInt(request.getParameter("page"));
+        if (auth == null) {
+            session.setAttribute("message", "You are not logged in!");
+            response.sendRedirect("login.jsp");
+        } else {
+            UserDaoImpl userDAO = new UserDaoImpl();
+            boolean isDeactivated = userDAO.isAccountDeactivated(auth.getId());
+            if (isDeactivated) {
+                session.setAttribute("message", "Your account has been deactivated!");
+                response.sendRedirect("loginMessage");
+            }
 
-            int totalItems = vdao.getTotalItem();
-            List<Voucher> vouchers = vdao.getAllVoucher(page, 8);
+            try {
+                response.setContentType("text/html;charset=UTF-8");
 
-            request.setAttribute("currentPage", page);
-            request.setAttribute("totalPages", Math.ceil((totalItems / (double) 8)));
-            request.setAttribute("itemsPerPage", 8);
-            request.setAttribute("vouchers", vouchers);
+                VoucherDAO vdao = new VoucherDAO();
+                int page = request.getParameter("page") == null ? 1 : Integer.parseInt(request.getParameter("page"));
 
-            request.getRequestDispatcher("/manageVoucher.jsp").forward(request, response);
-        } catch (Exception e) {
-            e.printStackTrace();
+                int totalItems = vdao.getTotalItem();
+                List<Voucher> vouchers = vdao.getAllVoucher(page, 8);
+
+                request.setAttribute("currentPage", page);
+                request.setAttribute("totalPages", Math.ceil((totalItems / (double) 8)));
+                request.setAttribute("itemsPerPage", 8);
+                request.setAttribute("vouchers", vouchers);
+
+                request.getRequestDispatcher("/manageVoucher.jsp").forward(request, response);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
-
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.

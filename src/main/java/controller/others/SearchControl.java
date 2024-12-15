@@ -7,6 +7,9 @@ package controller.others;
 import dao.DBContext;
 import dao.GearDAO;
 import java.io.IOException;
+
+import dao.OwnerDAO;
+import dao.UserDaoImpl;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -15,6 +18,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import jakarta.servlet.http.HttpSession;
 import model.Gear;
 import model.User;
 
@@ -25,31 +30,46 @@ public class SearchControl extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, Exception {
-        request.setCharacterEncoding("UTF-8");
-        response.setContentType("text/html;charset=UTF-8");
-
-        // Lấy đối tượng User từ session
+        HttpSession session = request.getSession();
+        OwnerDAO ownerDAO = new OwnerDAO(new DBContext());
         User auth = (User) request.getSession().getAttribute("currentUser");
 
-        // Kiểm tra nếu người dùng đã đăng nhập và là chủ cắm trại
-        if (auth != null && auth.isOwner()) {
-            // Lấy ID của chủ cắm trại
-            int campsiteOwnerId = auth.getId();
-
-            // Lấy thông tin tìm kiếm từ form
-            String txtSearch = request.getParameter("txt");
-
-            // Gọi DAO để tìm kiếm Gear của chủ sở hữu
-            DBContext db = new DBContext();
-            GearDAO dao = new GearDAO(db.getConnection());
-            List<Gear> list = dao.searchByNameAndOwner(txtSearch, campsiteOwnerId);
-
-            // Gửi dữ liệu kết quả tìm kiếm sang JSP
-            request.setAttribute("gears", list);
-            request.getRequestDispatcher("crudGear.jsp").forward(request, response);
-        } else {
-            // Nếu không hợp lệ, chuyển hướng về trang đăng nhập hoặc báo lỗi
+        if (auth == null) {
+            session.setAttribute("message", "You are not logged in!");
             response.sendRedirect("login.jsp");
+        } else {
+            UserDaoImpl userDAO = new UserDaoImpl();
+            boolean isDeactivated = userDAO.isAccountDeactivated(auth.getId());
+            if (isDeactivated) {
+                session.setAttribute("message", "Your account has been deactivated!");
+                response.sendRedirect("loginMessage");
+            }
+
+            request.setCharacterEncoding("UTF-8");
+            response.setContentType("text/html;charset=UTF-8");
+
+            // Lấy đối tượng User từ session
+
+            // Kiểm tra nếu người dùng đã đăng nhập và là chủ cắm trại
+            if (auth != null && auth.isOwner()) {
+                // Lấy ID của chủ cắm trại
+                int campsiteOwnerId = auth.getId();
+
+                // Lấy thông tin tìm kiếm từ form
+                String txtSearch = request.getParameter("txt");
+
+                // Gọi DAO để tìm kiếm Gear của chủ sở hữu
+                DBContext db = new DBContext();
+                GearDAO dao = new GearDAO(db.getConnection());
+                List<Gear> list = dao.searchByNameAndOwner(txtSearch, campsiteOwnerId);
+
+                // Gửi dữ liệu kết quả tìm kiếm sang JSP
+                request.setAttribute("gears", list);
+                request.getRequestDispatcher("crudGear.jsp").forward(request, response);
+            } else {
+                // Nếu không hợp lệ, chuyển hướng về trang đăng nhập hoặc báo lỗi
+                response.sendRedirect("login.jsp");
+            }
         }
     }
 

@@ -4,9 +4,8 @@
  */
 package controller.owner;
 
-import dao.CampsiteOrderDAO;
-import dao.DBContext;
-import dao.OrderDetailDAO;
+import dao.*;
+
 import java.io.IOException;
 
 import jakarta.servlet.ServletException;
@@ -15,6 +14,8 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
+
+import jakarta.servlet.http.HttpSession;
 import model.CampsiteOrder;
 import model.OrderDetail;
 import model.User;
@@ -37,27 +38,42 @@ public class OrderDetailServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try {
-            String action = request.getParameter("action");
-            String id = request.getParameter("id");
-            User auth = (User) request.getSession().getAttribute("currentUser");
-            DBContext db = new DBContext();
-            if (auth != null) {
-                request.setAttribute("person", auth);
-                CampsiteOrderDAO orderDao = new CampsiteOrderDAO(db.getConnection());
-                CampsiteOrder campsite = orderDao.getCampsiteOrderByOrderId(Integer.parseInt(id));
-                request.setAttribute("campsite", campsite);
+        HttpSession session = request.getSession();
+        OwnerDAO ownerDAO = new OwnerDAO(new DBContext());
+        User auth = (User) request.getSession().getAttribute("currentUser");
 
-                OrderDetailDAO orderDetailDAO = new OrderDetailDAO();
-                List<OrderDetail> ods = orderDetailDAO.orderDetailByOrderId(Integer.parseInt(id));
-                request.setAttribute("ods", ods);
-                request.setAttribute("action", action);
-                request.getRequestDispatcher("orderDetail.jsp").forward(request, response);
-            } else {
-                response.sendRedirect("login.jsp");
+        if (auth == null) {
+            session.setAttribute("message", "You are not logged in!");
+            response.sendRedirect("login.jsp");
+        } else {
+            UserDaoImpl userDAO = new UserDaoImpl();
+            boolean isDeactivated = userDAO.isAccountDeactivated(auth.getId());
+            if (isDeactivated) {
+                session.setAttribute("message", "Your account has been deactivated!");
+                response.sendRedirect("loginMessage");
             }
-        } catch (Exception e) {
+
+            response.setContentType("text/html;charset=UTF-8");
+            try {
+                String action = request.getParameter("action");
+                String id = request.getParameter("id");
+                DBContext db = new DBContext();
+                if (auth != null) {
+                    request.setAttribute("person", auth);
+                    CampsiteOrderDAO orderDao = new CampsiteOrderDAO(db.getConnection());
+                    CampsiteOrder campsite = orderDao.getCampsiteOrderByOrderId(Integer.parseInt(id));
+                    request.setAttribute("campsite", campsite);
+
+                    OrderDetailDAO orderDetailDAO = new OrderDetailDAO();
+                    List<OrderDetail> ods = orderDetailDAO.orderDetailByOrderId(Integer.parseInt(id));
+                    request.setAttribute("ods", ods);
+                    request.setAttribute("action", action);
+                    request.getRequestDispatcher("orderDetail.jsp").forward(request, response);
+                } else {
+                    response.sendRedirect("login.jsp");
+                }
+            } catch (Exception e) {
+            }
         }
     }
 

@@ -1,6 +1,7 @@
 package controller.admin;
 
 import dao.CampsiteDAO;
+import jakarta.servlet.http.HttpSession;
 import model.Campsite;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -29,34 +30,39 @@ public class CampsiteApproving extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        int page = 1;
-        int recordsPerPage = 10;
-        if (request.getParameter("page") != null) {
-            page = Integer.parseInt(request.getParameter("page"));
-        }
-
+        HttpSession session = request.getSession();
         User auth = (User) request.getSession().getAttribute("currentUser");
-        if (auth != null && auth.isOwner()) {
 
-            try {
-                List<Campsite> campsites = campDAO.getCampsitesWithStatusFalse();
-                int totalRecords = campsites.size();
-                int totalPages = (int) Math.ceil((double) totalRecords / recordsPerPage);
-
-                int start = (page - 1) * recordsPerPage;
-                int end = Math.min(start + recordsPerPage, totalRecords);
-                List<Campsite> paginatedCampsites = campsites.subList(start, end);
-
-                request.setAttribute("campsites", paginatedCampsites);
-                request.setAttribute("currentPage", page);
-                request.setAttribute("totalPages", totalPages);
-                request.getRequestDispatcher("/admin/campsiteApproving.jsp").forward(request, response);
-            } catch (Exception e) {
-                throw new ServletException("Error retrieving campsites", e);
-            }
-        }
-        else{
+        if (auth == null) {
+            session.setAttribute("message", "You are not logged in!");
             response.sendRedirect("login.jsp");
+        } else {
+            int page = 1;
+            int recordsPerPage = 10;
+            if (request.getParameter("page") != null) {
+                page = Integer.parseInt(request.getParameter("page"));
+            }
+            if (auth != null && auth.isOwner()) {
+
+                try {
+                    List<Campsite> campsites = campDAO.getCampsitesWithStatusFalse();
+                    int totalRecords = campsites.size();
+                    int totalPages = (int) Math.ceil((double) totalRecords / recordsPerPage);
+
+                    int start = (page - 1) * recordsPerPage;
+                    int end = Math.min(start + recordsPerPage, totalRecords);
+                    List<Campsite> paginatedCampsites = campsites.subList(start, end);
+
+                    request.setAttribute("campsites", paginatedCampsites);
+                    request.setAttribute("currentPage", page);
+                    request.setAttribute("totalPages", totalPages);
+                    request.getRequestDispatcher("/admin/campsiteApproving.jsp").forward(request, response);
+                } catch (Exception e) {
+                    throw new ServletException("Error retrieving campsites", e);
+                }
+            } else {
+                response.sendRedirect("login.jsp");
+            }
         }
     }
 

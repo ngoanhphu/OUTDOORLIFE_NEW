@@ -1,9 +1,6 @@
 package controller.owner;
 
-import dao.AccountDAO;
-import dao.DBContext;
-import dao.OwnerDAO;
-import dao.UserDAO;
+import dao.*;
 import dto.OrderDTO;
 import dto.OrderRevenueDTO;
 import jakarta.servlet.ServletException;
@@ -11,6 +8,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import model.Owner;
 import model.User;
 
@@ -24,6 +22,7 @@ import java.util.List;
 public class DashboardOwnerServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response, int queryYear)
             throws ServletException, IOException {
+
         String queryType = request.getParameter("queryType");
         if (queryType != null) {
             request.setAttribute("queryType", queryType);
@@ -61,12 +60,28 @@ public class DashboardOwnerServlet extends HttpServlet {
     }
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        int queryYear = Calendar.getInstance().get(Calendar.YEAR);
-        if (request.getParameter("year") != null) {
-            queryYear = Integer.parseInt(request.getParameter("year"));
+        HttpSession session = request.getSession();
+        OwnerDAO ownerDAO = new OwnerDAO(new DBContext());
+        User auth = (User) request.getSession().getAttribute("currentUser");
+
+        if (auth == null) {
+            session.setAttribute("message", "You are not logged in!");
+            response.sendRedirect("login.jsp");
+        } else {
+            UserDaoImpl userDAO = new UserDaoImpl();
+            boolean isDeactivated = userDAO.isAccountDeactivated(auth.getId());
+            if (isDeactivated) {
+                session.setAttribute("message", "Your account has been deactivated!");
+                response.sendRedirect("loginMessage");
+            }
+
+            int queryYear = Calendar.getInstance().get(Calendar.YEAR);
+            if (request.getParameter("year") != null) {
+                queryYear = Integer.parseInt(request.getParameter("year"));
+            }
+            processRequest(request, response, queryYear);
+            request.getRequestDispatcher("dashboard-owner.jsp").forward(request, response);
         }
-        processRequest(request, response, queryYear);
-        request.getRequestDispatcher("dashboard-owner.jsp").forward(request, response);
     }
 
     @Override

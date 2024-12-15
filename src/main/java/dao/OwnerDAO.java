@@ -270,6 +270,33 @@ public class OwnerDAO {
         return true;
     }
 
+    public boolean updateOwnerStatus(HttpSession session) throws SQLException {
+        Integer accountId = (Integer) session.getAttribute("accountId");
+
+        if (accountId == null) {
+            throw new IllegalArgumentException("Account_id is not present in the session");
+        }
+
+        String sql1 = "UPDATE ACCOUNT SET isOwner = 0 WHERE Account_id = ?";
+        String sql2 = "UPDATE OWNER SET status = 'disapproved' WHERE Account_id = ?";
+
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt1 = conn.prepareStatement(sql1);
+             PreparedStatement pstmt2 = conn.prepareStatement(sql2)) {
+            pstmt1.setInt(1, accountId);
+            pstmt2.setInt(1, accountId);
+
+            int rowsAffected1 = pstmt1.executeUpdate();
+            int rowsAffected2 = pstmt2.executeUpdate();
+
+            return rowsAffected1 > 0 && rowsAffected2 > 0;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+
     public List<OwnerDTO> getOwnersWithAccountInfoAndRevenue() throws SQLException {
         String sql = "SELECT "
                 + "o.owner_id, "

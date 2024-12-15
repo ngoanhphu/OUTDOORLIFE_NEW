@@ -2,12 +2,14 @@ package controller.owner;
 
 import dao.OwnerDAO;
 import dao.DBContext;
+import dao.UserDaoImpl;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.*;
 import model.Owner;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
+import model.User;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,22 +34,32 @@ public class RegisterOwner extends HttpServlet {
             throws ServletException, IOException {
         HttpSession session = request.getSession();
         OwnerDAO ownerDAO = new OwnerDAO(new DBContext());
+        User auth = (User) request.getSession().getAttribute("currentUser");
 
-        try {
-            String status = ownerDAO.getOwnerStatusByAccountId(session);
-            if ("approved".equals(status)) {
-                session.setAttribute("message", "Already became an approved owner!");
-                response.sendRedirect(request.getContextPath() + "/index.jsp");
+        if (auth == null) {
+            session.setAttribute("message", "You are not logged in!");
+            response.sendRedirect("login.jsp");
+        } else {
+            UserDaoImpl userDAO = new UserDaoImpl();
+            boolean isDeactivated = userDAO.isAccountDeactivated(auth.getId());
+            if (isDeactivated) {
+                session.setAttribute("message", "Your account has been deactivated!");
+                response.sendRedirect("loginMessage");
             }
-            else if ("pending".equals(status)) {
-                session.setAttribute("message", "Already submitted an owner registration request!");
-                response.sendRedirect(request.getContextPath() + "/index.jsp");
+            try {
+                String status = ownerDAO.getOwnerStatusByAccountId(session);
+                if ("approved".equals(status)) {
+                    session.setAttribute("message", "Already became an approved owner!");
+                    response.sendRedirect(request.getContextPath() + "/index.jsp");
+                } else if ("pending".equals(status)) {
+                    session.setAttribute("message", "Already submitted an owner registration request!");
+                    response.sendRedirect(request.getContextPath() + "/index.jsp");
+                } else {
+                    request.getRequestDispatcher("registerOwner.jsp").forward(request, response);
+                }
+            } catch (SQLException e) {
+                throw new ServletException("Database error", e);
             }
-            else {
-                request.getRequestDispatcher("registerOwner.jsp").forward(request, response);
-            }
-        } catch (SQLException e) {
-            throw new ServletException("Database error", e);
         }
     }
 

@@ -4,6 +4,8 @@
  */
 package controller.owner;
 
+import dao.DBContext;
+import dao.OwnerDAO;
 import dao.UserDaoImpl;
 import java.io.IOException;
 
@@ -12,6 +14,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import model.User;
 
 /**
  *
@@ -31,17 +35,31 @@ public class DeleteStaffServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        String id = request.getParameter("id"); //get id tu jsp
-        try {
+        HttpSession session = request.getSession();
+        OwnerDAO ownerDAO = new OwnerDAO(new DBContext());
+        User auth = (User) request.getSession().getAttribute("currentUser");
+
+        if (auth == null) {
+            session.setAttribute("message", "You are not logged in!");
+            response.sendRedirect("login.jsp");
+        } else {
             UserDaoImpl userDAO = new UserDaoImpl();
-            userDAO.deleteStaff(id);
-        } catch (Exception ex) {
+            boolean isDeactivated = userDAO.isAccountDeactivated(auth.getId());
+            if (isDeactivated) {
+                session.setAttribute("message", "Your account has been deactivated!");
+                response.sendRedirect("loginMessage");
+            }
 
+            response.setContentType("text/html;charset=UTF-8");
+            String id = request.getParameter("id"); //get id tu jsp
+            try {
+                userDAO.deleteStaff(id);
+            } catch (Exception ex) {
+
+            }
+            response.sendRedirect("manage-account");
         }
-        response.sendRedirect("manage-account");
     }
-
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.

@@ -1,6 +1,7 @@
 package controller.admin;
 
 import dao.CampsiteDAO;
+import jakarta.servlet.http.HttpSession;
 import model.Campsite;
 import model.User;
 
@@ -19,30 +20,36 @@ public class SearchCampsiteOwner extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, Exception {
-        request.setCharacterEncoding("UTF-8");
-        response.setContentType("text/html;charset=UTF-8");
-
-        // Lấy thông tin người dùng từ session
+        HttpSession session = request.getSession();
         User auth = (User) request.getSession().getAttribute("currentUser");
 
-        // Kiểm tra xem người dùng đã đăng nhập và có quyền là chủ campsite
-        if (auth != null && auth.isOwner()) {
-            // Lấy ID của chủ campsite
-            int campsiteOwnerId = auth.getId();
-
-            // Lấy thông tin từ form tìm kiếm
-            String txtSearch = request.getParameter("txt");
-
-            // Sử dụng DAO để tìm kiếm Campsite
-            CampsiteDAO dao = new CampsiteDAO();
-            List<Campsite> campsites = dao.searchCampsiteByNameAndOwner(txtSearch, campsiteOwnerId);
-
-            // Gửi danh sách Campsite sang trang JSP
-            request.setAttribute("campsites", campsites);
-            request.getRequestDispatcher("crudCampsite.jsp").forward(request, response);
-        } else {
-            // Nếu không hợp lệ, chuyển hướng về trang đăng nhập hoặc báo lỗi
+        if (auth == null) {
+            session.setAttribute("message", "You are not logged in!");
             response.sendRedirect("login.jsp");
+        } else {
+            request.setCharacterEncoding("UTF-8");
+            response.setContentType("text/html;charset=UTF-8");
+
+            // Lấy thông tin người dùng từ session
+            // Kiểm tra xem người dùng đã đăng nhập và có quyền là chủ campsite
+            if (auth != null && auth.isOwner()) {
+                // Lấy ID của chủ campsite
+                int campsiteOwnerId = auth.getId();
+
+                // Lấy thông tin từ form tìm kiếm
+                String txtSearch = request.getParameter("txt");
+
+                // Sử dụng DAO để tìm kiếm Campsite
+                CampsiteDAO dao = new CampsiteDAO();
+                List<Campsite> campsites = dao.searchCampsiteByNameAndOwner(txtSearch, campsiteOwnerId);
+
+                // Gửi danh sách Campsite sang trang JSP
+                request.setAttribute("campsites", campsites);
+                request.getRequestDispatcher("crudCampsite.jsp").forward(request, response);
+            } else {
+                // Nếu không hợp lệ, chuyển hướng về trang đăng nhập hoặc báo lỗi
+                response.sendRedirect("login.jsp");
+            }
         }
     }
 

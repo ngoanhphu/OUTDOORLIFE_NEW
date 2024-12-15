@@ -4,15 +4,18 @@
  */
 package controller.owner;
 
-import dao.GearDAO;
+import dao.*;
+
 import java.io.IOException;
 
-import dao.TentDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import model.User;
+
 import java.sql.Connection;
 
 /**
@@ -25,13 +28,29 @@ public class DeleteTentControl extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String id = request.getParameter("id"); //get id tu jsp
-        TentDAO gear = new TentDAO(con);
-        try {
-            gear.deleteGear(id);
-        } catch (Exception ex) {
+        HttpSession session = request.getSession();
+        OwnerDAO ownerDAO = new OwnerDAO(new DBContext());
+        User auth = (User) request.getSession().getAttribute("currentUser");
 
+        if (auth == null) {
+            session.setAttribute("message", "You are not logged in!");
+            response.sendRedirect("login.jsp");
+        } else {
+            UserDaoImpl userDAO = new UserDaoImpl();
+            boolean isDeactivated = userDAO.isAccountDeactivated(auth.getId());
+            if (isDeactivated) {
+                session.setAttribute("message", "Your account has been deactivated!");
+                response.sendRedirect("loginMessage");
+            }
+
+            String id = request.getParameter("id"); //get id tu jsp
+            TentDAO gear = new TentDAO(con);
+            try {
+                gear.deleteGear(id);
+            } catch (Exception ex) {
+
+            }
+            response.sendRedirect("admintent");
         }
-        response.sendRedirect("admintent");
     }
 }

@@ -77,7 +77,7 @@
                         <a href="manage-campsite" class="nav-item nav-link">Manage Campsites</a>
                         <a href="manage-order" class="nav-item nav-link">Manage Orders</a>
                         <a href="manage-voucher" class="nav-item nav-link">Manage Vouchers</a>
-                        <a href="extendContract" class="nav-item nav-link">Contract</a>
+                        <a href="extendContract" class="nav-item nav-link">Extend Contract</a>
 
 
                     </c:if>
@@ -113,6 +113,12 @@
                                 </button>
                                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                     <li><a class="dropdown-item" href="UserProfile.jsp">Profile</a></li>
+                                    <c:if test="${currentUser.admin}">
+                                        <li><a class="dropdown-item" href="dashboard">Admin Dashboard</a></li>
+                                    </c:if>
+                                    <c:if test="${currentUser.owner}">
+                                        <li><a class="dropdown-item" href="schedule-rent">Owner Dashboard</a></li>
+                                    </c:if>
                                     <li><a class="dropdown-item" href="logout">Logout</a></li>
                                 </ul>
                             </div>

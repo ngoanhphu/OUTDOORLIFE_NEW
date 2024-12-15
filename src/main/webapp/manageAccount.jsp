@@ -111,8 +111,9 @@
     </style>
 </head>
 <body>
-<%@ include file="headeradmin.jsp" %>
-<div class="container" style="margin-top: 200px">
+
+<%@ include file="header.jsp" %>
+<div class="container" style="margin-top: 300px">
     <h2>Manage Accounts</h2>
     <form method="get" action="manage-account">
         <input type="text" name="search" placeholder="Search by ID, Email, or Phone" value="${searchQuery}" />
@@ -150,6 +151,11 @@
                 </td>
                 <td>
                     <button class="btn" onclick="editAccount(${a.id}, '${a.firstName}', '${a.lastName}', '${a.email}', '${a.phoneNumber}', ${a.admin}, ${a.owner})">Edit</button>
+                    <form method="post" action="manage-account" style="display:inline;">
+                        <input type="hidden" name="action" value="deactivate">
+                        <input type="hidden" name="id" value="${a.id}">
+                        <button type="submit" class="btn">Deactivate</button>
+                    </form>
                 </td>
             </tr>
         </c:forEach>
@@ -160,6 +166,49 @@
             <a href="manage-account?page=${i}&search=${searchQuery}" class="${i == currentPage ? 'active' : ''}">${i}</a>
         </c:forEach>
     </div>
+</div>
+
+<!-- New Deactivated Accounts Section -->
+<div class="container">
+    <h2>Deactivated Accounts</h2>
+    <table>
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Role</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <c:forEach var="a" items="${deactivatedAccounts}">
+            <tr>
+                <td>${a.id}</td>
+                <td>${a.firstName}</td>
+                <td>${a.lastName}</td>
+                <td>${a.email}</td>
+                <td>${a.phoneNumber}</td>
+                <td>
+                    <c:choose>
+                        <c:when test="${a.admin}">Admin</c:when>
+                        <c:when test="${a.owner}">Owner</c:when>
+                        <c:otherwise>User</c:otherwise>
+                    </c:choose>
+                </td>
+                <td>
+                    <form method="post" action="manage-account" style="display:inline;">
+                        <input type="hidden" name="action" value="reactivate">
+                        <input type="hidden" name="id" value="${a.id}">
+                        <button type="submit" class="btn">Reactivate</button>
+                    </form>
+                </td>
+            </tr>
+        </c:forEach>
+        </tbody>
+    </table>
 </div>
 
 <div class="form-container" id="editForm">
@@ -175,20 +224,13 @@
         <input type="email" name="email" id="email" required>
         <label for="phoneNumber">Phone Number:</label>
         <input type="text" name="phoneNumber" id="phoneNumber" required>
-        <label for="isAdmin">Admin:</label>
-        <select name="isAdmin" id="isAdmin">
-            <option value="true">Yes</option>
-            <option value="false">No</option>
-        </select>
-        <label for="isOwner">Owner:</label>
-        <select name="isOwner" id="isOwner">
-            <option value="true">Yes</option>
-            <option value="false">No</option>
-        </select>
+        <input type="hidden" name="isAdmin" id="isAdmin">
+        <input type="hidden" name="isOwner" id="isOwner">
         <button type="submit" class="btn">Update</button>
         <button type="button" class="btn" onclick="closeForm()">Cancel</button>
     </form>
 </div>
+
 <%@ include file="footer.jsp" %>
 
 <script>
