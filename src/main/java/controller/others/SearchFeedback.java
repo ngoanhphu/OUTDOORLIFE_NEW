@@ -5,15 +5,20 @@
  */
 package controller.others;
 
+import dao.DBContext;
 import dao.FeedbackDAO;
 import java.io.IOException;
 import java.util.List;
+
+import dao.OwnerDAO;
+import dao.UserDaoImpl;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import model.Feedback;
+import model.User;
 
 /**
  *
@@ -32,27 +37,42 @@ public class SearchFeedback extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
+        HttpSession session = request.getSession();
+        OwnerDAO ownerDAO = new OwnerDAO(new DBContext());
+        User auth = (User) request.getSession().getAttribute("currentUser");
 
-        String txtSeaech = request.getParameter("txtSearch");
-
-        FeedbackDAO dao = new FeedbackDAO();
-        String url = "error.jsp";
-
-        try {
-            HttpSession session = request.getSession();
-            List<Feedback> list = dao.searchFeedbackByUser(txtSeaech);
-            System.out.println("Lisst"+list);
-            if (list.size() > 0) {
-                session.setAttribute("LIST_ADMIN_FFEDBACK", list);
-                url = "showFeedback.jsp";
-            } else {
-                url="login.jsp";
+        if (auth == null) {
+            session.setAttribute("message", "You are not logged in!");
+            response.sendRedirect("login.jsp");
+        } else {
+            UserDaoImpl userDAO = new UserDaoImpl();
+            boolean isDeactivated = userDAO.isAccountDeactivated(auth.getId());
+            if (isDeactivated) {
+                session.setAttribute("message", "Your account has been deactivated!");
+                response.sendRedirect("loginMessage");
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            request.getRequestDispatcher(url).forward(request, response);
+
+            response.setContentType("text/html;charset=UTF-8");
+
+            String txtSeaech = request.getParameter("txtSearch");
+
+            FeedbackDAO dao = new FeedbackDAO();
+            String url = "error.jsp";
+
+            try {
+                List<Feedback> list = dao.searchFeedbackByUser(txtSeaech);
+                System.out.println("Lisst" + list);
+                if (list.size() > 0) {
+                    session.setAttribute("LIST_ADMIN_FFEDBACK", list);
+                    url = "showFeedback.jsp";
+                } else {
+                    url = "login.jsp";
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                request.getRequestDispatcher(url).forward(request, response);
+            }
         }
     }
 

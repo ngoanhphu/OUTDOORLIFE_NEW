@@ -5,8 +5,8 @@
  */
 package controller.owner;
 
-import dao.FeedbackDAO;
-import dao.ReplyFeedbackDAO;
+import dao.*;
+
 import java.io.IOException;
 import java.util.List;
 import jakarta.servlet.ServletException;
@@ -48,36 +48,51 @@ public class ReplyFeedbackServlet extends HttpServlet {
 //        String idStr = Integer.toString(id);
 //        dao.addReplyFeedback(idStr, feedbackId, content);
 //        request.getRequestDispatcher("showFeedback.jsp").forward(request, response);
-//        
+//
+        HttpSession session = request.getSession();
+        OwnerDAO ownerDAO = new OwnerDAO(new DBContext());
+        User auth = (User) request.getSession().getAttribute("currentUser");
 
-        response.setContentType("text/html;charset=UTF-8");
-        String content = request.getParameter("content");
-        String feedbackId = request.getParameter("txtId");
-
-        ReplyFeedbackDAO dao = new ReplyFeedbackDAO();
-        FeedbackDAO feedbackDAO = new FeedbackDAO();
-        String url = "error.jsp";
-
-        try {
-            HttpSession session = request.getSession();
-            User user = (User) session.getAttribute("userA");
-            boolean result = dao.insertReplyFeedback(new ReplyFeedback(0, Integer.parseInt(feedbackId), user.getId(), content));
-
-            if (result) {
-                boolean deleteResult = feedbackDAO.deleteFeedback(Integer.parseInt(feedbackId));
-
-                if (deleteResult) {
-                    List<Feedback> listFeedback = feedbackDAO.getAllFeedback();
-                    session.setAttribute("LIST_ADMIN_FFEDBACK", listFeedback);
-
-                    request.setAttribute("REPLY_SUCUESS", "success");
-                    url = "showFeedback.jsp";
-                }
+        if (auth == null) {
+            session.setAttribute("message", "You are not logged in!");
+            response.sendRedirect("login.jsp");
+        } else {
+            UserDaoImpl userDAO = new UserDaoImpl();
+            boolean isDeactivated = userDAO.isAccountDeactivated(auth.getId());
+            if (isDeactivated) {
+                session.setAttribute("message", "Your account has been deactivated!");
+                response.sendRedirect("loginMessage");
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            request.getRequestDispatcher(url).forward(request, response);
+
+
+            response.setContentType("text/html;charset=UTF-8");
+            String content = request.getParameter("content");
+            String feedbackId = request.getParameter("txtId");
+
+            ReplyFeedbackDAO dao = new ReplyFeedbackDAO();
+            FeedbackDAO feedbackDAO = new FeedbackDAO();
+            String url = "error.jsp";
+
+            try {
+                User user = (User) session.getAttribute("userA");
+                boolean result = dao.insertReplyFeedback(new ReplyFeedback(0, Integer.parseInt(feedbackId), user.getId(), content));
+
+                if (result) {
+                    boolean deleteResult = feedbackDAO.deleteFeedback(Integer.parseInt(feedbackId));
+
+                    if (deleteResult) {
+                        List<Feedback> listFeedback = feedbackDAO.getAllFeedback();
+                        session.setAttribute("LIST_ADMIN_FFEDBACK", listFeedback);
+
+                        request.setAttribute("REPLY_SUCUESS", "success");
+                        url = "showFeedback.jsp";
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                request.getRequestDispatcher(url).forward(request, response);
+            }
         }
     }
 

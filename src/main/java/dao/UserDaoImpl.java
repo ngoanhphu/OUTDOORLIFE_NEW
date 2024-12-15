@@ -220,7 +220,7 @@ public class UserDaoImpl extends DBContext implements UserDAO {
     @Override
     public List<User> getAllAccount() {
         List<User> accounts = new ArrayList<>();
-        String query = "SELECT * FROM ACCOUNT";
+        String query = "SELECT * FROM ACCOUNT WHERE deactivated IS NULL OR deactivated = 0";
 
         try (Connection con = getConnection(); PreparedStatement pst = con.prepareStatement(query); ResultSet rs = pst.executeQuery()) {
             while (rs.next()) {
@@ -303,7 +303,7 @@ public class UserDaoImpl extends DBContext implements UserDAO {
     @Override
     public List<User> searchAccounts(String query) {
         List<User> accounts = new ArrayList<>();
-        String sql = "SELECT * FROM ACCOUNT WHERE Account_id LIKE ? OR Gmail LIKE ? OR phone_number LIKE ?";
+        String sql = "SELECT * FROM ACCOUNT WHERE (Account_id LIKE ? OR Gmail LIKE ? OR phone_number LIKE ?) AND (deactivated IS NULL OR deactivated = 0)";
         try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             String searchPattern = "%" + query + "%";
             ps.setString(1, searchPattern);
@@ -329,5 +329,103 @@ public class UserDaoImpl extends DBContext implements UserDAO {
             throw new RuntimeException(e);
         }
         return accounts;
+    }
+
+    public List<User> searchDeactivatedAccounts(String query) {
+        List<User> accounts = new ArrayList<>();
+        String sql = "SELECT * FROM ACCOUNT WHERE (Account_id LIKE ? OR Gmail LIKE ? OR phone_number LIKE ?) AND deactivated = 1";
+        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            String searchPattern = "%" + query + "%";
+            ps.setString(1, searchPattern);
+            ps.setString(2, searchPattern);
+            ps.setString(3, searchPattern);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                User user = new User(
+                        rs.getInt("Account_id"),
+                        rs.getString("first_name"),
+                        rs.getString("last_name"),
+                        rs.getString("Gmail"),
+                        rs.getString("phone_number"),
+                        rs.getString("passwordHash"),
+                        rs.getBoolean("isAdmin"),
+                        rs.getBoolean("isOwner")
+                );
+                accounts.add(user);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return accounts;
+    }
+
+    public boolean deactivateAccount(int accountId) {
+        String sql = "UPDATE ACCOUNT SET deactivated = 1 WHERE Account_id = ?";
+        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, accountId);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public boolean reactivateAccount(int accountId) {
+        String sql = "UPDATE ACCOUNT SET deactivated = NULL WHERE Account_id = ?";
+        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, accountId);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public List<User> getDeactivatedAccounts() {
+        List<User> accounts = new ArrayList<>();
+        String query = "SELECT * FROM ACCOUNT WHERE deactivated = 1";
+
+        try (Connection con = getConnection(); PreparedStatement pst = con.prepareStatement(query); ResultSet rs = pst.executeQuery()) {
+            while (rs.next()) {
+                User user = new User();
+                user.setId(rs.getInt("Account_id"));
+                user.setFirstName(rs.getString("first_name"));
+                user.setLastName(rs.getString("last_name"));
+                user.setEmail(rs.getString("Gmail"));
+                user.setPhoneNumber(rs.getString("phone_number"));
+                user.setPasswordHash(rs.getString("passwordHash"));
+                user.setAdmin(rs.getBoolean("isAdmin"));
+                user.setOwner(rs.getBoolean("isOwner"));
+                accounts.add(user);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return accounts;
+    }
+
+    public boolean isAccountDeactivated(int accountId) {
+        String sql = "SELECT deactivated FROM [ACCOUNT] WHERE Account_id = ?";
+        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, accountId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("deactivated") == 1;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return false;
     }
 }

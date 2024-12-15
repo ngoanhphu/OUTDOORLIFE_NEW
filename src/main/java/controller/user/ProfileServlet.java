@@ -1,5 +1,7 @@
 package controller.user;
 
+import dao.DBContext;
+import dao.OwnerDAO;
 import dao.UserDAO;
 import dao.UserDaoImpl;
 import jakarta.servlet.RequestDispatcher;
@@ -23,19 +25,33 @@ public class ProfileServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
-        User currentUser = (User) session.getAttribute("currentUser");
+        OwnerDAO ownerDAO = new OwnerDAO(new DBContext());
+        User auth = (User) request.getSession().getAttribute("currentUser");
 
-        if (currentUser == null) {
+        if (auth == null) {
+            session.setAttribute("message", "You are not logged in!");
             response.sendRedirect("login.jsp");
-            return;
-        }
-
-        User user = userDAO.findByEmail(currentUser.getEmail());
-        if (user != null) {
-            request.setAttribute("user", user);
-            request.getRequestDispatcher("UserProfile.jsp").forward(request, response);
         } else {
-            response.sendRedirect("error.jsp");
+            UserDaoImpl userDAO = new UserDaoImpl();
+            boolean isDeactivated = userDAO.isAccountDeactivated(auth.getId());
+            if (isDeactivated) {
+                session.setAttribute("message", "Your account has been deactivated!");
+                response.sendRedirect("loginMessage");
+            }
+            User currentUser = (User) session.getAttribute("currentUser");
+
+            if (currentUser == null) {
+                response.sendRedirect("login.jsp");
+                return;
+            }
+
+            User user = userDAO.findByEmail(currentUser.getEmail());
+            if (user != null) {
+                request.setAttribute("user", user);
+                request.getRequestDispatcher("UserProfile.jsp").forward(request, response);
+            } else {
+                response.sendRedirect("error.jsp");
+            }
         }
     }
 

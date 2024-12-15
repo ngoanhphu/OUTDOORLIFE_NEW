@@ -1,39 +1,31 @@
-<!--<!DOCTYPE html>
-<html lang="en">
-
-    <head>
-        <meta charset="utf-8">
-        <title>Environs - Environmental & Nature Website Template</title>
-        <meta content="width=device-width, initial-scale=1.0" name="viewport">
-        <meta content="" name="keywords">
-        <meta content="" name="description">
-
-         Google Web Fonts 
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Jost:wght@500;600&family=Roboto&display=swap" rel="stylesheet"> 
-
-         Icon Font Stylesheet 
-        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"/>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
-
-         Libraries Stylesheet 
-        <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
-        <link href="lib/lightbox/css/lightbox.min.css" rel="stylesheet">
-
-
-         Customized Bootstrap Stylesheet 
-        <link href="css/bootstrap.min.css" rel="stylesheet">
-
-         Template Stylesheet 
-        <link href="css/style.css" tyle="text/css" rel="stylesheet">
-    </head>-->
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+    <style>
+        .alert {
+            color: green;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+    </style>
 
     <body>
+<c:if test="${not empty message}">
+    <script>
+        alert("${message}");
+    </script>
+</c:if>
 
+    <c:if test="${not empty sessionScope.message}">
+        <div class="alert">${sessionScope.message}</div>
+        <c:remove var="message" scope="session"/>
+    </c:if>
 <jsp:include page="header.jsp"></jsp:include>
 <div class="container">
-       <!-- Carousel Start -->
         <div class="container-fluid carousel-header vh-100 px-0">
             <div id="carouselId" class="carousel slide" data-bs-ride="carousel">
                 <ol class="carousel-indicators">

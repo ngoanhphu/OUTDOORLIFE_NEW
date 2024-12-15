@@ -3,6 +3,9 @@ package controller.admin;
 import dao.DBContext;
 import dao.GearDAO;
 import java.io.IOException;
+
+import dao.OwnerDAO;
+import dao.UserDaoImpl;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -11,6 +14,8 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.time.LocalDateTime;
 import java.util.List;
+
+import jakarta.servlet.http.HttpSession;
 import model.Gear;
 import model.User;
 
@@ -32,36 +37,44 @@ public class Admin extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        LocalDateTime now = LocalDateTime.now();
-
-        // Lấy thông tin người dùng từ session (User auth)
+        HttpSession session = request.getSession();
         User auth = (User) request.getSession().getAttribute("currentUser");
 
-        // Kiểm tra nếu người dùng đã đăng nhập và là chủ cắm trại (isOwner)
-        if (auth != null && auth.isOwner()) {
-            // Lấy ID của chủ cắm trại từ đối tượng User
-            int campsiteOwnerId = auth.getId();  // Thay vì auth.getCampsiteOwnerId(), bạn sử dụng auth.getId()
-
-            // Xử lý phân trang
-            int page = request.getParameter("page") == null ? 1 : Integer.parseInt(request.getParameter("page"));
-
-            // Lấy tổng số món đồ cắm trại mà chủ cắm trại này sở hữu
-            int totalItems = geardao.getTotalItemByOwner(campsiteOwnerId);
-
-            // Lấy danh sách đồ cắm trại của chủ cắm trại
-            List<Gear> gears = geardao.getGearsByOwner(campsiteOwnerId, page, 9);
-
-            // Thiết lập các thuộc tính cho view
-            request.setAttribute("currentPage", page);
-            request.setAttribute("totalPages", Math.ceil((totalItems / (double) 9)));
-            request.setAttribute("itemsPerPage", 9);
-            request.setAttribute("gears", gears);
-
-            // Chuyển hướng đến trang crudGear.jsp
-            request.getRequestDispatcher("/crudGear.jsp").forward(request, response);
-        } else {
-            // Nếu người dùng không phải là chủ cắm trại, chuyển hướng đến trang đăng nhập
+        if (auth == null) {
+            session.setAttribute("message", "You are not logged in!");
             response.sendRedirect("login.jsp");
+        } else {
+
+            LocalDateTime now = LocalDateTime.now();
+
+            // Lấy thông tin người dùng từ session (User auth)
+
+            // Kiểm tra nếu người dùng đã đăng nhập và là chủ cắm trại (isOwner)
+            if (auth != null && auth.isOwner()) {
+                // Lấy ID của chủ cắm trại từ đối tượng User
+                int campsiteOwnerId = auth.getId();  // Thay vì auth.getCampsiteOwnerId(), bạn sử dụng auth.getId()
+
+                // Xử lý phân trang
+                int page = request.getParameter("page") == null ? 1 : Integer.parseInt(request.getParameter("page"));
+
+                // Lấy tổng số món đồ cắm trại mà chủ cắm trại này sở hữu
+                int totalItems = geardao.getTotalItemByOwner(campsiteOwnerId);
+
+                // Lấy danh sách đồ cắm trại của chủ cắm trại
+                List<Gear> gears = geardao.getGearsByOwner(campsiteOwnerId, page, 9);
+
+                // Thiết lập các thuộc tính cho view
+                request.setAttribute("currentPage", page);
+                request.setAttribute("totalPages", Math.ceil((totalItems / (double) 9)));
+                request.setAttribute("itemsPerPage", 9);
+                request.setAttribute("gears", gears);
+
+                // Chuyển hướng đến trang crudGear.jsp
+                request.getRequestDispatcher("/crudGear.jsp").forward(request, response);
+            } else {
+                // Nếu người dùng không phải là chủ cắm trại, chuyển hướng đến trang đăng nhập
+                response.sendRedirect("login.jsp");
+            }
         }
     }
 

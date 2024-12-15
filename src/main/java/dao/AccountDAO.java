@@ -161,7 +161,21 @@ public class AccountDAO {
             }
         }
         return -1; // Trả về -1 nếu không tìm thấy
+    }
 
+    public boolean isAccountDeactivated(int accountId) {
+        String sql = "SELECT deactivated FROM [ACCOUNT] WHERE Account_id = ?";
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, accountId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("deactivated") == 1;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
     public int getCustomerIdByAccountId(int accountId) throws SQLException {
         String query = "SELECT customer_id FROM [dbo].[CUSTOMER] WHERE Account_id = ?";

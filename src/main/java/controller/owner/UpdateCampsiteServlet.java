@@ -3,14 +3,16 @@ package controller.owner;
 import dao.CampsiteDAO;
 import java.io.File;
 import java.io.IOException;
+
+import dao.DBContext;
+import dao.OwnerDAO;
+import dao.UserDaoImpl;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.Part;
+import jakarta.servlet.http.*;
 import model.Campsite;
+import model.User;
 
 @WebServlet(name = "UpdateCampsiteServlet", urlPatterns = {"/update-campsite"})
 @MultipartConfig
@@ -21,18 +23,33 @@ public class UpdateCampsiteServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        int campsiteId = Integer.parseInt(request.getParameter("id"));
-        CampsiteDAO campsiteDAO = new CampsiteDAO();
-        Campsite campsite = campsiteDAO.getCampsiteById(campsiteId);  // Get campsite info by ID
+        HttpSession session = request.getSession();
+        OwnerDAO ownerDAO = new OwnerDAO(new DBContext());
+        User auth = (User) request.getSession().getAttribute("currentUser");
 
-        if (campsite != null) {
-            request.setAttribute("c", campsite);  // Set campsite data in request
-            request.getRequestDispatcher("/updateCampsite.jsp").forward(request, response);  // Forward to update form
+        if (auth == null) {
+            session.setAttribute("message", "You are not logged in!");
+            response.sendRedirect("login.jsp");
         } else {
-            response.sendRedirect("manage-campsite");  // If no campsite found, redirect to management page
+            UserDaoImpl userDAO = new UserDaoImpl();
+            boolean isDeactivated = userDAO.isAccountDeactivated(auth.getId());
+            if (isDeactivated) {
+                session.setAttribute("message", "Your account has been deactivated!");
+                response.sendRedirect("loginMessage");
+            }
+
+            int campsiteId = Integer.parseInt(request.getParameter("id"));
+            CampsiteDAO campsiteDAO = new CampsiteDAO();
+            Campsite campsite = campsiteDAO.getCampsiteById(campsiteId);  // Get campsite info by ID
+
+            if (campsite != null) {
+                request.setAttribute("c", campsite);  // Set campsite data in request
+                request.getRequestDispatcher("/updateCampsite.jsp").forward(request, response);  // Forward to update form
+            } else {
+                response.sendRedirect("manage-campsite");  // If no campsite found, redirect to management page
+            }
         }
     }
-
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {

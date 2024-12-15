@@ -21,6 +21,10 @@
                         <c:if test="${not empty errorMessage}">
                             <p style="color:red">${errorMessage}</p>
                         </c:if>
+
+                        <c:if test="${not empty message}">
+                            <p style="color:red">${message}</p>
+                        </c:if>
                         
                         <div class="form-floating mb-3">
                             <input type="email" class="form-control" id="floatingEmail" placeholder="Email address" name="email" required>

@@ -153,7 +153,6 @@
                            <a href="contact.jsp" class="nav-item nav-link">Contact</a>
                             <li class="nav-item"><a class="nav-link" href="Cart.jsp">Cart <span class="badge-custom">${cart_list.size()}</span> </a></li>-->
             </div>
-
             <c:choose>
                 <c:when test = "${not empty currentUser }">
                     <div class="d-flex align-items-center flex-nowrap pt-xl-0" style="margin-left: 15px;">

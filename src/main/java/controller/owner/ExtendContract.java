@@ -1,8 +1,10 @@
 package controller.owner;
 
 import VnpayService.VnpayService;
+import dao.AccountDAO;
 import dao.DBContext;
 import dao.OwnerDAO;
+import dao.UserDaoImpl;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -10,6 +12,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import model.Owner;
+import model.User;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -31,7 +34,6 @@ public class ExtendContract extends HttpServlet {
             if (owner != null) {
                 String durationStr = request.getParameter("duration");
                 int duration = Integer.parseInt(durationStr);
-                String paymentMethod = request.getParameter("paymentMethod");
 
                 Date currentEndDate = owner.getEndDate();
                 Calendar calendar = Calendar.getInstance();
@@ -39,19 +41,13 @@ public class ExtendContract extends HttpServlet {
                 calendar.add(Calendar.MONTH, duration);
                 Date newEndDate = new Date(calendar.getTimeInMillis());
 
-                if ("VNPay".equals(paymentMethod)) {
-                    long price = Long.parseLong(request.getParameter("total-price"));
-                    String url = VnpayService.paymentUrl(request, price);
-                    session.setAttribute("newEndDate", newEndDate);
-                    response.sendRedirect(url);
+                boolean isUpdated = ownerDAO.updateOwnerEndDate(accountId, newEndDate);
+                if (isUpdated) {
+                    session.setAttribute("message", "Contract extended successfully.");
+                    response.sendRedirect("indexMessage");
                 } else {
-                    boolean isUpdated = ownerDAO.updateOwnerEndDate(accountId, newEndDate);
-                    if (isUpdated) {
-                        response.sendRedirect("success.jsp");
-                    } else {
-                        request.setAttribute("errorMessage", "Failed to extend the contract.");
-                        request.getRequestDispatcher("extendcontract.jsp").forward(request, response);
-                    }
+                    request.setAttribute("errorMessage", "Failed to extend the contract.");
+                    request.getRequestDispatcher("extendcontract.jsp").forward(request, response);
                 }
             } else {
                 request.setAttribute("errorMessage", "Owner not found.");
@@ -67,36 +63,53 @@ public class ExtendContract extends HttpServlet {
             throws ServletException, IOException {
         HttpSession session = request.getSession();
         OwnerDAO ownerDAO = new OwnerDAO(new DBContext());
+        User auth = (User) request.getSession().getAttribute("currentUser");
 
-        try {
-            String status = ownerDAO.getOwnerStatusByAccountId(session);
-            if ("disapproved".equals(status) || "pending".equals(status)) {
-                session.setAttribute("message", "You are not an approved owner!");
-                response.sendRedirect(request.getContextPath() + "/index.jsp");
-            } else {
-                String responseCode = request.getParameter("vnp_ResponseCode");
-                int accountId = (Integer) session.getAttribute("accountId");
-                Date newEndDate = (Date) session.getAttribute("newEndDate");
+        if (auth == null) {
+            session.setAttribute("message", "You are not logged in!");
+            response.sendRedirect("login.jsp");
+        } else {
+            UserDaoImpl userDAO = new UserDaoImpl();
+            boolean isDeactivated = userDAO.isAccountDeactivated(auth.getId());
+            if (isDeactivated) {
+                session.setAttribute("message", "Your account has been deactivated!");
+                response.sendRedirect("loginMessage");
+            }
 
-                if ("00".equals(responseCode)) {
-                    try {
-                        boolean isUpdated = ownerDAO.updateOwnerEndDate(accountId, newEndDate);
-                        if (isUpdated) {
-                            response.sendRedirect("success.jsp");
+            if (auth != null && auth.isOwner()) {
+                try {
+                    String status = ownerDAO.getOwnerStatusByAccountId(session);
+                    if ("disapproved".equals(status) || "pending".equals(status)) {
+                        session.setAttribute("message", "You are not an approved owner!");
+                        response.sendRedirect(request.getContextPath() + "/index.jsp");
+                    } else {
+                        String responseCode = request.getParameter("vnp_ResponseCode");
+                        int accountId = (Integer) session.getAttribute("accountId");
+                        Date newEndDate = (Date) session.getAttribute("newEndDate");
+
+                        if ("00".equals(responseCode)) {
+                            try {
+                                boolean isUpdated = ownerDAO.updateOwnerEndDate(accountId, newEndDate);
+                                if (isUpdated) {
+                                    response.sendRedirect("success.jsp");
+                                } else {
+                                    request.setAttribute("errorMessage", "Failed to extend the contract.");
+                                    request.getRequestDispatcher("extendcontract.jsp").forward(request, response);
+                                }
+                            } catch (SQLException e) {
+                                throw new ServletException("Database error", e);
+                            }
                         } else {
-                            request.setAttribute("errorMessage", "Failed to extend the contract.");
+                            request.setAttribute("errorMessage", "Payment failed.");
                             request.getRequestDispatcher("extendcontract.jsp").forward(request, response);
                         }
-                    } catch (SQLException e) {
-                        throw new ServletException("Database error", e);
                     }
-                } else {
-                    request.setAttribute("errorMessage", "Payment failed.");
-                    request.getRequestDispatcher("extendcontract.jsp").forward(request, response);
+                } catch (SQLException e) {
+                    throw new ServletException("Database error", e);
                 }
+            } else {
+                response.sendRedirect("login.jsp");
             }
-        } catch (SQLException e) {
-            throw new ServletException("Database error", e);
         }
     }
 }

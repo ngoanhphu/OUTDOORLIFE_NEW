@@ -1,15 +1,15 @@
 package controller.owner;
 
 import dao.DBContext;
+import dao.OwnerDAO;
 import dao.TentDAO;
+import dao.UserDaoImpl;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.Part;
+import jakarta.servlet.http.*;
 import model.Gear;
+import model.User;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,16 +24,32 @@ public class UpdateTentControl extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String id = request.getParameter("id"); // Lấy Gear ID từ URL
-        try {
-            DBContext db = new DBContext();
-            TentDAO tentDAO = new TentDAO(db.getConnection());
-            Gear gear = tentDAO.getTentByID(id); // Lấy thông tin gear từ cơ sở dữ liệu
-            request.setAttribute("st", gear); // Đưa gear vào request attribute
-        } catch (Exception e) {
-            e.printStackTrace();
+        HttpSession session = request.getSession();
+        OwnerDAO ownerDAO = new OwnerDAO(new DBContext());
+        User auth = (User) request.getSession().getAttribute("currentUser");
+
+        if (auth == null) {
+            session.setAttribute("message", "You are not logged in!");
+            response.sendRedirect("login.jsp");
+        } else {
+            UserDaoImpl userDAO = new UserDaoImpl();
+            boolean isDeactivated = userDAO.isAccountDeactivated(auth.getId());
+            if (isDeactivated) {
+                session.setAttribute("message", "Your account has been deactivated!");
+                response.sendRedirect("loginMessage");
+            }
+
+            String id = request.getParameter("id"); // Lấy Gear ID từ URL
+            try {
+                DBContext db = new DBContext();
+                TentDAO tentDAO = new TentDAO(db.getConnection());
+                Gear gear = tentDAO.getTentByID(id); // Lấy thông tin gear từ cơ sở dữ liệu
+                request.setAttribute("st", gear); // Đưa gear vào request attribute
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            request.getRequestDispatcher("Update_tent.jsp").forward(request, response); // Forward đến JSP
         }
-        request.getRequestDispatcher("Update_tent.jsp").forward(request, response); // Forward đến JSP
     }
 
     @Override

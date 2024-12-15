@@ -1,11 +1,9 @@
 package controller.owner;
 
-import dao.CampsiteOrderDAO;
-import dao.DBContext;
+import dao.*;
 
 import java.io.IOException;
 
-import dao.OrderDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -14,24 +12,39 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import jakarta.servlet.http.HttpSession;
 import model.CampsiteOrder;
 import model.Order;
 import model.Owner;
 import model.User;
-import dao.AccountDAO;
 
 @WebServlet(name = "ManageOrderServlet", urlPatterns = {"/manage-order"})
 public class ManageOrderServlet extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, Exception {
-        response.setContentType("text/html;charset=UTF-8");
+        HttpSession session = request.getSession();
+        OwnerDAO ownerDAO = new OwnerDAO(new DBContext());
+        User auth = (User) request.getSession().getAttribute("currentUser");
+
+        if (auth == null) {
+            session.setAttribute("message", "You are not logged in!");
+            response.sendRedirect("login.jsp");
+        } else {
+            UserDaoImpl userDAO = new UserDaoImpl();
+            boolean isDeactivated = userDAO.isAccountDeactivated(auth.getId());
+            if (isDeactivated) {
+                session.setAttribute("message", "Your account has been deactivated!");
+                response.sendRedirect("loginMessage");
+            }
+
+            response.setContentType("text/html;charset=UTF-8");
         DBContext db = new DBContext();
         CampsiteOrderDAO campsiteOrderDAO = new CampsiteOrderDAO(db.getConnection());
         OrderDAO orderDAO = new OrderDAO(db.getConnection());
         AccountDAO accountDAO = new AccountDAO(db.getConnection());
 
-        User auth = (User) request.getSession().getAttribute("currentUser");
         if (auth != null) {
             int accountId = auth.getId();
             int ownerID = accountDAO.getOwnerIdByAccountId(accountId);
@@ -46,6 +59,7 @@ public class ManageOrderServlet extends HttpServlet {
             request.setAttribute("orders", orders);
 
             request.getRequestDispatcher("/manageOrder.jsp").forward(request, response);
+        }
         }
     }
 

@@ -30,4 +30,12 @@ public interface UserDAO {
     boolean updateAccount(User user);
 
     List<User> searchAccounts(String query);
+
+    boolean reactivateAccount(int accountId);
+
+    boolean deactivateAccount(int accountId);
+
+    List<User> searchDeactivatedAccounts(String query);
+
+    boolean isAccountDeactivated(int accountId);
 }

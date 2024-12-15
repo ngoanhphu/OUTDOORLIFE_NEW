@@ -4,12 +4,10 @@
  */
 package controller.owner;
 
-import dao.CampsiteDAO;
-import dao.DBContext;
-import dao.OrderDAO;
+import dao.*;
+
 import java.io.IOException;
 
-import dao.OwnerDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -23,6 +21,7 @@ import java.util.List;
 import jakarta.servlet.http.HttpSession;
 import model.Campsite;
 import model.Order;
+import model.User;
 
 /**
  *
@@ -90,17 +89,35 @@ public class ScheduleRentServlet extends HttpServlet {
             throws ServletException, IOException {
         HttpSession session = request.getSession();
         OwnerDAO ownerDAO = new OwnerDAO(new DBContext());
+        User auth = (User) request.getSession().getAttribute("currentUser");
 
-        try {
-            if (!ownerDAO.isOwnerEndDateValid(session)) {
-                session.setAttribute("message", "Your owner's contract is over!");
-                response.sendRedirect(request.getContextPath() + "/index.jsp");
-            } else {
-                processRequest(request, response);
-//                request.getRequestDispatcher("scheduleRent.jsp").forward(request, response);
+        if (auth == null) {
+            session.setAttribute("message", "You are not logged in!");
+            response.sendRedirect("login.jsp");
+        } else {
+            UserDaoImpl userDAO = new UserDaoImpl();
+            boolean isDeactivated = userDAO.isAccountDeactivated(auth.getId());
+            if (isDeactivated) {
+                session.setAttribute("message", "Your account has been deactivated!");
+                response.sendRedirect("loginMessage");
             }
-        } catch (SQLException e) {
-            throw new ServletException("Database error", e);
+            try {
+                if (!ownerDAO.isOwnerEndDateValid(session)) {
+                    ownerDAO.updateOwnerStatus(session);
+                    session.setAttribute("message", "Your owner's contract is over!");
+                    response.sendRedirect(request.getContextPath() + "/indexMessage");
+                } else {
+                    String ownerStatus = ownerDAO.getOwnerStatusByAccountId(session);
+                    if ("disapproved".equals(ownerStatus)) {
+                        session.setAttribute("message", "Your owner registration request hasn't been approved!");
+                        response.sendRedirect(request.getContextPath() + "/indexMessage");
+                    } else {
+                        processRequest(request, response);
+                    }
+                }
+            } catch (SQLException e) {
+                throw new ServletException("Database error", e);
+            }
         }
     }
 

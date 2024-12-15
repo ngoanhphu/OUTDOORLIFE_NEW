@@ -4,11 +4,11 @@
  */
 package controller.owner;
 
-import dao.CampsiteDAO;
-import dao.DBContext;
-import dao.OrderDAO;
+import dao.*;
+
 import java.io.IOException;
 import java.io.PrintWriter;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -17,8 +17,11 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import jakarta.servlet.http.HttpSession;
 import model.CampsiteOrder;
 import model.Order;
+import model.User;
 
 /**
  *
@@ -47,32 +50,47 @@ public class CancelOrderServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        try (PrintWriter out = response.getWriter()) {
-            String id = request.getParameter("id");
-            if (id != null) {
-                DBContext db = new DBContext();
-                OrderDAO orderDao = new OrderDAO(db.getConnection());
-                //get order by id
-                Order o = orderDao.getUserById(Integer.parseInt(id));
-                CampsiteOrder campsiteOrder = new CampsiteOrder();
-                campsiteOrder.setCampsiteId(o.getCampsiteId());
-                campsiteOrder.setQuantity(o.getQuantity() * -1);
+        HttpSession session = request.getSession();
+        OwnerDAO ownerDAO = new OwnerDAO(new DBContext());
+        User auth = (User) request.getSession().getAttribute("currentUser");
 
-                //cancel
-                orderDao.cancelOrder(Integer.parseInt(id));
-
-                //update quantity campsite
-                CampsiteDAO campsiteDAO = new CampsiteDAO();
-                campsiteDAO.updateQuantityCampsite(campsiteOrder);
+        if (auth == null) {
+            session.setAttribute("message", "You are not logged in!");
+            response.sendRedirect("login.jsp");
+        } else {
+            UserDaoImpl userDAO = new UserDaoImpl();
+            boolean isDeactivated = userDAO.isAccountDeactivated(auth.getId());
+            if (isDeactivated) {
+                session.setAttribute("message", "Your account has been deactivated!");
+                response.sendRedirect("loginMessage");
             }
-            String redirectPage = request.getParameter("redirectPage");
-            response.sendRedirect(redirectPage);
-        } catch (ClassNotFoundException | SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (Exception ex) {
-            Logger.getLogger(CancelOrderServlet.class.getName()).log(Level.SEVERE, null, ex);
+
+            try (PrintWriter out = response.getWriter()) {
+                String id = request.getParameter("id");
+                if (id != null) {
+                    DBContext db = new DBContext();
+                    OrderDAO orderDao = new OrderDAO(db.getConnection());
+                    //get order by id
+                    Order o = orderDao.getUserById(Integer.parseInt(id));
+                    CampsiteOrder campsiteOrder = new CampsiteOrder();
+                    campsiteOrder.setCampsiteId(o.getCampsiteId());
+                    campsiteOrder.setQuantity(o.getQuantity() * -1);
+
+                    //cancel
+                    orderDao.cancelOrder(Integer.parseInt(id));
+
+                    //update quantity campsite
+                    CampsiteDAO campsiteDAO = new CampsiteDAO();
+                    campsiteDAO.updateQuantityCampsite(campsiteOrder);
+                }
+                String redirectPage = request.getParameter("redirectPage");
+                response.sendRedirect(redirectPage);
+            } catch (ClassNotFoundException | SQLException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (Exception ex) {
+                Logger.getLogger(CancelOrderServlet.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
-
 }
