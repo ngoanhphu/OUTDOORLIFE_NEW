@@ -270,6 +270,16 @@ public class OwnerDAO {
         return true;
     }
 
+    public int getOwnerIdByCampsiteIdInTableCampsite(int campsiteOwner) throws SQLException {
+        String sql = "SELECT Campsite_owner FROM CAMPSITE WHERE Campsite_id = ?";
+        try (Connection con = db.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, campsiteOwner);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("Campsite_owner");
+                }
+              
     public List<OwnerDTO> getOwnersWithAccountInfoAndRevenue() throws SQLException {
         String sql = "SELECT "
                 + "o.owner_id, "
@@ -358,10 +368,48 @@ public class OwnerDAO {
                 ownerDTO.setOwner(owner);
                 ownerDTO.setTotalRevenue(rs.getBigDecimal("total_revenue"));  // Get the total revenue
                 owners.add(ownerDTO);
+
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+
+        return -1; // Không tìm thấy.
+    }
+
+    public Owner getOwnerByOwnerId(int ownerId) throws SQLException {
+        String sql = "SELECT o.*, a.first_name, a.last_name FROM OWNER o INNER JOIN ACCOUNT a ON o.Account_id = a.Account_id  WHERE owner_id = ?";
+        try (Connection conn = db.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, ownerId);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    Owner owner = new Owner();
+                    owner.setOwnerId(rs.getInt("owner_id"));
+                    owner.setAccountId(rs.getInt("Account_id"));
+                    owner.setOwnerSince(rs.getDate("owner_since"));
+                    owner.setOccupation(rs.getString("occupation"));
+                    owner.setAddress(rs.getString("address"));
+                    owner.setDob(rs.getDate("date_of_birth"));
+                    owner.setGender(rs.getString("gender"));
+                    owner.setRegion(rs.getString("region"));
+                    owner.setIdentification(rs.getInt("identification"));
+                    owner.setTaxCode(rs.getInt("tax_code"));
+                    owner.setImage(rs.getString("attached_files"));
+                    owner.setStatus(rs.getString("status"));
+                    owner.setStartDate(rs.getDate("start_date"));
+                    owner.setEndDate(rs.getDate("end_date"));
+                    owner.setNotes(rs.getString("notes"));
+                    String ownerName = rs.getString("first_name") + " " + rs.getString("last_name");
+                    owner.setOwnerName(ownerName);
+                    return owner;
+                }
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return null;
+    }
         return owners;
     }
 
@@ -509,5 +557,4 @@ public class OwnerDAO {
             throw new RuntimeException(e);
         }
     }
-
 }

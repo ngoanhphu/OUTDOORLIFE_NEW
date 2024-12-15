@@ -17,6 +17,19 @@ public class Order extends Gear {
     private String bookerName;
     private int ownerIsRequired;
 
+    public Order(int booker, int campsiteId, Timestamp startDate, Timestamp endDate, boolean approveStatus, boolean paymentStatus, int quantity, int totalAmount, int bookingPrice, int ownerIsRequired) {
+        this.booker = booker;
+        this.campsiteId = campsiteId;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.approveStatus = approveStatus;
+        this.paymentStatus = paymentStatus;
+        this.quantity = quantity;
+        this.totalAmount = totalAmount;
+        this.bookingPrice = bookingPrice;
+        this.ownerIsRequired = ownerIsRequired;
+    }
+
     public Order(int booker, int campsiteId, Timestamp startDate, Timestamp endDate, boolean approveStatus, boolean paymentStatus, int quantity, int totalAmount, int bookingPrice) {
         this.booker = booker;
         this.campsiteId = campsiteId;
