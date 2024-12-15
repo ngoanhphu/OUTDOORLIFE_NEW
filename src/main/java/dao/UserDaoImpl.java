@@ -218,27 +218,34 @@ public class UserDaoImpl extends DBContext implements UserDAO {
     }
 
     @Override
-    public List<User> getAllAccount() {
+    public List<User> getAllAccount(int page, int size) {
         List<User> accounts = new ArrayList<>();
-        String query = "SELECT * FROM ACCOUNT";
+        String query = "SELECT G.* FROM [ACCOUNT] G"
+                + " ORDER BY G.[Account_id] desc "
+                + "OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
 
-        try (Connection con = getConnection(); PreparedStatement pst = con.prepareStatement(query); ResultSet rs = pst.executeQuery()) {
-            while (rs.next()) {
-                User user = new User();
-                user.setId(rs.getInt("Account_id"));
-                user.setFirstName(rs.getString("first_name"));
-                user.setLastName(rs.getString("last_name"));
-                user.setEmail(rs.getString("Gmail"));
-                user.setPhoneNumber(rs.getString("phone_number"));
-                user.setPasswordHash(rs.getString("passwordHash"));
-                user.setAdmin(rs.getBoolean("isAdmin"));
-                user.setOwner(rs.getBoolean("isOwner"));
-                accounts.add(user);
+        try (Connection con = getConnection(); PreparedStatement pst = con.prepareStatement(query)) {
+            int offset = (page - 1) * size;
+            pst.setInt(1, offset);
+            pst.setInt(2, size);
+            try (ResultSet rs = pst.executeQuery()) {
+                while (rs.next()) {
+                    User user = new User();
+                    user.setId(rs.getInt("Account_id"));
+                    user.setFirstName(rs.getString("first_name"));
+                    user.setLastName(rs.getString("last_name"));
+                    user.setEmail(rs.getString("Gmail"));
+                    user.setPhoneNumber(rs.getString("phone_number"));
+                    user.setPasswordHash(rs.getString("passwordHash"));
+                    user.setAdmin(rs.getBoolean("isAdmin"));
+                    user.setOwner(rs.getBoolean("isOwner"));
+                    accounts.add(user);
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        } catch (Exception ex) {
+            Logger.getLogger(UserDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
         return accounts;
     }
@@ -277,57 +284,5 @@ public class UserDaoImpl extends DBContext implements UserDAO {
         } catch (Exception ex) {
             Logger.getLogger(UserDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }
-
-    @Override
-    public boolean updateAccount(User user) {
-        String sql = "UPDATE ACCOUNT SET first_name = ?, last_name = ?, Gmail = ?, phone_number = ?, passwordHash = ?, isAdmin = ?, isOwner = ? WHERE Account_id = ?";
-        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, user.getFirstName());
-            ps.setString(2, user.getLastName());
-            ps.setString(3, user.getEmail());
-            ps.setString(4, user.getPhoneNumber());
-            ps.setString(5, user.getPasswordHash());
-            ps.setBoolean(6, user.isAdmin());
-            ps.setBoolean(7, user.isOwner());
-            ps.setInt(8, user.getId());
-            return ps.executeUpdate() > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
-    public List<User> searchAccounts(String query) {
-        List<User> accounts = new ArrayList<>();
-        String sql = "SELECT * FROM ACCOUNT WHERE Account_id LIKE ? OR Gmail LIKE ? OR phone_number LIKE ?";
-        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
-            String searchPattern = "%" + query + "%";
-            ps.setString(1, searchPattern);
-            ps.setString(2, searchPattern);
-            ps.setString(3, searchPattern);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                User user = new User(
-                        rs.getInt("Account_id"),
-                        rs.getString("first_name"),
-                        rs.getString("last_name"),
-                        rs.getString("Gmail"),
-                        rs.getString("phone_number"),
-                        rs.getString("passwordHash"),
-                        rs.getBoolean("isAdmin"),
-                        rs.getBoolean("isOwner")
-                );
-                accounts.add(user);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        return accounts;
     }
 }

@@ -1,82 +1,91 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
+ */
 package controller.admin;
 
-import dao.UserDaoImpl;
-import model.User;
+import java.io.IOException;
 
+import dao.UserDaoImpl;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
-import java.io.IOException;
 import java.util.List;
 
-@WebServlet("/manage-account")
+import model.User;
+
+/**
+ *
+ * @author Admin
+ */
+@WebServlet(name = "ManageAccountsServlet", urlPatterns = {"/manage-account"})
 public class ManageAccountsServlet extends HttpServlet {
 
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+    /**
+     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
+     * methods.
+     *
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8");
         UserDaoImpl userDAO = new UserDaoImpl();
-        int page = 1;
-        int recordsPerPage = 8;
-        if (request.getParameter("page") != null) {
-            page = Integer.parseInt(request.getParameter("page"));
-        }
+        int page = request.getParameter("page") == null ? 1 : Integer.parseInt(request.getParameter("page"));
 
-        String searchQuery = request.getParameter("search");
-        List<User> allAccounts;
-        if (searchQuery != null && !searchQuery.isEmpty()) {
-            allAccounts = userDAO.searchAccounts(searchQuery);
-        } else {
-            allAccounts = userDAO.getAllAccount();
-        }
+        int totalItems = userDAO.getTotalItem();
+        List<User> accounts = userDAO.getAllAccount(page, 8);
 
-        int totalRecords = allAccounts.size();
-        int totalPages = (int) Math.ceil((double) totalRecords / recordsPerPage);
-
-        int start = (page - 1) * recordsPerPage;
-        int end = Math.min(start + recordsPerPage, totalRecords);
-        List<User> paginatedAccounts = allAccounts.subList(start, end);
-
-        request.setAttribute("accounts", paginatedAccounts);
         request.setAttribute("currentPage", page);
-        request.setAttribute("totalPages", totalPages);
-        request.setAttribute("searchQuery", searchQuery);
+        request.setAttribute("totalPages", Math.ceil((totalItems / (double) 8)));
+        request.setAttribute("itemsPerPage", 8);
+        request.setAttribute("accounts", accounts);
+
         request.getRequestDispatcher("/manageAccount.jsp").forward(request, response);
     }
 
+    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+    /**
+     * Handles the HTTP <code>GET</code> method.
+     *
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        processRequest(request, response);
+    }
+
+    /**
+     * Handles the HTTP <code>POST</code> method.
+     *
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        UserDaoImpl userDAO = new UserDaoImpl();
-        String action = request.getParameter("action");
-
-        if ("update".equals(action)) {
-            int id = Integer.parseInt(request.getParameter("id"));
-            User auth = (User) request.getSession().getAttribute("currentUser");
-
-            if (auth != null && auth.getId() == id) {
-                request.setAttribute("message", "You can't edit your own account!");
-            } else {
-                String firstName = request.getParameter("firstName");
-                String lastName = request.getParameter("lastName");
-                String email = request.getParameter("email");
-                String phoneNumber = request.getParameter("phoneNumber");
-                boolean isAdmin = Boolean.parseBoolean(request.getParameter("isAdmin"));
-                boolean isOwner = Boolean.parseBoolean(request.getParameter("isOwner"));
-
-                User user = new User(id, firstName, lastName, email, phoneNumber, null, isAdmin, isOwner, null);
-                boolean success = userDAO.updateAccount(user);
-
-                if (success) {
-                    request.setAttribute("message", "Account updated successfully.");
-                } else {
-                    request.setAttribute("message", "Failed to update account.");
-                }
-            }
-        }
-        doGet(request, response);
+        processRequest(request, response);
     }
+
+    /**
+     * Returns a short description of the servlet.
+     *
+     * @return a String containing servlet description
+     */
+    @Override
+    public String getServletInfo() {
+        return "Short description";
+    }// </editor-fold>
+
 }
