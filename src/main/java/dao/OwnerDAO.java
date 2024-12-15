@@ -279,6 +279,12 @@ public class OwnerDAO {
                 if (rs.next()) {
                     return rs.getInt("Campsite_owner");
                 }
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return -1; // Không tìm thấy.
+    }
               
     public List<OwnerDTO> getOwnersWithAccountInfoAndRevenue() throws SQLException {
         String sql = "SELECT "
@@ -330,7 +336,8 @@ public class OwnerDAO {
                 + "a.Gmail, "
                 + "a.phone_number, "
                 + "a.isAdmin, "
-                + "a.isOwner";
+                + "a.isOwner "+
+                "having COALESCE(SUM(ord.totalAmount), 0) > 0";
 
         List<OwnerDTO> owners = new ArrayList<>();
         try (Connection conn = db.getConnection();
@@ -374,7 +381,7 @@ public class OwnerDAO {
             throw new RuntimeException(e);
         }
 
-        return -1; // Không tìm thấy.
+        return owners; // Không tìm thấy.
     }
 
     public Owner getOwnerByOwnerId(int ownerId) throws SQLException {
@@ -410,8 +417,7 @@ public class OwnerDAO {
         }
         return null;
     }
-        return owners;
-    }
+
 
     public List<OrderRevenueDTO> getOrderRevenueByOwnerId(int ownerId, int queryYear) {
         List<OrderRevenueDTO> orderRevenueDTOs = new ArrayList<>();
