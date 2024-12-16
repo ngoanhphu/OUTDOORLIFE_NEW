@@ -428,4 +428,30 @@ public class UserDaoImpl extends DBContext implements UserDAO {
         }
         return false;
     }
+
+    public User findById(int id) {
+        String query = "SELECT * FROM ACCOUNT WHERE Account_id = ?";
+        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    User user = new User();
+                    user.setId(rs.getInt("Account_id"));
+                    user.setFirstName(rs.getString("first_name"));
+                    user.setLastName(rs.getString("last_name"));
+                    user.setEmail(rs.getString("Gmail"));
+                    user.setPhoneNumber(rs.getString("phone_number"));
+                    user.setPasswordHash(rs.getString("passwordHash"));
+                    user.setAdmin(rs.getBoolean("isAdmin"));
+                    user.setOwner(rs.getBoolean("isOwner"));
+                    return user;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return null;
+    }
 }

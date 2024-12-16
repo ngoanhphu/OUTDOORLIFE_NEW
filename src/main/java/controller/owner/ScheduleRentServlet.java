@@ -108,7 +108,7 @@ public class ScheduleRentServlet extends HttpServlet {
                     response.sendRedirect(request.getContextPath() + "/indexMessage");
                 } else {
                     String ownerStatus = ownerDAO.getOwnerStatusByAccountId(session);
-                    if ("disapproved".equals(ownerStatus)) {
+                    if ("pending".equals(ownerStatus)) {
                         session.setAttribute("message", "Your owner registration request hasn't been approved!");
                         response.sendRedirect(request.getContextPath() + "/indexMessage");
                     } else {

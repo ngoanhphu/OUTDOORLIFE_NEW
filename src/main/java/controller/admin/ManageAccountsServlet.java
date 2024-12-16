@@ -86,10 +86,12 @@ public class ManageAccountsServlet extends HttpServlet {
                 }
             }
         } else if ("deactivate".equals(action)) {
+            User userToDeactivate = userDAO.findById(id);
             if (auth != null && auth.getId() == id) {
                 request.setAttribute("message", "You can't deactivate your own account!");
-            }
-            else {
+            } else if (userToDeactivate != null && userToDeactivate.isAdmin()) {
+                request.setAttribute("message", "Admin accounts cannot be deactivated!");
+            } else {
                 boolean success = userDAO.deactivateAccount(id);
                 if (success) {
                     request.setAttribute("message", "Account deactivated successfully.");
