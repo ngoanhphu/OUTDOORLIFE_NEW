@@ -12,14 +12,13 @@ import java.util.List;
 public class NotificationDao extends DBContext{
 
     public boolean insertNotification(Notification notification) {
-        String sql = "INSERT INTO Notification (receiver_id, description, status, notification_date) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO Notification (receiver_id, description, status) VALUES (?, ?, ?)";
 
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, notification.getReceiverId());
             stmt.setString(2, notification.getDescription());
-            stmt.setString(3, notification.getStatus());
-            stmt.setTimestamp(4, new java.sql.Timestamp(notification.getNotificationDate().getTime()));
+            stmt.setBoolean(3, notification.getStatus());
 
             stmt.executeUpdate();
             return true;
@@ -113,17 +112,10 @@ public class NotificationDao extends DBContext{
                 Notification notification = new Notification(
                         rs.getInt("notification_id"),
                         rs.getString("description"),
-                        rs.getTimestamp("created_date"),
                         rs.getBoolean("is_read")
                 );
                 notifications.add(notification);
             }
-
-            // Mark as read
-            String updateQuery = "UPDATE NOTIFICATION SET is_read = 1 WHERE owner_id = ?";
-            PreparedStatement stmtUpdate = connection.prepareStatement(updateQuery);
-            stmtUpdate.setInt(1, ownerId);
-            stmtUpdate.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
         }

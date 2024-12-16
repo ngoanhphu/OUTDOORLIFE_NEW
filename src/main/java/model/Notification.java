@@ -6,22 +6,23 @@ public class Notification {
     private int id;
     private int receiverId;
     private String description;
-    private String status;
-    private java.util.Date notificationDate;
+    private boolean status;
+    private String notificationDate;
 
     public Notification() {}
 
-    public Notification(int receiverId, String description, String status) {
+    public Notification(int receiverId, String description, boolean status) {
         this.receiverId = receiverId;
         this.description = description;
         this.status = status;
-        this.notificationDate = new java.util.Date();
+
     }
 
-    public Notification(int notificationId, String description, Timestamp createdDate, boolean isRead) {
+
+    public Notification(int notificationId, String description, Timestamp createdDate, boolean isRead, String notificationDate) {
         this.receiverId = notificationId;
         this.description = description;
-        this.notificationDate = new java.util.Date();
+        this.notificationDate = notificationDate;
     }
 
 
@@ -50,19 +51,19 @@ public class Notification {
         this.description = description;
     }
 
-    public String getStatus() {
+    public boolean getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(boolean status) {
         this.status = status;
     }
 
-    public java.util.Date getNotificationDate() {
+    public String getNotificationDate() {
         return notificationDate;
     }
 
-    public void setNotificationDate(java.util.Date notificationDate) {
+    public void setNotificationDate(String notificationDate) {
         this.notificationDate = notificationDate;
     }
 }

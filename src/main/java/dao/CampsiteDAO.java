@@ -24,7 +24,7 @@ public class CampsiteDAO extends DBContext {
 
     public List<Campsite> getAllRiverCampsite() throws Exception {
         List<Campsite> campsites = new ArrayList<>();
-        try (Connection con = getConnection(); PreparedStatement pst = con.prepareStatement("SELECT C.*, C.Price FROM CAMPSITE C WHERE C.Name LIKE N'%Sông%' AND C.Status = 1"); ResultSet rs = pst.executeQuery()) {
+        try (Connection con = getConnection(); PreparedStatement pst = con.prepareStatement("SELECT C.*, A.first_name, A.last_name FROM CAMPSITE C JOIN OWNER O ON C.Campsite_owner = O.owner_id JOIN ACCOUNT A ON O.Account_id = A.Account_id WHERE C.Name LIKE N'%Sông%' AND C.Status = 1;\n"); ResultSet rs = pst.executeQuery()) {
             while (rs.next()) {
                 Campsite campsite = new Campsite();
                 campsite.setCampId(rs.getInt("Campsite_id"));

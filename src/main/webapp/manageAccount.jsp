@@ -232,8 +232,8 @@
         <input type="text" name="firstName" id="firstName" required>
         <label for="lastName">Last Name:</label>
         <input type="text" name="lastName" id="lastName" required>
-        <label for="email">Email:</label>
-        <input type="email" name="email" id="email" required>
+        <label for="email" hidden="hidden">Email:</label>
+        <input type="email" name="email" id="email" required hidden="hidden">
         <label for="phoneNumber">Phone Number:</label>
         <input type="text" name="phoneNumber" id="phoneNumber" required>
         <input type="hidden" name="isAdmin" id="isAdmin">

@@ -7,12 +7,12 @@
     int unreadCount = 0; // Mặc định là 0 nếu không có giá trị
     List<Notification> notifications = new ArrayList<>();
 
-    if (request.getAttribute("unreadCount") != null) {
-        unreadCount = (int) request.getAttribute("unreadCount");
+    if (session.getAttribute("unreadCount") != null) {
+        unreadCount = (int) session.getAttribute("unreadCount");
     }
 
-    if (request.getAttribute("notifications") != null) {
-        notifications = (List<Notification>) request.getAttribute("notifications");
+    if (session.getAttribute("notifications") != null) {
+        notifications = (List<Notification>) session.getAttribute("notifications");
     }
 %>
 <!DOCTYPE html>

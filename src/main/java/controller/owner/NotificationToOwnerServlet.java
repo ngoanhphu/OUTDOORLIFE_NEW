@@ -36,8 +36,8 @@ public class NotificationToOwnerServlet extends HttpServlet {
             int unreadCount = dao.getUnreadCount(ownerId);
             List<Notification> notifications = dao.getNotifications(ownerId);
 
-            request.setAttribute("unreadCount", unreadCount);
-            request.setAttribute("notifications", notifications);
+            session.setAttribute("unreadCount", unreadCount);
+            session.setAttribute("notifications", notifications);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
