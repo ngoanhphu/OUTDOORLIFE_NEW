@@ -87,7 +87,7 @@ public class NotificationDao extends DBContext{
 
     public int getUnreadCount(int ownerId) {
         try (Connection connection = getConnection()) {
-            String query = "SELECT COUNT(*) AS unread_count FROM NOTIFICATION WHERE owner_id = ? AND is_read = 0";
+            String query = "SELECT COUNT(*) AS unread_count FROM NOTIFICATION WHERE owner_id = ? ";
             PreparedStatement stmt = connection.prepareStatement(query);
             stmt.setInt(1, ownerId);
 
