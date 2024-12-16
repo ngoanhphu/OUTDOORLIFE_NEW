@@ -38,4 +38,6 @@ public interface UserDAO {
     List<User> searchDeactivatedAccounts(String query);
 
     boolean isAccountDeactivated(int accountId);
+
+    User findById(int id);
 }
