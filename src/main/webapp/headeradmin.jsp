@@ -93,11 +93,11 @@
                     <a href="viewOwner" class="nav-item nav-link">Manage Gear</a>
                     <a href="manage-campsite" class="nav-item nav-link">Manage Campsites</a>
                     <a href="manage-order" class="nav-item nav-link">Manage Orders</a>
-                    <a href="manage-voucher" class="nav-item nav-link">Manage Vouchers</a>
+
                     <a href="extendContract" class="nav-item nav-link">Extend Contract</a>
                     <div class="dropdown nav-item">
                         <button class="btn btn-outline-primary dropdown-toggle d-flex align-items-center" type="button" id="notificationDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="fas fa-bell me-2"></i> Notifications <span class="badge bg-danger ms-2"><%= unreadCount %></span>
+                            <i class="fas fa-bell me-2"></i><span class="badge bg-danger ms-2"><%= unreadCount %></span>
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end shadow-lg p-2" aria-labelledby="notificationDropdown" style="min-width: 350px;">
                             <%
@@ -136,6 +136,7 @@
                     <a href="all-campsites" class="nav-item nav-link">Manage Campsite</a>
                     <%--                                <a href="manage-campsite" class="nav-item nav-link">Manage Campsites</a>--%>
                     <a href="show-feedback" class="nav-item nav-link">Manage Feedbacks</a>
+                    <a href="manage-voucher" class="nav-item nav-link">Manage Vouchers</a>
                     <a href="/login_war/report/viewReportByAdmin.jsp" class="nav-item nav-link active">View Report</a>
 
                     <a href="ownerRegistration" class="nav-item nav-link">Pending Owner</a>

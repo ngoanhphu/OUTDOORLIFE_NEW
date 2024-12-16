@@ -112,7 +112,7 @@
 </head>
 <body>
 
-<%@ include file="header.jsp" %>
+<%@ include file="headeradmin.jsp" %>
 <div class="container" style="margin-top: 300px">
     <h2>Manage Accounts</h2>
     <form method="get" action="manage-account">

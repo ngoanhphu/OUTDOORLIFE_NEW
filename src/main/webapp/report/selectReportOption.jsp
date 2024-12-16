@@ -95,6 +95,6 @@
         <button type="submit" name="action" value="campsite" class="btn btn-campsite">Report Campsite</button>
         <button type="submit" name="action" value="owner" class="btn btn-owner">Report Owner</button>
     </form>
-    <button href="user.jsp" name="home" value="home" class="btn btn-home">Back Home</button>
+    <button href="index.jsp" name="home" value="home" class="btn btn-home">Back Home</button>
 </div>
 </body>

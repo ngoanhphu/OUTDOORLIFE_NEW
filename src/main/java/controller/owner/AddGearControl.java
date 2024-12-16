@@ -19,7 +19,7 @@ import model.User;
 @MultipartConfig // Cho phép servlet xử lý multipart/form-data
 public class AddGearControl extends HttpServlet {
 
-    private static final String UPLOAD_DIRECTORY = "D:\\OJT\\new_project\\OUTDOORLIFE_NEW\\src\\main\\webapp\\img";
+    private static final String UPLOAD_DIRECTORY = "D:\\INTELIJI\\OUTDOORLIFE\\OUTDOORLIFE_NEW\\src\\main\\webapp\\img";
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)

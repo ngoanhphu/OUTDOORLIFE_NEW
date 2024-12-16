@@ -27,7 +27,7 @@ import jakarta.servlet.http.Part;
 @WebServlet(name = "AddCampsideServlet", urlPatterns = {"/add-campsite"})
 @MultipartConfig
 public class AddCampsiteServlet extends HttpServlet {
-    private static final String UPLOAD_DIRECTORY = "D:\\OJT\\new_project\\OUTDOORLIFE_NEW\\src\\main\\webapp\\img";
+    private static final String UPLOAD_DIRECTORY = "D:\\INTELIJI\\OUTDOORLIFE\\OUTDOORLIFE_NEW\\src\\main\\webapp\\img";
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");

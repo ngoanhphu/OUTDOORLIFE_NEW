@@ -63,7 +63,7 @@ public class LoginServlet extends HttpServlet {
                     if ("disapproved".equals(ownerStatus)) {
                         response.sendRedirect(request.getContextPath() + "/index.jsp");
                     } else {
-                        response.sendRedirect("schedule-rent");
+                        response.sendRedirect("notifyToOwner");
                     }
                 } else {
                     response.sendRedirect("registerOwner.jsp");

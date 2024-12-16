@@ -41,7 +41,8 @@ public class NotificationToOwnerServlet extends HttpServlet {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        request.getRequestDispatcher("scheduleRent.jsp").forward(request, response);
+//        request.getRequestDispatcher("schedule-rent").forward(request, response);
+        response.sendRedirect("schedule-rent");
     }
 
 }

@@ -19,7 +19,7 @@ import java.io.IOException;
 public class UpdateTentControl extends HttpServlet {
 
     // Đường dẫn lưu trữ ảnh
-    private static final String UPLOAD_DIRECTORY = "D:\\OJT\\new_project\\OUTDOORLIFE_NEW\\src\\main\\webapp\\img";
+    private static final String UPLOAD_DIRECTORY = "D:\\INTELIJI\\OUTDOORLIFE\\OUTDOORLIFE_NEW\\src\\main\\webapp\\img";
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
